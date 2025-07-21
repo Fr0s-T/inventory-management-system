@@ -7,7 +7,7 @@ public class test1 {
 
 
         // SQL to insert a test row
-        String insertSQL = "INSERT INTO test1 (id, name) VALUES (3, 'Ali')";
+        String insertSQL = "INSERT INTO test1 (id, name) VALUES (4, 'fouad')";
 
         try (Connection connection = DriverManager.getConnection(connectionUrl);
              Statement statement = connection.createStatement()) {
