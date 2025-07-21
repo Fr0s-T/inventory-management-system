@@ -2,22 +2,12 @@ import java.sql.*;
 
 public class test1 {
     public static void main(String[] args) {
-        // Database connection details
-        String server = "inventorymanegmentsystem-srv.database.windows.net";
-        String database = "inventory_manegment_system_db";  // Replace with your actual DB name
-        String username = "sqladmin";
-        String password = "";      // Replace with your actual password
+        Main m1 = new Main();
+        String connectionUrl = m1.getConnectionUrl(300);
 
-        String connectionUrl = "jdbc:sqlserver://" + server + ":1433;"
-                + "database=" + database + ";"
-                + "user=" + username + ";"
-                + "password=" + password + ";"
-                + "encrypt=true;"
-                + "trustServerCertificate=false;"
-                + "loginTimeout=30;";
 
         // SQL to insert a test row
-        String insertSQL = "INSERT INTO test1 (id, name) VALUES (1, 'Test Name')";
+        String insertSQL = "INSERT INTO test1 (id, name) VALUES (3, 'Ali')";
 
         try (Connection connection = DriverManager.getConnection(connectionUrl);
              Statement statement = connection.createStatement()) {
