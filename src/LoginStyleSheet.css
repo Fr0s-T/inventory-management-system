@@ -1,3 +1,46 @@
+/* Class selector (starts with dot) */
+.root {
+    -fx-font-size: 14px;
+}
+
 .m1 {
     -fx-text-fill: red;
+}
+
+/* ID selector (starts with hash) */
+.h {
+    -fx-background-color: white;
+    -fx-background-radius: 50px;  /* Must match border-radius */
+    -fx-border-radius: 50px;
+    -fx-padding: 10px;
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-background-insets: 0;
+
+    /* Critical fix: Clip the background to the rounded shape */
+    -fx-clip: inherit;
+
+    /* Optional: Prevent children from overflowing */
+    -fx-effect: null; /* Remove any effects that might cause overflow */
+}
+.f1 {
+    -fx-border-width: 0;          /* Removes border */
+    -fx-font-style: italic;       /* Makes text italic */
+    -fx-background-color: transparent; /* Optional: removes background */
+}
+.b {
+    -fx-background-color: white;
+    -fx-background-radius: 50px;  /* Makes background rounded */
+    -fx-border-radius: 50px;      /* Makes border rounded (if used) */
+    -fx-border-color: transparent; /* Optional: if you want no border */
+    -fx-border-width: 0;          /* Optional: removes border */
+    -fx-padding: 10px 20px;      /* Adds internal spacing (top/bottom, left/right) */
+
+    /* Ensures crisp edges and proper clipping */
+    -fx-background-insets: 0;
+    -fx-clip: inherit;
+    -fx-snap-to-pixel: true;
+}
+#p1{
+    -fx-margin: 5px 0 0 0;
 }

@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,6 +15,7 @@ public class LoginPage extends Application {
     @FXML private TextField p1;
     @FXML private Label e1;
     @FXML private Button b1;
+    @FXML private Button b2;
 
 
     @FXML
@@ -29,6 +31,7 @@ public class LoginPage extends Application {
 
         // Either use this programmatic approach (remove onAction from FXML)
         b1.setOnAction(event -> login());
+        b2.setOnAction(event -> Platform.exit());
 
         // OR use the FXML onAction="#login" (remove this setOnAction)
     }
