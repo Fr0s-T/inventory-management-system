@@ -60,6 +60,11 @@
                   <Font size="24.0" />
                </font>
             </Button>
+            <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="849.0" layoutY="64.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Logo.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
    </children>
