@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -12,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LoginPage">
    <children>
-      <Pane layoutX="-17.0" layoutY="-8.0" prefHeight="1090.0" prefWidth="1948.0" style="-fx-background-color: #c7d3df;" stylesheets="@LoginStyleSheet.css">
+      <Pane fx:id="p1" layoutX="-17.0" layoutY="-8.0" prefHeight="1090.0" prefWidth="1948.0" style="-fx-background-color: #c7d3df;" stylesheets="@LoginStyleSheet.css">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="708.0" layoutY="259.0" prefHeight="171.0" prefWidth="553.0" text="Welcome Back!" textAlignment="CENTER">
                <font>
@@ -34,11 +35,11 @@
                         <Image url="@avatar-removebg-preview.png" />
                      </image>
                   </ImageView>
-                  <TextField id="p1" fx:id="p1" prefHeight="53.0" prefWidth="264.0" promptText="Password" styleClass="f1" stylesheets="@LoginStyleSheet.css">
+                  <PasswordField id="p1" fx:id="pass1" prefHeight="71.0" prefWidth="446.0" promptText="Password" styleClass="f1" stylesheets="@LoginStyleSheet.css">
                      <font>
                         <Font size="24.0" />
                      </font>
-                  </TextField>
+                  </PasswordField>
                </children>
             </HBox>
             <HBox id="h2" layoutX="684.0" layoutY="442.0" prefHeight="59.0" prefWidth="589.0" styleClass="h" stylesheets="@LoginStyleSheet.css">
@@ -60,7 +61,7 @@
                   <Font size="24.0" />
                </font>
             </Button>
-            <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="849.0" layoutY="64.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="880.0" layoutY="92.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@Logo.png" />
                </image>

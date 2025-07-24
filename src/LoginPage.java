@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -19,7 +20,7 @@ import javafx.stage.Stage;
 public class LoginPage extends Application {
 
     @FXML private TextField u1;
-    @FXML private TextField p1;
+    @FXML private PasswordField pass1;
     @FXML private Label e1;
     @FXML private Button b1;
     @FXML private Button b2;
@@ -28,7 +29,7 @@ public class LoginPage extends Application {
     @FXML
     private void login() {
         String username = u1.getText();
-        String password = p1.getText();
+        String password = pass1.getText();
         e1.setVisible(!"admin".equals(username) || !"admin".equals(password));
     }
     @FXML
