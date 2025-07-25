@@ -45,3 +45,10 @@
 #p1{
     -fx-margin: 5px 0 0 0;
 }
+#logopane{
+    -fx-background-color:  #c7d3df;
+     visibility: true;
+}
+#logopane > .image-view {
+    -fx-alignment: center;
+}
