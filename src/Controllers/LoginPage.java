@@ -1,3 +1,5 @@
+package Controllers;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -9,11 +11,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
+//TODO:1- Add a password logo
+//     2- Password Management and security checks
+//     3- Add alert feature if !password 3 times
 /*
  *
  *
- * @Frost
+ * Author: @Frost
  *
  */
 
@@ -46,7 +50,7 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("LoginPage.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/LoginPage.fxml"));
         AnchorPane root = loader.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);

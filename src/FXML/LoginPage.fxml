@@ -11,59 +11,59 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LoginPage">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginPage">
    <children>
-      <Pane fx:id="p1" layoutX="-17.0" layoutY="-8.0" prefHeight="1090.0" prefWidth="1948.0" style="-fx-background-color: #c7d3df;" stylesheets="@LoginStyleSheet.css">
+      <Pane fx:id="p1" layoutX="-17.0" layoutY="-8.0" prefHeight="1090.0" prefWidth="1948.0" style="-fx-background-color: #c7d3df;" stylesheets="@../StyleSheets/LoginStyleSheet.css">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="708.0" layoutY="259.0" prefHeight="171.0" prefWidth="553.0" text="Welcome Back!" textAlignment="CENTER">
                <font>
                   <Font size="36.0" />
                </font>
             </Label>
-            <Label id="e1" fx:id="e1" layoutX="727.0" layoutY="670.0" prefHeight="35.0" prefWidth="827.0" styleClass="m1" stylesheets="@LoginStyleSheet.css" text="UserName or Passowrd are incorrect">
+            <Label id="e1" fx:id="e1" layoutX="727.0" layoutY="670.0" prefHeight="35.0" prefWidth="827.0" styleClass="m1" stylesheets="@../StyleSheets/LoginStyleSheet.css" text="UserName or Passowrd are incorrect">
                <font>
                   <Font size="24.0" />
                </font></Label>
-            <Button id="b1" fx:id="b1" layoutX="680.0" layoutY="741.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="b" stylesheets="@LoginStyleSheet.css" text="Login">
+            <Button id="b1" fx:id="b1" layoutX="680.0" layoutY="741.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="b" stylesheets="@../StyleSheets/LoginStyleSheet.css" text="Login">
                <font>
                   <Font size="24.0" />
                </font></Button>
-            <HBox id="h2" layoutX="684.0" layoutY="575.0" prefHeight="59.0" prefWidth="589.0" styleClass="h" stylesheets="@LoginStyleSheet.css">
+            <HBox id="h2" layoutX="684.0" layoutY="575.0" prefHeight="59.0" prefWidth="589.0" styleClass="h" stylesheets="@../StyleSheets/LoginStyleSheet.css">
                <children>
                   <ImageView fitHeight="55.0" fitWidth="143.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@avatar-removebg-preview.png" />
+                        <Image url="@../Icons/avatar-removebg-preview.png" />
                      </image>
                   </ImageView>
-                  <PasswordField id="p1" fx:id="pass1" prefHeight="71.0" prefWidth="446.0" promptText="Password" styleClass="f1" stylesheets="@LoginStyleSheet.css">
+                  <PasswordField id="p1" fx:id="pass1" prefHeight="71.0" prefWidth="446.0" promptText="Password" styleClass="f1" stylesheets="@../StyleSheets/LoginStyleSheet.css">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </PasswordField>
                </children>
             </HBox>
-            <HBox id="h2" layoutX="684.0" layoutY="442.0" prefHeight="59.0" prefWidth="589.0" styleClass="h" stylesheets="@LoginStyleSheet.css">
+            <HBox id="h2" layoutX="684.0" layoutY="442.0" prefHeight="59.0" prefWidth="589.0" styleClass="h" stylesheets="@../StyleSheets/LoginStyleSheet.css">
                <children>
                   <ImageView fitHeight="55.0" fitWidth="143.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@avatar-removebg-preview.png" />
+                        <Image url="@../Icons/avatar-removebg-preview.png" />
                      </image>
                   </ImageView>
-                  <TextField id="u1" fx:id="u1" prefHeight="128.0" prefWidth="441.0" promptText="User name" styleClass="f1" stylesheets="@LoginStyleSheet.css">
+                  <TextField id="u1" fx:id="u1" prefHeight="128.0" prefWidth="441.0" promptText="User name" styleClass="f1" stylesheets="@../StyleSheets/LoginStyleSheet.css">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </TextField>
                </children>
             </HBox>
-            <Button id="b2" fx:id="b2" layoutX="989.0" layoutY="745.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="b" stylesheets="@LoginStyleSheet.css" text="Exit">
+            <Button id="b2" fx:id="b2" layoutX="989.0" layoutY="745.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="b" stylesheets="@../StyleSheets/LoginStyleSheet.css" text="Exit">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
             <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="880.0" layoutY="92.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@Logo.png" />
+                  <Image url="@../Icons/Logo.png" />
                </image>
             </ImageView>
          </children>
