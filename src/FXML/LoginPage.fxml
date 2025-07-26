@@ -14,12 +14,12 @@
 <AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginPage">
    <children>
       <!-- Main background pane -->
-      <Pane fx:id="mainPane" layoutX="-14.0" layoutY="-24.0" prefHeight="1113.0" prefWidth="1961.0" style="-fx-background-color: #c7d3df;" stylesheets="@../StyleSheets/LoginStyleSheet.css">
+      <Pane fx:id="mainPane" layoutX="-14.0" layoutY="-24.0" prefHeight="1113.0" prefWidth="1961.0" style="-fx-background-color: #D3D3D4;" stylesheets="@../StyleSheets/LoginStyleSheet.css">
          <children>
 
             <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="852.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Icons/Logo.png" />
+                  <Image url="@../Icons/Possible%20logos/Screenshot__77_-removebg-preview(1).png" />
                </image>
             </ImageView>
             <Label alignment="CENTER" layoutX="711.0" layoutY="268.0" prefHeight="171.0" prefWidth="553.0" text="Welcome Back!" textAlignment="CENTER">
@@ -57,7 +57,7 @@
 
             <HBox fx:id="passwordContainer" layoutX="684.0" layoutY="575.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
                <children>
-                  <ImageView fitHeight="55.0" fitWidth="143.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="49.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Icons/password_avatar.png" />
                      </image>
@@ -74,15 +74,20 @@
                   <Font size="24.0" />
                </font>
             </Label>
+            <Label layoutX="252.0" layoutY="135.0" prefHeight="83.0" prefWidth="367.0" text="Manegment&amp;Co.">
+               <font>
+                  <Font size="32.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
 
-                                                                                                <!-- Splash logo pane -->
-      <Pane fx:id="logoPane" layoutX="-14.0" layoutY="-24.0" prefHeight="1113.0" prefWidth="1961.0" styleClass="splash-background" stylesheets="@../StyleSheets/LoginStyleSheet.css">
+                                                                                                      <!-- Splash logo pane -->
+      <Pane fx:id="logoPane" layoutX="-14.0" layoutY="-24.0" prefHeight="1113.0" prefWidth="1961.0" styleClass="splash-background" stylesheets="@../StyleSheets/LoginStyleSheet.css" visible="false">
          <children>
             <ImageView fitHeight="195.0" fitWidth="266.0" layoutX="874.0" layoutY="402.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Icons/Logo.png" />
+                  <Image url="@../Icons/Possible%20logos/Screenshot__77_-removebg-preview(1).png" />
                </image>
             </ImageView>
          </children>

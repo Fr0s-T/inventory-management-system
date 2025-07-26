@@ -30,7 +30,7 @@
 
 /* Rounded button style */
 .rounded-button {
-	-fx-background-color: #004AAB;
+	-fx-background-color: white;
 	-fx-background-radius: 50px;
 	-fx-border-radius: 50px;
 	-fx-border-color: transparent;
@@ -42,7 +42,7 @@
 
 /* Splash background */
 .splash-background {
-	-fx-background-color: #c7d3df;
+	-fx-background-color: #D3D3D4;
 
 }
 .rounded-button:hover {
