@@ -110,8 +110,8 @@ public class LoginPage extends Application {
                 login();
             }
         });
-
-        exitButton.setOnAction(event -> Platform.exit());
+            Platform.runLater(() -> usernameField.requestFocus());
+            exitButton.setOnAction(event -> Platform.exit());
     }
 
     @Override

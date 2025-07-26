@@ -53,3 +53,6 @@
 .rounded-button:pressed {
     -fx-background-color: #004aab; /* royal blue */
 }
+.buttonHbox {
+    -fx-spacing: 50px; /* adjust value as needed */
+    -fx-alignment: center; /* optional: centers buttons horizontally */

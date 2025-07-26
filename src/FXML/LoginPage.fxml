@@ -28,18 +28,6 @@
                </font>
             </Label>
 
-            <Button fx:id="loginButton" layoutX="680.0" layoutY="741.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Login">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Button>
-
-            <Button fx:id="exitButton" layoutX="989.0" layoutY="745.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Exit">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Button>
-
             <HBox fx:id="usernameContainer" layoutX="684.0" layoutY="442.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
                <children>
                   <ImageView fitHeight="55.0" fitWidth="143.0" pickOnBounds="true" preserveRatio="true">
@@ -79,6 +67,18 @@
                   <Font size="32.0" />
                </font>
             </Label>
+
+                  <Button fx:id="loginButton" layoutX="718.0" layoutY="718.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Login">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+
+                        <Button fx:id="exitButton" layoutX="1018.0" layoutY="721.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Exit">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
          </children>
       </Pane>
 
