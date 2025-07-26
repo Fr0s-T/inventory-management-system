@@ -45,3 +45,11 @@
 	-fx-background-color: #c7d3df;
 
 }
+.rounded-button:hover {
+    -fx-background-color: #0073e6; /* stronger blue */
+    -fx-cursor: hand;
+}
+
+.rounded-button:pressed {
+    -fx-background-color: #004aab; /* royal blue */
+}
