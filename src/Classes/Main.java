@@ -1,13 +1,21 @@
 package Classes;
 
 import javafx.application.Application;
-import Controllers.LoginPage;
+import javafx.stage.Stage;
+import Controllers.SceneLoader;
 
+/*
+ * Main entry point of the JavaFX application.
+ */
+public class Main extends Application {
 
-public class Main {
+    @Override
+    public void start(Stage primaryStage) {
+        SceneLoader.setPrimaryStage(primaryStage);
+        SceneLoader.loadScene("/FXML/LoginPage.fxml", null);
+    }
+
     public static void main(String[] args) {
-        Application.launch(LoginPage.class, args);
-        User currentUser = Session.getCurrentUser();
-        System.out.println(currentUser.toString());
+        launch(args);
     }
 }

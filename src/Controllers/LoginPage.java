@@ -7,6 +7,7 @@ import Classes.Session;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -21,22 +22,11 @@ import javafx.util.Duration;
 import java.sql.*;
 
 /*
- *
  * Author: @Frost
- *
+ * JavaFX Login Page Controller and App Entry
  */
 
 public class LoginPage extends Application {
-
-    public interface LoginListener {
-        void onLoginSuccess(User user);
-    }
-
-    private LoginListener loginListener;
-
-    public void setLoginListener(LoginListener listener) {
-        this.loginListener = listener;
-    }
 
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
@@ -45,43 +35,86 @@ public class LoginPage extends Application {
     @FXML private Button exitButton;
     @FXML private Pane logoPane;
 
+    private Stage mainStage;
+
     @FXML
     private void login() {
-        final String username = usernameField.getText().trim();
-        final String password = passwordField.getText().trim();
+        if (!validateInputs()) {
+            return;
+        }
+        loginButton.setDisable(true);
+        errorLabel.setVisible(false);
+
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
+
+        performLoginAsync(username, password);
+    }
+
+    private boolean validateInputs() {
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
             errorLabel.setText("Please enter both username and password.");
             errorLabel.setVisible(true);
-            return;
+            return false;
         }
+        return true;
+    }
 
-        HashingUtility hashingUtility = new HashingUtility();
-        final String hashedPassword = hashingUtility.md5Hash(password);
-
-        User user = authenticateUser(username, hashedPassword);
-
-        if (user != null) {
-            // Store user in session
-            Session.setCurrentUser(user);
-
-            // Notify listener if set
-            if (loginListener != null) {
-                loginListener.onLoginSuccess(user);
+    private void performLoginAsync(String username, String password) {
+        Task<User> loginTask = new Task<>() {
+            @Override
+            protected User call() throws Exception {
+                HashingUtility hashingUtility = new HashingUtility();
+                String hashedPassword = hashingUtility.md5Hash(password);
+                return authenticateUser(username, hashedPassword);
             }
+        };
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Login Status");
-            alert.setHeaderText(null);
-            alert.setContentText("Login successful!");
-            alert.showAndWait();
+        loginTask.setOnSucceeded(event -> handleLoginSuccess(loginTask.getValue()));
+        loginTask.setOnFailed(event -> handleLoginFailure());
 
-            // For testing, don't close app here to allow next steps
-            // Platform.exit();
+        new Thread(loginTask).start();
+    }
+
+    private void handleLoginSuccess(User user) {
+        if (user != null) {
+            Session.setCurrentUser(user);
+            switchSceneBasedOnRole(user);
         } else {
-            errorLabel.setText("Username or Password is incorrect!");
-            errorLabel.setVisible(true);
+            showError("Username or Password is incorrect!");
+            loginButton.setDisable(false);
         }
+    }
+
+    private void handleLoginFailure() {
+        showError("Login failed due to an error.");
+        loginButton.setDisable(false);
+    }
+
+    private void switchSceneBasedOnRole(User user) {
+        try {
+            switch (user.getRole()) {
+                case REGIONAL_MANAGER -> SceneLoader.loadScene("/FXML/SuFrame.fxml", mainStage);
+                case WAREHOUSE_MANAGER -> SceneLoader.loadScene("/FXML/WarehouseManagerDashboard.fxml", mainStage);
+                // Add other roles here only if their FXML files exist
+                default -> {
+                    showError("Unknown user role or scene not available.");
+                    loginButton.setDisable(false);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Failed to load scene for user role.");
+            loginButton.setDisable(false);
+        }
+    }
+
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
     }
 
     private User authenticateUser(String username, String hashedPassword) {
@@ -102,11 +135,8 @@ public class LoginPage extends Application {
 
                 if (rs.next()) {
                     String storedPassword = rs.getString("Password");
-                    if (!hashedPassword.equals(storedPassword)) {
-                        return null; // password mismatch
-                    }
+                    if (!hashedPassword.equals(storedPassword)) return null;
 
-                    // Build User object without password
                     return new User(
                             rs.getInt("ID"),
                             rs.getString("FirstName"),
@@ -119,48 +149,48 @@ public class LoginPage extends Application {
                     );
                 }
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return null; // user not found or error
+        return null;
     }
 
     @FXML
     private void initialize() {
         errorLabel.setVisible(false);
+
         loginButton.setOnAction(event -> login());
 
         usernameField.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                passwordField.requestFocus();
-            }
+            if (event.getCode() == KeyCode.ENTER) passwordField.requestFocus();
         });
+
         passwordField.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                login();
-            }
+            if (event.getCode() == KeyCode.ENTER) login();
         });
+
+        if (logoPane != null) {
+            logoPane.setVisible(true);
+            PauseTransition delay = new PauseTransition(Duration.seconds(1));
+            delay.setOnFinished(e -> logoPane.setVisible(false));
+            delay.play();
+        }
+
         Platform.runLater(() -> usernameField.requestFocus());
-        exitButton.setOnAction(event -> Platform.exit());
+
+        exitButton.setOnAction(e -> Platform.exit());
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        mainStage = stage;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/LoginPage.fxml"));
+        loader.setController(this);
         AnchorPane root = loader.load();
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-
-        LoginPage controller = loader.getController();
-
-        if (controller.logoPane != null) {
-            controller.logoPane.setVisible(true);
-            PauseTransition delay = new PauseTransition(Duration.seconds(1));
-            delay.setOnFinished(event -> controller.logoPane.setVisible(false));
-            delay.play();
-        }
     }
 
     public static void main(String[] args) {
