@@ -1,7 +1,11 @@
 package Tests;
 
 import Classes.HashingUtility;
-
+/*
+ *
+ * Author: @Frost
+ *
+ */
 public class TestHashing {
 
     public static void main(String[] args){

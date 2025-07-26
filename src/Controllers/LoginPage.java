@@ -2,6 +2,9 @@ package Controllers;
 
 import Classes.DataBaseConnection;
 import Classes.HashingUtility;
+import Classes.User;
+import Classes.Session;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -16,22 +19,31 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
 import java.sql.*;
-import java.util.Objects;
 
 /*
-*
-* Author: @Frost
-*
-* */
+ *
+ * Author: @Frost
+ *
+ */
+
 public class LoginPage extends Application {
-// #c7d3df
+
+    public interface LoginListener {
+        void onLoginSuccess(User user);
+    }
+
+    private LoginListener loginListener;
+
+    public void setLoginListener(LoginListener listener) {
+        this.loginListener = listener;
+    }
+
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Label errorLabel;
     @FXML private Button loginButton;
     @FXML private Button exitButton;
     @FXML private Pane logoPane;
-
 
     @FXML
     private void login() {
@@ -47,55 +59,74 @@ public class LoginPage extends Application {
         HashingUtility hashingUtility = new HashingUtility();
         final String hashedPassword = hashingUtility.md5Hash(password);
 
-        if (verifyPassword(username, hashedPassword)) {
+        User user = authenticateUser(username, hashedPassword);
+
+        if (user != null) {
+            // Store user in session
+            Session.setCurrentUser(user);
+
+            // Notify listener if set
+            if (loginListener != null) {
+                loginListener.onLoginSuccess(user);
+            }
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Login Status");
             alert.setHeaderText(null);
             alert.setContentText("Login successful!");
             alert.showAndWait();
 
-            // Exit or transition here if needed
-            Platform.exit(); // or close current window
+            // For testing, don't close app here to allow next steps
+            // Platform.exit();
         } else {
             errorLabel.setText("Username or Password is incorrect!");
             errorLabel.setVisible(true);
         }
     }
 
+    private User authenticateUser(String username, String hashedPassword) {
+        final String sql = "SELECT * FROM Employee WHERE Username = ?";
 
+        try {
+            DataBaseConnection dataBaseConnection = new DataBaseConnection();
+            final String connectionUrl = dataBaseConnection.getConnectionUrl(300);
 
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-    private boolean verifyPassword(String username,String password){
-            final String sql = "SELECT Password FROM Employee WHERE Username = ?";
+            try (
+                    Connection connection = DriverManager.getConnection(connectionUrl);
+                    PreparedStatement statement = connection.prepareStatement(sql)
+            ) {
+                statement.setString(1, username);
+                ResultSet rs = statement.executeQuery();
 
-            try {
-                DataBaseConnection dataBaseConnection = new DataBaseConnection();
-                final String connectionUrl = dataBaseConnection.getConnectionUrl(300);
-
-                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-
-                try (
-                        Connection connection = DriverManager.getConnection(connectionUrl);
-                        PreparedStatement statement = connection.prepareStatement(sql)
-                ) {
-                    statement.setString(1, username);
-                    ResultSet rs = statement.executeQuery();
-
-                    if (rs.next()) {
-                        String storedPassword = rs.getString("Password");
-                        return password.equals(storedPassword);
+                if (rs.next()) {
+                    String storedPassword = rs.getString("Password");
+                    if (!hashedPassword.equals(storedPassword)) {
+                        return null; // password mismatch
                     }
+
+                    // Build User object without password
+                    return new User(
+                            rs.getInt("ID"),
+                            rs.getString("FirstName"),
+                            rs.getString("MiddleName"),
+                            rs.getString("LastName"),
+                            rs.getString("Username"),
+                            rs.getInt("RoleID"),
+                            rs.getInt("WarehouseID"),
+                            rs.getString("Picture")
+                    );
                 }
-
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace(); // Or log this in a more secure way
             }
-
-            return false;
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
         }
 
+        return null; // user not found or error
+    }
 
-        @FXML
+    @FXML
     private void initialize() {
         errorLabel.setVisible(false);
         loginButton.setOnAction(event -> login());
@@ -110,8 +141,8 @@ public class LoginPage extends Application {
                 login();
             }
         });
-            Platform.runLater(() -> usernameField.requestFocus());
-            exitButton.setOnAction(event -> Platform.exit());
+        Platform.runLater(() -> usernameField.requestFocus());
+        exitButton.setOnAction(event -> Platform.exit());
     }
 
     @Override
