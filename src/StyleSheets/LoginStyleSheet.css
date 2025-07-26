@@ -1,54 +1,47 @@
-/* Class selector (starts with dot) */
+/* Applies to root */
 .root {
-    -fx-font-size: 24px;
+	-fx-font-size: 24px;
 }
 
-.m1 {
-    -fx-text-fill: red;
+/* Error message */
+.error-text {
+	-fx-text-fill: red;
 }
 
-/* ID selector (starts with hash) */
-.h {
-    -fx-background-color: white;
-    -fx-background-radius: 50px;  /* Must match border-radius */
-    -fx-border-radius: 50px;
-    -fx-padding: 10px;
-    -fx-border-color: black;
-    -fx-border-width: 1px;
-    -fx-background-insets: 0;
+/* TextFields and PasswordFields */
+.text-field {
+	-fx-font-size: 24px;
+	-fx-font-style: italic;
+	-fx-background-color: transparent;
+	-fx-border-width: 0;
+}
 
-    /* Critical fix: Clip the background to the rounded shape */
-    -fx-clip: inherit;
+/* Container style */
+.input-container {
+	-fx-background-color: white;
+	-fx-background-radius: 50px;
+	-fx-border-radius: 50px;
+	-fx-padding: 10px;
+	-fx-border-color: black;
+	-fx-border-width: 1px;
+	-fx-background-insets: 0;
+	-fx-snap-to-pixel: true;
+}
 
-    /* Optional: Prevent children from overflowing */
-    -fx-effect: null; /* Remove any effects that might cause overflow */
+/* Rounded button style */
+.rounded-button {
+	-fx-background-color: white;
+	-fx-background-radius: 50px;
+	-fx-border-radius: 50px;
+	-fx-border-color: transparent;
+	-fx-border-width: 0;
+	-fx-padding: 10px 20px;
+	-fx-background-insets: 0;
+	-fx-snap-to-pixel: true;
 }
-.f1 {
-    -fx-font-size: 24px;
-    -fx-border-width: 0;          /* Removes border */
-    -fx-font-style: italic;       /* Makes text italic */
-    -fx-background-color: transparent; /* Optional: removes background */
-}
-.b {
-    -fx-background-color: white;
-    -fx-background-radius: 50px;  /* Makes background rounded */
-    -fx-border-radius: 50px;      /* Makes border rounded (if used) */
-    -fx-border-color: transparent; /* Optional: if you want no border */
-    -fx-border-width: 0;          /* Optional: removes border */
-    -fx-padding: 10px 20px;      /* Adds internal spacing (top/bottom, left/right) */
 
-    /* Ensures crisp edges and proper clipping */
-    -fx-background-insets: 0;
-    -fx-clip: inherit;
-    -fx-snap-to-pixel: true;
-}
-#p1{
-    -fx-margin: 5px 0 0 0;
-}
-#logopane{
-    -fx-background-color:  #c7d3df;
-     visibility: true;
-}
-#logopane > .image-view {
-    -fx-alignment: center;
+/* Splash background */
+.splash-background {
+	-fx-background-color: #c7d3df;
+
 }
