@@ -1,5 +1,7 @@
 package Controllers;
 
+import Classes.DataBaseConnection;
+import Classes.HashingUtility;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -12,6 +14,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
+
+import java.sql.*;
+import java.util.Objects;
+
 /*
 *
 * Author: @Frost
@@ -26,14 +32,70 @@ public class LoginPage extends Application {
     @FXML private Button exitButton;
     @FXML private Pane logoPane;
 
-    @FXML
-    private void login() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-        errorLabel.setVisible(!"admin".equals(username) || !"admin".equals(password));
-    }
 
     @FXML
+    private void login() {
+        final String username = usernameField.getText().trim();
+        final String password = passwordField.getText().trim();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            errorLabel.setText("Please enter both username and password.");
+            errorLabel.setVisible(true);
+            return;
+        }
+
+        HashingUtility hashingUtility = new HashingUtility();
+        final String hashedPassword = hashingUtility.md5Hash(password);
+
+        if (verifyPassword(username, hashedPassword)) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Login Status");
+            alert.setHeaderText(null);
+            alert.setContentText("Login successful!");
+            alert.showAndWait();
+
+            // Exit or transition here if needed
+            Platform.exit(); // or close current window
+        } else {
+            errorLabel.setText("Username or Password is incorrect!");
+            errorLabel.setVisible(true);
+        }
+    }
+
+
+
+
+    private boolean verifyPassword(String username,String password){
+            final String sql = "SELECT Password FROM Employee WHERE Username = ?";
+
+            try {
+                DataBaseConnection dataBaseConnection = new DataBaseConnection();
+                final String connectionUrl = dataBaseConnection.getConnectionUrl(300);
+
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+                try (
+                        Connection connection = DriverManager.getConnection(connectionUrl);
+                        PreparedStatement statement = connection.prepareStatement(sql)
+                ) {
+                    statement.setString(1, username);
+                    ResultSet rs = statement.executeQuery();
+
+                    if (rs.next()) {
+                        String storedPassword = rs.getString("Password");
+                        return password.equals(storedPassword);
+                    }
+                }
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace(); // Or log this in a more secure way
+            }
+
+            return false;
+        }
+
+
+        @FXML
     private void initialize() {
         errorLabel.setVisible(false);
         loginButton.setOnAction(event -> login());

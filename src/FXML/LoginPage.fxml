@@ -69,8 +69,7 @@
                   </PasswordField>
                </children>
             </HBox>
-      
-                                          <Label fx:id="errorLabel" layoutX="684.0" layoutY="671.0" prefHeight="35.0" prefWidth="827.0" styleClass="error-text" text="Username or Password is incorrect!">
+            <Label fx:id="errorLabel" layoutX="684.0" layoutY="671.0" prefHeight="35.0" prefWidth="827.0" styleClass="error-text" text="Username or Password is incorrect!">
                <font>
                   <Font size="24.0" />
                </font>

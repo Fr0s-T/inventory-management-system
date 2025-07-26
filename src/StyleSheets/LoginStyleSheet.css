@@ -30,7 +30,7 @@
 
 /* Rounded button style */
 .rounded-button {
-	-fx-background-color: white;
+	-fx-background-color: #004AAB;
 	-fx-background-radius: 50px;
 	-fx-border-radius: 50px;
 	-fx-border-color: transparent;

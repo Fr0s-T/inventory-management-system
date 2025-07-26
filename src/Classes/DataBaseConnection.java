@@ -2,7 +2,7 @@ package Classes;
 
 public class DataBaseConnection {
     private final String server = "inventorymanegmentsystem-srv.database.windows.net";
-    private final String database = "inventory_manegment_system_db";
+    private final String database = "IMS";
     private final String username = "sqladmin";
     private final String password = "XcrJ8EB~u?J43Em";
 
