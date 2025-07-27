@@ -34,15 +34,21 @@ public class LoginPage extends Application {
     @FXML private Button loginButton;
     @FXML private Button exitButton;
     @FXML private Pane logoPane;
-
+    private int loginAttempts = 0;
     private Stage mainStage;
 
     @FXML
     private void login() {
+        if (loginAttempts >= 3) {
+            loginButton.setDisable(true);
+            showError("Too many failed attempts. Please try again later.");
+            return;
+        }
+
         if (!validateInputs()) {
             return;
         }
-        loginButton.setDisable(true);
+
         errorLabel.setVisible(false);
 
         String username = usernameField.getText().trim();
@@ -80,19 +86,34 @@ public class LoginPage extends Application {
     }
 
     private void handleLoginSuccess(User user) {
-        if (user != null) {
-            Session.setCurrentUser(user);
-            switchSceneBasedOnRole(user);
-        } else {
-            showError("Username or Password is incorrect!");
-            loginButton.setDisable(false);
-        }
+        Platform.runLater(() -> {
+            if (user != null) {
+                Session.setCurrentUser(user);
+                switchSceneBasedOnRole(user);
+            } else {
+                loginAttempts++;
+                if (loginAttempts >= 3) {
+                    showError("Too many failed attempts. Please try again later.");
+                    loginButton.setDisable(true);
+                } else {
+                    showError("Username or Password is incorrect!");
+                }
+            }
+        });
     }
 
     private void handleLoginFailure() {
-        showError("Login failed due to an error.");
-        loginButton.setDisable(false);
+        Platform.runLater(() -> {
+            loginAttempts++;
+            if (loginAttempts >= 3) {
+                showError("Too many failed attempts. Please try again later.");
+                loginButton.setDisable(true);
+            } else {
+                showError("Invalid credentials. Attempt " + loginAttempts + " of 3.");
+            }
+        });
     }
+
 
     private void switchSceneBasedOnRole(User user) {
         try {

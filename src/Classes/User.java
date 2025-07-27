@@ -7,6 +7,14 @@ package Classes;
  */
 
 public class User {
+    public int getLoginAttempts() {
+        return loginAttempts;
+    }
+
+    public void setLoginAttempts(int loginAttempts) {
+        this.loginAttempts = loginAttempts;
+    }
+
     public enum Role {
         REGIONAL_MANAGER(1),
         WAREHOUSE_MANAGER(2),
@@ -41,6 +49,7 @@ public class User {
     private final Role role;
     private final int warehouseId;
     private final String picture;
+    private int loginAttempts = 0;
 
     public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId, String picture) {
         this.id = id;
