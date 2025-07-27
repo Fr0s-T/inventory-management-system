@@ -16,9 +16,8 @@
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="src/Icons/avatar-removebg-preview.png" />
-               </image>
-            </ImageView>
+                  <Image url="@../Icons/avatar-removebg-preview.png" />
+               </image></ImageView>
             <Label id="UsernameLabel" alignment="CENTER" prefHeight="58.0" prefWidth="192.0" stylesheets="@../StyleSheets/SuFrameStyleSheet.css" text="Username">
                <font>
                   <Font size="18.0" />
