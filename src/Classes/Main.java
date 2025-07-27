@@ -10,9 +10,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             SceneLoader.setPrimaryStage(primaryStage);
-            SceneLoader.loadScene("/FXML/LoginPage.fxml", null);
+            SceneLoader.loadScene("/FXML/SuFrame.fxml", null);
             primaryStage.setTitle("Inventory Management System");
-            primaryStage.setMaximized(false);
+            primaryStage.setMaximized(true);
         } catch (Exception e) {
             e.printStackTrace(); // Print full error for debugging
         }

@@ -34,10 +34,12 @@
                   <Font name="System Bold" size="36.0" />
                </font></Button>
             <Region prefHeight="440.0" prefWidth="350.0" />
-            <Button id="LogoutBtn" layoutX="10.0" layoutY="257.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="999.0" stylesheets="@../StyleSheets/SuFrameStyleSheet.css" text="Logout">
-               <font>
-                  <Font size="32.0" />
-               </font></Button>
+            <Button fx:id="logoutButton" text="Logout" >
+               <graphic>
+                  <ImageView fitWidth="18" fitHeight="18" preserveRatio="true" image="@/Icons/7124045_logout_icon.png" />
+               </graphic>
+            </Button>
+
          </children>
       </VBox>
       <Pane layoutX="466.0" layoutY="117.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

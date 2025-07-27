@@ -21,6 +21,7 @@ import javafx.util.Duration;
 
 import java.sql.*;
 
+
 /*
  * Author: @Frost
  * JavaFX Login Page Controller and App Entry
