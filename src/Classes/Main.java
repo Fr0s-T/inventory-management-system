@@ -12,7 +12,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         SceneLoader.setPrimaryStage(primaryStage);
-        SceneLoader.loadScene("/FXML/LoginPage.fxml", null);
+        SceneLoader.loadScene("/FXML/SuFrame.fxml", null);
     }
 
     public static void main(String[] args) {
