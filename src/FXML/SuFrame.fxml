@@ -16,7 +16,7 @@
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@/C:/Users/user/IdeaProjects/inventory-management-system/src/Icons/avatar-removebg-preview.png" />
+                  <Image url="@/Icons/avatar-removebg-preview.png" />
                </image>
             </ImageView>
             <Label id="UsernameLabel" alignment="CENTER" prefHeight="58.0" prefWidth="192.0" stylesheets="@../StyleSheets/SuFrameStyleSheet.css" text="Username">
