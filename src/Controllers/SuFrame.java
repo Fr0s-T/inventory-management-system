@@ -1,13 +1,20 @@
 package Controllers;
 
+import Classes.Session;
+import Classes.User;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
  * Author: @Frost
- * JavaFX main class that initializes the app and loads the first scene.
+ *
  */
 public class SuFrame extends Application {
+
+
+
+
+
 
     @Override
     public void start(Stage stage) {

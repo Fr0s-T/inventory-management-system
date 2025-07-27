@@ -16,7 +16,7 @@ public class User {
     }
 
     public enum Role {
-        REGIONAL_MANAGER(1),
+        REGIONAL_MANAGER(1),//warehouse id = null maneges many warehouses
         WAREHOUSE_MANAGER(2),
         SHIFT_MANAGER(3),
         EMPLOYEE(4);

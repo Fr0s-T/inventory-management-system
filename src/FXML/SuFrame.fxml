@@ -21,7 +21,7 @@
                <items>
                       <!-- Sidebar VBox -->
                       <VBox prefHeight="1081.0" prefWidth="455.0" spacing="10.0" style="-fx-background-color: #c7d3df;" stylesheets="@../StyleSheets/SuFrameStyleSheet.css">
-      
+
                           <children>
                               <!-- Avatar -->
                               <Label id="AvatarLabel" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" prefHeight="112.0" prefWidth="116.0" text="Label">
@@ -33,7 +33,7 @@
                                       </ImageView>
                                   </graphic>
                               </Label>
-      
+
                               <Label id="UserNameLabel" alignment="CENTER" prefHeight="53.0" prefWidth="194.0" text="l1f1" />
                               <Label id="StatusLabel" alignment="CENTER" prefHeight="50.0" prefWidth="206.0" text="Online" />
                               <Region prefHeight="50.0" />
