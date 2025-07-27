@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+        //to do: add primaryStage.setMaximized(true);
 
 /**
  * Utility class for managing scene transitions across the application.
@@ -32,3 +33,5 @@ public class SceneLoader {
         }
     }
 }
+
+
