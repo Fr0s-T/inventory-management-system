@@ -4,15 +4,18 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import Controllers.SceneLoader;
 
-/*
- * Main entry point of the JavaFX application.
- */
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        SceneLoader.setPrimaryStage(primaryStage);
-        SceneLoader.loadScene("/FXML/SuFrame.fxml", null);
+        try {
+            SceneLoader.setPrimaryStage(primaryStage);
+            SceneLoader.loadScene("/FXML/SuFrame.fxml", null);
+            primaryStage.setTitle("Inventory Management System");
+            primaryStage.setMaximized(true);
+        } catch (Exception e) {
+            e.printStackTrace(); // Print full error for debugging
+        }
     }
 
     public static void main(String[] args) {
