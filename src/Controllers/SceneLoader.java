@@ -31,7 +31,7 @@ public class SceneLoader {
             if (fxmlPath.contains("LoginPage.fxml")) {
                 primaryStage.setMaximized(false);
             } else {
-                primaryStage.setMaximized(true);
+                //primaryStage.setMaximized(true);
                 primaryStage.centerOnScreen(); // optional for login page
             }
 
