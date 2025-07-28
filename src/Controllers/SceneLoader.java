@@ -4,7 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-        //to do: add primaryStage.setMaximized(true);
+//to do: add primaryStage.setMaximized(true);
 
 /**
  * Utility class for managing scene transitions across the application.
@@ -26,12 +26,20 @@ public class SceneLoader {
             Parent root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
+
+            // ✅ Automatically maximize SuFrame
+            if (fxmlPath.contains("LoginPage.fxml")) {
+                primaryStage.setMaximized(false);
+            } else {
+                //primaryStage.setMaximized(true);
+                primaryStage.centerOnScreen(); // optional for login page
+            }
+
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to load scene: " + fxmlPath);
         }
     }
+
 }
-
-

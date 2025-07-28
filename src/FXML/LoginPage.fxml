@@ -14,33 +14,33 @@
 <AnchorPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginPage">
    <children>
       <!-- Main background pane -->
-      <Pane fx:id="mainPane" layoutY="-7.0" prefHeight="812.0" prefWidth="1592.0" style="-fx-background-color: #D3D3D4;" stylesheets="@../StyleSheets/LoginStyleSheet.css">
+      <Pane fx:id="mainPane" layoutX="24.0" layoutY="-5.0" prefHeight="1089.6" prefWidth="1948.0" style="-fx-background-color: #D3D3D4;" stylesheets="@../StyleSheets/LoginStyleSheet.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
 
-            <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="700.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="837.0" layoutY="161.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Icons/Possible%20logos/Screenshot__77_-removebg-preview(1).png" />
                </image>
             </ImageView>
-            <Label alignment="CENTER" layoutX="528.0" layoutY="277.0" prefHeight="171.0" prefWidth="553.0" text="Welcome Back!" textAlignment="CENTER">
+            <Label alignment="CENTER" layoutX="680.0" layoutY="347.0" prefHeight="171.0" prefWidth="553.0" text="Welcome Back!" textAlignment="CENTER">
                <font>
                   <Font size="36.0" />
                </font>
             </Label>
 
-            <Button fx:id="loginButton" layoutX="556.0" layoutY="690.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Login">
+            <Button fx:id="loginButton" layoutX="699.0" layoutY="806.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Login">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
 
-            <Button fx:id="exitButton" layoutX="875.0" layoutY="703.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Exit">
+            <Button fx:id="exitButton" layoutX="1009.0" layoutY="808.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Exit">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
 
-            <HBox fx:id="usernameContainer" layoutX="539.0" layoutY="453.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
+            <HBox fx:id="usernameContainer" layoutX="694.0" layoutY="505.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
                <children>
                   <ImageView fitHeight="55.0" fitWidth="143.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -55,7 +55,7 @@
                </children>
             </HBox>
 
-            <HBox fx:id="passwordContainer" layoutX="539.0" layoutY="569.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
+            <HBox fx:id="passwordContainer" layoutX="695.0" layoutY="639.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
                <children>
                   <ImageView fitHeight="49.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -69,12 +69,12 @@
                   </PasswordField>
                </children>
             </HBox>
-            <Label fx:id="errorLabel" layoutX="540.0" layoutY="660.0" prefHeight="35.0" prefWidth="827.0" styleClass="error-text" text="Username or Password is incorrect!">
+            <Label fx:id="errorLabel" layoutX="692.0" layoutY="730.0" prefHeight="35.0" prefWidth="827.0" styleClass="error-text" text="Username or Password is incorrect!">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label layoutX="281.0" layoutY="37.0" prefHeight="83.0" prefWidth="367.0" text="Manegment&amp;Co.">
+            <Label layoutX="433.0" layoutY="107.0" prefHeight="83.0" prefWidth="367.0" text="Manegment&amp;Co.">
                <font>
                   <Font size="32.0" />
                </font>

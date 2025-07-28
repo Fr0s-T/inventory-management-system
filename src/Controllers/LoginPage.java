@@ -68,51 +68,143 @@ public class LoginPage extends Application {
         }
         return true;
     }
-
     private void performLoginAsync(String username, String password) {
-        Task<User> loginTask = new Task<>() {
+        Task<Void> loginTask = new Task<>() {
             @Override
-            protected User call() throws Exception {
-                HashingUtility hashingUtility = new HashingUtility();
-                String hashedPassword = hashingUtility.md5Hash(password);
-                return authenticateUser(username, hashedPassword);
+            protected Void call() {
+                attemptLogin(username, password);
+                return null;
             }
         };
-
-        loginTask.setOnSucceeded(event -> handleLoginSuccess(loginTask.getValue()));
-        loginTask.setOnFailed(event -> handleLoginFailure());
 
         new Thread(loginTask).start();
     }
 
-    private void handleLoginSuccess(User user) {
-        Platform.runLater(() -> {
-            if (user != null) {
-                Session.setCurrentUser(user);
-                switchSceneBasedOnRole(user);
-            } else {
-                loginAttempts++;
-                if (loginAttempts >= 3) {
-                    showError("Too many failed attempts. Please try again later.");
-                    loginButton.setDisable(true);
-                } else {
-                    showError("Username or Password is incorrect!");
-                }
-            }
-        });
-    }
 
-    private void handleLoginFailure() {
-        Platform.runLater(() -> {
-            loginAttempts++;
-            if (loginAttempts >= 3) {
-                showError("Too many failed attempts. Please try again later.");
-                loginButton.setDisable(true);
-            } else {
-                showError("Invalid credentials. Attempt " + loginAttempts + " of 3.");
+//    private void performLoginAsync(String username, String password) {
+//        Task<User> loginTask = new Task<>() {
+//            @Override
+//            protected User call() throws Exception {
+//                HashingUtility hashingUtility = new HashingUtility();
+//                String hashedPassword = hashingUtility.md5Hash(password);
+//                return authenticateUser(username, hashedPassword);
+//            }
+//        };
+//
+//        loginTask.setOnSucceeded(event -> handleLoginSuccess(loginTask.getValue()));
+//        loginTask.setOnFailed(event -> handleLoginFailure());
+//
+//        new Thread(loginTask).start();
+//    }
+
+//    private void handleLoginSuccess(User user) {
+//        Platform.runLater(() -> {
+//            if (user != null) {
+//                Session.setCurrentUser(user);
+//                switchSceneBasedOnRole(user);
+//            } else {
+//                loginAttempts++;
+//                if (loginAttempts >= 3) {
+//                    showError("Too many failed attempts. Please try again later.");
+//                    loginButton.setDisable(true);
+//                } else {
+//                    showError("Username or Password is incorrect!");
+//                }
+//            }
+//        });
+//    }
+//
+//    private void handleLoginFailure() {
+//        Platform.runLater(() -> {
+//            loginAttempts++;
+//            if (loginAttempts >= 3) {
+//                showError("Too many failed attempts. Please try again later.");
+//                loginButton.setDisable(true);
+//            } else {
+//                showError("Invalid credentials. Attempt " + loginAttempts + " of 3.");
+//            }
+//        });
+//    }
+    //
+private void attemptLogin(String username, String password) {
+    Task<Void> loginTask = new Task<>() {
+        @Override
+        protected Void call() {
+            try (Connection conn = DataBaseConnection.getConnection()) {
+                PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT * FROM Users WHERE Username = ?");
+                stmt.setString(1, username);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    Timestamp lockoutUntil = rs.getTimestamp("LockoutUntil");
+                    int failedAttempts = rs.getInt("FailedAttempts");
+                    String storedHash = rs.getString("PasswordHash");
+
+                    Timestamp now = new Timestamp(System.currentTimeMillis());
+
+                    if (lockoutUntil != null && lockoutUntil.after(now)) {
+                        Platform.runLater(() -> {
+                            showError("Account is locked until: " + lockoutUntil.toLocalDateTime());
+                            loginButton.setDisable(true);
+                        });
+                        return null;
+                    }
+
+                    if (HashingUtility.verifyPassword(password, storedHash)) {
+                        // Correct password → reset counters
+                        PreparedStatement resetStmt = conn.prepareStatement(
+                                "UPDATE Users SET FailedAttempts = 0, LockoutUntil = NULL WHERE Username = ?");
+                        resetStmt.setString(1, username);
+                        resetStmt.executeUpdate();
+
+                        User user = new User(rs); // Assuming your User constructor accepts ResultSet
+                        Platform.runLater(() -> {
+                            Session.setCurrentUser(user);
+                            switchSceneBasedOnRole(user);
+                        });
+
+                    } else {
+                        failedAttempts++;
+                        PreparedStatement updateStmt;
+                        if (failedAttempts >= 3) {
+                            updateStmt = conn.prepareStatement(
+                                    "UPDATE Users SET FailedAttempts = ?, LockoutUntil = DATEADD(MINUTE, 5, GETDATE()) WHERE Username = ?");
+                        } else {
+                            updateStmt = conn.prepareStatement(
+                                    "UPDATE Users SET FailedAttempts = ? WHERE Username = ?");
+                        }
+                        updateStmt.setInt(1, failedAttempts);
+                        updateStmt.setString(2, username);
+                        updateStmt.executeUpdate();
+
+                        int attemptsLeft = 3 - failedAttempts;
+
+                        Platform.runLater(() -> {
+                            if (failedAttempts >= 3) {
+                                showError("Too many failed attempts. Account locked for 5 minutes.");
+                                loginButton.setDisable(true);
+                            } else {
+                                showError("Invalid credentials. " + attemptsLeft + " attempt(s) left.");
+                            }
+                        });
+                    }
+                } else {
+                    Platform.runLater(() -> showError("User not found."));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> showError("Database error occurred."));
             }
-        });
-    }
+
+            return null;
+        }
+    };
+
+    new Thread(loginTask).start();
+}
+
 
 
     private void switchSceneBasedOnRole(User user) {
@@ -143,7 +235,7 @@ public class LoginPage extends Application {
 
         try {
             DataBaseConnection dataBaseConnection = new DataBaseConnection();
-            final String connectionUrl = dataBaseConnection.getConnectionUrl(300);
+            final String connectionUrl = DataBaseConnection.getConnection();
 
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
@@ -166,7 +258,9 @@ public class LoginPage extends Application {
                             rs.getString("Username"),
                             rs.getInt("RoleID"),
                             rs.getInt("WarehouseID"),
-                            rs.getString("Picture")
+                            rs.getString("Picture"),
+                            rs.getInt("FailedAttempts"),
+                            rs.getTimestamp("LockoutUntil")
                     );
                 }
             }

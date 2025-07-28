@@ -1,5 +1,9 @@
 package Classes;
 
+import java.sql.Timestamp;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /*
  *
  * Author: @Frost
@@ -49,9 +53,11 @@ public class User {
     private final Role role;
     private final int warehouseId;
     private final String picture;
-    private int loginAttempts = 0;
+    private int loginAttempts=0;
+    private final int failedAttempts;
+    private final Timestamp lockoutUntil;
 
-    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId, String picture) {
+    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId, String picture,int failedAttempts,Timestamp lockoutUntil) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -60,9 +66,12 @@ public class User {
         this.role = Role.fromId(roleId);
         this.warehouseId = warehouseId;
         this.picture = picture;
+        this.failedAttempts = failedAttempts;
+        this.lockoutUntil = lockoutUntil;
+
     }
-    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId) {
-        this(id, firstName, middleName, lastName, username, roleId, warehouseId, null);
+    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId,int failedAttempts, Timestamp lockoutUntil) {
+        this(id, firstName, middleName, lastName, username, roleId, warehouseId, null, failedAttempts, lockoutUntil);
     }
     // Getters for all fields
 
@@ -97,6 +106,21 @@ public class User {
     public String getPicture() {
         return picture;
     }
+
+
+    public User(ResultSet rs) throws SQLException {
+        this.id = rs.getInt("ID");
+        this.firstName = rs.getString("FirstName");
+        this.middleName = rs.getString("MiddleName");
+        this.lastName = rs.getString("LastName");
+        this.username = rs.getString("Username");
+        this.role = Role.fromId(rs.getInt("RoleID"));
+        this.warehouseId = rs.getInt("WarehouseID");
+        this.picture = rs.getString("Picture");
+        this.failedAttempts = rs.getInt("Failedtempts");
+        this.lockoutUntil=rs.getTimestamp("lockoutUntil");// only if column exists
+    }
+
     @Override
     public String toString() {
         return "User ID: " + id + "\n"

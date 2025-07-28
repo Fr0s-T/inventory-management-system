@@ -43,7 +43,9 @@ public class testUserClass {
                             rs.getString("Username"),
                             rs.getInt("RoleID"),
                             rs.getInt("WarehouseID"),
-                            rs.getString("Picture")
+                            rs.getString("Picture"),
+                            rs.getInt("FailedAttempts"),
+                            rs.getTimestamp("LockoutUntil")
                     );
 
                     users.add(user);
