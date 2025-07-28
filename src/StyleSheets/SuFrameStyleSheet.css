@@ -1,80 +1,76 @@
--fx-background-color: #F8FAFC;
-/* Alert Button Style */
-#AlertBtn {
-    -fx-background-color: #FFA500!important; /* Bright Orange */
-    -fx-text-fill: white!important;
-    -fx-font-size: 20px!important;
-    -fx-font-weight: bold!important;
-    -fx-border-width: 1!important;
-    -fx-border-radius: 10!important;
-    -fx-background-radius: 10!important;
-    -fx-cursor: hand!important;
+/* Base Styles */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: #F8FAFC;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #D3D3D3;
+    -fx-border-width: 0 1 0 0;
+}
+
+/* Profile Image */
+.profile-image {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+    -fx-padding: 20 0 15 0;
+}
+
+/* User Info Labels */
+.username-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2F4F4F;
+    -fx-padding: 0 0 5 0;
+}
+
+.status-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #708090;
+    -fx-padding: 0 0 20 0;
+}
+
+/* Alert Button */
+.alert-button {
+    -fx-background-color: #FFA500;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 12 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
 }
 
 .alert-button:hover {
-    -fx-background-color: #FF6347; /* Darker orange on hover */
+    -fx-background-color: #FF6347;
 }
 
-/* Logout Button Style */
+/* Logout Button */
 .logout-button {
-    -fx-background-color: #FFFFFF; /* White */
-    -fx-text-fill: #708090; /* Slate */
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #708090;
     -fx-font-size: 18px;
-    -fx-font-weight: normal;
     -fx-border-color: #708090;
     -fx-border-width: 1;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
+    -fx-padding: 10 25;
     -fx-cursor: hand;
+    -fx-graphic-text-gap: 10;
+    -fx-content-display: left;
 }
 
 .logout-button:hover {
-    -fx-background-color: #004AAB; /* Soft Gray on hover */
+    -fx-background-color: #004AAB;
+    -fx-text-fill: white;
+    -fx-border-color: #004AAB;
 }
 
-
-
-/* --------COLOR CODE----------
-
-🎨 Your Base Palette (Recap)
-Name	Color	Hex Code	Usage
-White
-#FFFFFF	Background, cards
-Royal Blue
-#004AAB	Navbars, primary buttons
-Light Blue
-#ADD8E6	Secondary highlights
-Soft Gray
-#D3D3D3	Containers, muted areas
-Slate
-#708090	Text, borders, subtle icons
-Lime Green
-#32CD32	Success, confirmations
-Bright Orange
-#FFA500	Alerts, warning actions
-
-🌈 Complementary & Utility Colors
-Name	Color	Hex Code	Suggested Use
-Dark Royal Blue
-#003680	Hover/darker states of Royal Blue
-Sky Blue
-#87CEEB	Highlights, tooltips
-Steel Gray
-#B0C4DE	Card outlines, muted sections
-Light Slate
-#778899	Labels, secondary text
-Dark Gray
-#A9A9A9	Disabled buttons
-Charcoal
-#2F4F4F	Dark mode backgrounds
-Coral Red
-#FF6347	Delete buttons, danger states
-Mint Green
-#98FB98	Validation feedback
-Gold Yellow
-#FFD700	Highlights, notifications
-Light Beige
-#F5F5DC	Soft UI backgrounds
-*/
-
-
+/* Main Content Area */
+.content-pane {
+    -fx-background-color: white;
+    -fx-padding: 20;
+}
