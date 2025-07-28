@@ -1,9 +1,15 @@
 package Controllers;
 
-import Classes.Session;
-import Classes.User;
 import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import Models.*;
+import java.util.Optional;
 
 /**
  * Author: @Frost
@@ -11,16 +17,47 @@ import javafx.stage.Stage;
  */
 public class SuFrame extends Application {
 
+    @FXML private ImageView UserImage;
+    @FXML private Label UsernameLabel;
+    @FXML private Label StatusLabel;
+    @FXML private Button AlertBtn;
+    @FXML private Button LogoutBtn;
+    private Stage mainStage;
 
+    @FXML
+    private void Logout(){
 
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout Cpnfirmation");
+        alert.setHeaderText("Are you sure you want to logout?");
+        alert.setContentText("You will be redirected to the login screen.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Go back to login page
+            SceneLoader.loadScene("/FXML/LoginPage.fxml", null); // Adjust path if needed
+        }
 
+    }
+    @FXML
+    private void Initialize(){
+        User user=Session.getCurrentUser();
+        UsernameLabel.setText(user.getUsername());
+
+        LogoutBtn.setOnAction(event ->Logout());
+
+    }
 
 
     @Override
-    public void start(Stage stage) {
-        SceneLoader.setPrimaryStage(stage);
-        SceneLoader.loadScene("/FXML/SuFrame.fxml", null); // initial scene
-    }
+    public void start(Stage stage) throws Exception{
+        mainStage = stage;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/SuFrame.fxml"));
+        loader.setController(this); // Only if SuFrame is controller
+        AnchorPane root = loader.load();
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();    }
 
     public static void main(String[] args) {
         launch(args);

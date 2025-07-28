@@ -1,9 +1,5 @@
-/* Applies to root
-* {
-    -fx-border-color: red;
-    -fx-border-width: 1px;
-}
-*/
+/* Applies to root */
+
 .root {
 	-fx-font-size: 24px;
 }
@@ -60,5 +56,4 @@
 }
 .buttonHbox {
     -fx-spacing: 50px; /* adjust value as needed */
-    -fx-alignment: center; /* optional: centers buttons horizontally*/
-    }
+    -fx-alignment: center; /* optional: centers buttons horizontally
