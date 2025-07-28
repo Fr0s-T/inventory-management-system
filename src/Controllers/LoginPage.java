@@ -70,12 +70,15 @@ public class LoginPage extends Application {
         return true;
     }
 
+//TODO: 1-pass failedAttempt to data and set 0 on successful login
+//      2- when failed attempt = 3 lock for 5min send to db and unlock after 5 min
+
     private void performLoginAsync(String username, String password) {
         Task<User> loginTask = new Task<>() {
             @Override
             protected User call() throws Exception {
-                HashingUtility hashingUtility = new HashingUtility();
-                String hashedPassword = hashingUtility.md5Hash(password);
+               // HashingUtility hashingUtility = new HashingUtility();
+                String hashedPassword = HashingUtility.md5Hash(password);
                 return authenticateUser(username, hashedPassword);
             }
         };
@@ -115,6 +118,86 @@ public class LoginPage extends Application {
         });
     }
 
+/*private void attemptLogin(String username, String password) {
+    Task<Void> loginTask = new Task<>() {
+        @Override
+        protected Void call() {
+            try (Connection conn = DataBaseConnection.getConnectionUrl(300)) {
+                PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT * FROM Users WHERE Username = ?");
+                stmt.setString(1, username);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    Timestamp lockoutUntil = rs.getTimestamp("LockoutUntil");
+                    int failedAttempts = rs.getInt("FailedAttempts");
+                    String storedHash = rs.getString("PasswordHash");
+
+                    Timestamp now = new Timestamp(System.currentTimeMillis());
+
+                    if (lockoutUntil != null && lockoutUntil.after(now)) {
+                        Platform.runLater(() -> {
+                            showError("Account is locked until: " + lockoutUntil.toLocalDateTime());
+                            loginButton.setDisable(true);
+                        });
+                        return null;
+                    }
+
+                    if (HashingUtility.verifyPassword(password, storedHash)) {
+                        // Correct password → reset counters
+                        PreparedStatement resetStmt = conn.prepareStatement(
+                                "UPDATE Users SET FailedAttempts = 0, LockoutUntil = NULL WHERE Username = ?");
+                        resetStmt.setString(1, username);
+                        resetStmt.executeUpdate();
+
+                        User user = new User(rs); // Assuming your User constructor accepts ResultSet
+                        Platform.runLater(() -> {
+                            Session.setCurrentUser(user);
+                            switchSceneBasedOnRole(user);
+                        });
+
+                    } else {
+                        failedAttempts++;
+                        PreparedStatement updateStmt;
+                        if (failedAttempts >= 3) {
+                            updateStmt = conn.prepareStatement(
+                                    "UPDATE Users SET FailedAttempts = ?, LockoutUntil = DATEADD(MINUTE, 5, GETDATE()) WHERE Username = ?");
+                        } else {
+                            updateStmt = conn.prepareStatement(
+                                    "UPDATE Users SET FailedAttempts = ? WHERE Username = ?");
+                        }
+                        updateStmt.setInt(1, failedAttempts);
+                        updateStmt.setString(2, username);
+                        updateStmt.executeUpdate();
+
+                        int attemptsLeft = 3 - failedAttempts;
+
+                        Platform.runLater(() -> {
+                            if (failedAttempts >= 3) {
+                                showError("Too many failed attempts. Account locked for 5 minutes.");
+                                loginButton.setDisable(true);
+                            } else {
+                                showError("Invalid credentials. " + attemptsLeft + " attempt(s) left.");
+                            }
+                        });
+                    }
+                } else {
+                    Platform.runLater(() -> showError("User not found."));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> showError("Database error occurred."));
+            }
+
+            return null;
+        }
+    };
+
+    new Thread(loginTask).start();
+}
+*/
+
 
     private void switchSceneBasedOnRole(User user) {
         try {
@@ -143,8 +226,8 @@ public class LoginPage extends Application {
         final String sql = "SELECT * FROM Employee WHERE Username = ?";
 
         try {
-            DataBaseConnection dataBaseConnection = new DataBaseConnection();
-            final String connectionUrl = dataBaseConnection.getConnectionUrl(300);
+            //DataBaseConnection dataBaseConnection = new DataBaseConnection();
+            final String connectionUrl = DataBaseConnection.getConnectionUrl(300);
 
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
@@ -167,7 +250,9 @@ public class LoginPage extends Application {
                             rs.getString("Username"),
                             rs.getInt("RoleID"),
                             rs.getInt("WarehouseID"),
-                            rs.getString("Picture")
+                            rs.getString("Picture"),
+                            rs.getInt("FailedAttempts"),
+                            rs.getTimestamp("LockoutUntil")
                     );
                 }
             }
