@@ -68,69 +68,60 @@ public class LoginPage extends Application {
         }
         return true;
     }
+
+//TODO: 1-pass failedAttempt to data and set 0 on successful login
+//      2- when failed attempt = 3 lock for 5min send to db and unlock after 5 min
+
     private void performLoginAsync(String username, String password) {
-        Task<Void> loginTask = new Task<>() {
+        Task<User> loginTask = new Task<>() {
             @Override
-            protected Void call() {
-                attemptLogin(username, password);
-                return null;
+            protected User call() throws Exception {
+               // HashingUtility hashingUtility = new HashingUtility();
+                String hashedPassword = HashingUtility.md5Hash(password);
+                return authenticateUser(username, hashedPassword);
             }
         };
+
+        loginTask.setOnSucceeded(event -> handleLoginSuccess(loginTask.getValue()));
+        loginTask.setOnFailed(event -> handleLoginFailure());
 
         new Thread(loginTask).start();
     }
 
+    private void handleLoginSuccess(User user) {
+        Platform.runLater(() -> {
+            if (user != null) {
+                Session.setCurrentUser(user);
+                switchSceneBasedOnRole(user);
+            } else {
+                loginAttempts++;
+                if (loginAttempts >= 3) {
+                    showError("Too many failed attempts. Please try again later.");
+                    loginButton.setDisable(true);
+                } else {
+                    showError("Username or Password is incorrect!");
+                }
+            }
+        });
+    }
 
-//    private void performLoginAsync(String username, String password) {
-//        Task<User> loginTask = new Task<>() {
-//            @Override
-//            protected User call() throws Exception {
-//                HashingUtility hashingUtility = new HashingUtility();
-//                String hashedPassword = hashingUtility.md5Hash(password);
-//                return authenticateUser(username, hashedPassword);
-//            }
-//        };
-//
-//        loginTask.setOnSucceeded(event -> handleLoginSuccess(loginTask.getValue()));
-//        loginTask.setOnFailed(event -> handleLoginFailure());
-//
-//        new Thread(loginTask).start();
-//    }
+    private void handleLoginFailure() {
+        Platform.runLater(() -> {
+            loginAttempts++;
+            if (loginAttempts >= 3) {
+                showError("Too many failed attempts. Please try again later.");
+                loginButton.setDisable(true);
+            } else {
+                showError("Invalid credentials. Attempt " + loginAttempts + " of 3.");
+            }
+        });
+    }
 
-//    private void handleLoginSuccess(User user) {
-//        Platform.runLater(() -> {
-//            if (user != null) {
-//                Session.setCurrentUser(user);
-//                switchSceneBasedOnRole(user);
-//            } else {
-//                loginAttempts++;
-//                if (loginAttempts >= 3) {
-//                    showError("Too many failed attempts. Please try again later.");
-//                    loginButton.setDisable(true);
-//                } else {
-//                    showError("Username or Password is incorrect!");
-//                }
-//            }
-//        });
-//    }
-//
-//    private void handleLoginFailure() {
-//        Platform.runLater(() -> {
-//            loginAttempts++;
-//            if (loginAttempts >= 3) {
-//                showError("Too many failed attempts. Please try again later.");
-//                loginButton.setDisable(true);
-//            } else {
-//                showError("Invalid credentials. Attempt " + loginAttempts + " of 3.");
-//            }
-//        });
-//    }
-    //
-private void attemptLogin(String username, String password) {
+/*private void attemptLogin(String username, String password) {
     Task<Void> loginTask = new Task<>() {
         @Override
         protected Void call() {
-            try (Connection conn = DataBaseConnection.getConnection()) {
+            try (Connection conn = DataBaseConnection.getConnectionUrl(300)) {
                 PreparedStatement stmt = conn.prepareStatement(
                         "SELECT * FROM Users WHERE Username = ?");
                 stmt.setString(1, username);
@@ -204,7 +195,7 @@ private void attemptLogin(String username, String password) {
 
     new Thread(loginTask).start();
 }
-
+*/
 
 
     private void switchSceneBasedOnRole(User user) {
@@ -234,8 +225,8 @@ private void attemptLogin(String username, String password) {
         final String sql = "SELECT * FROM Employee WHERE Username = ?";
 
         try {
-            DataBaseConnection dataBaseConnection = new DataBaseConnection();
-            final String connectionUrl = DataBaseConnection.getConnection();
+            //DataBaseConnection dataBaseConnection = new DataBaseConnection();
+            final String connectionUrl = DataBaseConnection.getConnectionUrl(300);
 
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
