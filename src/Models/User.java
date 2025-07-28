@@ -1,4 +1,4 @@
-package Classes;
+package Models;
 
 import java.sql.Timestamp;
 import java.sql.ResultSet;

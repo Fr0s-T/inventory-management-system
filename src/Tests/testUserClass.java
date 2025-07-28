@@ -1,7 +1,7 @@
 package Tests;
 
-import Classes.DataBaseConnection;
-import Classes.User;
+import Utilities.DataBaseConnection;
+import Models.User;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package Classes;
+package Models;
 
 /*
  *

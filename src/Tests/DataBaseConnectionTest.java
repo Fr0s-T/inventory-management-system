@@ -1,6 +1,6 @@
 package Tests;
 
-import Classes.DataBaseConnection;
+import Utilities.DataBaseConnection;
 import java.sql.*;
 
 /*

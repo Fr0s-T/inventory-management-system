@@ -1,6 +1,6 @@
 package Tests;
 
-import Classes.HashingUtility;
+import Utilities.HashingUtility;
 /*
  *
  * Author: @Frost
