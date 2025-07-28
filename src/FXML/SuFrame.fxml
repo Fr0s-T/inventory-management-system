@@ -12,32 +12,33 @@
 
 <AnchorPane prefHeight="800.0" prefWidth="1550.0" stylesheets="@../StyleSheets/SuFrameStyleSheet.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox prefHeight="800.0" prefWidth="257.0" style="-fx-background-color: #c7d3df;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <!-- Left Sidebar -->
+      <VBox prefHeight="800.0" prefWidth="300.0" style="-fx-background-color: #F8FAFC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ImageView fitHeight="130.0" fitWidth="274.0" pickOnBounds="true" preserveRatio="true">
+            <!-- User Profile Section -->
+            <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" styleClass="profile-image">
                <image>
                   <Image url="@../Icons/avatar-removebg-preview.png" />
                </image>
             </ImageView>
 
-            <Label fx:id="UsernameLabel" alignment="CENTER" prefHeight="56.0" prefWidth="296.0" text="Username">
+            <Label fx:id="UsernameLabel" styleClass="username-label" text="Username"/>
+
+            <Label fx:id="StatusLabel" styleClass="status-label" text="Online"/>
+
+            <!-- Alert Button -->
+            <Button id="AlertBtn" styleClass="alert-button" text="Alerts">
                <font>
-                  <Font size="18.0" />
+                  <Font size="20.0" />
                </font>
-            </Label>
+            </Button>
 
-            <Label fx:id="StatusLabel" alignment="CENTER" prefHeight="54.0" prefWidth="270.0" text="Status">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <Button id="AlertBtn" mnemonicParsing="false" prefHeight="75.0" prefWidth="336.0" styleClass="alert-button" text="Button" />
+            <Region VBox.vgrow="ALWAYS" />
 
-            <Region prefHeight="405.0" prefWidth="400.0" />
-
-            <Button fx:id="LogoutBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="999.0" styleClass="logout-button" text="Logout">
+            <!-- Logout Button -->
+            <Button fx:id="LogoutBtn" styleClass="logout-button" text="Logout">
                <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0">
+                  <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
                      <image>
                         <Image url="@../Icons/logout_icon.png" />
                      </image>
@@ -47,6 +48,7 @@
          </children>
       </VBox>
 
-      <Pane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <!-- Main Content Area -->
+      <Pane style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>
