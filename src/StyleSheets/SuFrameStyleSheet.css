@@ -1,7 +1,80 @@
-* {
-    -fx-border-color: red;
-    -fx-border-width: 1px;
+-fx-background-color: #F8FAFC;
+/* Alert Button Style */
+#AlertBtn {
+    -fx-background-color: #FFA500!important; /* Bright Orange */
+    -fx-text-fill: white!important;
+    -fx-font-size: 20px!important;
+    -fx-font-weight: bold!important;
+    -fx-border-width: 1!important;
+    -fx-border-radius: 10!important;
+    -fx-background-radius: 10!important;
+    -fx-cursor: hand!important;
 }
 
--fx-background-color: #F8FAFC;
+.alert-button:hover {
+    -fx-background-color: #FF6347; /* Darker orange on hover */
+}
+
+/* Logout Button Style */
+.logout-button {
+    -fx-background-color: #FFFFFF; /* White */
+    -fx-text-fill: #708090; /* Slate */
+    -fx-font-size: 18px;
+    -fx-font-weight: normal;
+    -fx-border-color: #708090;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #004AAB; /* Soft Gray on hover */
+}
+
+
+
+/* --------COLOR CODE----------
+
+🎨 Your Base Palette (Recap)
+Name	Color	Hex Code	Usage
+White
+#FFFFFF	Background, cards
+Royal Blue
+#004AAB	Navbars, primary buttons
+Light Blue
+#ADD8E6	Secondary highlights
+Soft Gray
+#D3D3D3	Containers, muted areas
+Slate
+#708090	Text, borders, subtle icons
+Lime Green
+#32CD32	Success, confirmations
+Bright Orange
+#FFA500	Alerts, warning actions
+
+🌈 Complementary & Utility Colors
+Name	Color	Hex Code	Suggested Use
+Dark Royal Blue
+#003680	Hover/darker states of Royal Blue
+Sky Blue
+#87CEEB	Highlights, tooltips
+Steel Gray
+#B0C4DE	Card outlines, muted sections
+Light Slate
+#778899	Labels, secondary text
+Dark Gray
+#A9A9A9	Disabled buttons
+Charcoal
+#2F4F4F	Dark mode backgrounds
+Coral Red
+#FF6347	Delete buttons, danger states
+Mint Green
+#98FB98	Validation feedback
+Gold Yellow
+#FFD700	Highlights, notifications
+Light Beige
+#F5F5DC	Soft UI backgrounds
+*/
+
 
