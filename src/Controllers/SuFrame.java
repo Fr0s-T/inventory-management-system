@@ -34,12 +34,12 @@ public class SuFrame extends Application {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Go back to login page
-            SceneLoader.loadScene("/FXML/LoginPage.fxml", null); // Adjust path if needed
+            SceneLoader.loadScene("/FXML/LoginPage.fxml", null);
         }
 
     }
     @FXML
-    private void Initialize(){
+    private void initialize(){
         User user=Session.getCurrentUser();
         UsernameLabel.setText(user.getUsername());
 

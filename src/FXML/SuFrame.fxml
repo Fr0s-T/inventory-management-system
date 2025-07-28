@@ -10,9 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1550.0" stylesheets="@../StyleSheets/SuFrameStyleSheet.css"
-            fx:controller="Controllers.SuFrame"
-            xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane prefHeight="800.0" prefWidth="1550.0" stylesheets="@../StyleSheets/SuFrameStyleSheet.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.SuFrame">
    <children>
       <VBox prefHeight="800.0" prefWidth="257.0" style="-fx-background-color: #c7d3df;" styleClass="sidebar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
