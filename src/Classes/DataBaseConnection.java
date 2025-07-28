@@ -1,5 +1,9 @@
 package Classes;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class DataBaseConnection {
     private static final String server = "inventorymanegmentsystem-srv.database.windows.net";
     private static final String database = "IMS";
@@ -15,31 +19,9 @@ public class DataBaseConnection {
                 + "database=" + database + ";" + "user=" + username + ";" + "password=" + password + ";"
                 + "encrypt=true;" + "trustServerCertificate=false;" + "loginTimeout=30;";
     }
+    public static Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        return DriverManager.getConnection(getConnectionUrl(300));
+    }
 
 }
-//package Classes;
-//
-//import java.sql.Connection;
-//import java.sql.DriverManager;
-//import java.sql.SQLException;
-//
-//public class DataBaseConnection {
-//    private static final String SERVER = "inventorymanegmentsystem-srv.database.windows.net";
-//    private static final String DATABASE = "IMS";
-//    private static final String USERNAME = "sqladmin";
-//    private static final String PASSWORD = "XcrJ8EB~u?J43Em";
-//
-//    private static final String CONNECTION_URL = "jdbc:sqlserver://" + SERVER + ":1433;"
-//            + "database=" + DATABASE + ";"
-//            + "user=" + USERNAME + ";"
-//            + "password=" + PASSWORD + ";"
-//            + "encrypt=true;"
-//            + "trustServerCertificate=false;"
-//            + "loginTimeout=30;";
-//
-//    // Static method to get a connection
-//    public static Connection getConnection() throws SQLException {
-//        return DriverManager.getConnection(CONNECTION_URL);
-//    }
-//}
-
