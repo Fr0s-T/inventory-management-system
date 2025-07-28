@@ -1,9 +1,9 @@
-/* Applies to root */
+/* Applies to root
 * {
     -fx-border-color: red;
     -fx-border-width: 1px;
 }
-
+*/
 .root {
 	-fx-font-size: 24px;
 }
