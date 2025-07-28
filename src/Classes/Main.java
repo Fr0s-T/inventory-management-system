@@ -12,7 +12,7 @@ public class Main extends Application {
             SceneLoader.setPrimaryStage(primaryStage);
             SceneLoader.loadScene("/FXML/LoginPage.fxml", null);
             primaryStage.setTitle("Inventory Management System");
-            primaryStage.setMaximized(true);
+            //primaryStage.setMaximized(true);
         } catch (Exception e) {
             e.printStackTrace(); // Print full error for debugging
         }

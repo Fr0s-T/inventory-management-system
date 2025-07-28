@@ -14,10 +14,10 @@
 <AnchorPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginPage">
    <children>
       <!-- Main background pane -->
-      <Pane fx:id="mainPane" layoutX="-36.0" layoutY="-37.0" prefHeight="962.0" prefWidth="1582.0" style="-fx-background-color: #D3D3D4;" stylesheets="@../StyleSheets/LoginStyleSheet.css">
+      <Pane fx:id="mainPane" layoutY="-7.0" prefHeight="812.0" prefWidth="1592.0" style="-fx-background-color: #D3D3D4;" stylesheets="@../StyleSheets/LoginStyleSheet.css">
          <children>
 
-            <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="685.0" layoutY="91.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="227.0" fitWidth="384.0" layoutX="700.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Icons/Possible%20logos/Screenshot__77_-removebg-preview(1).png" />
                </image>
@@ -28,19 +28,19 @@
                </font>
             </Label>
 
-            <Button fx:id="loginButton" layoutX="547.0" layoutY="736.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Login">
+            <Button fx:id="loginButton" layoutX="556.0" layoutY="690.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Login">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
 
-            <Button fx:id="exitButton" layoutX="857.0" layoutY="738.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Exit">
+            <Button fx:id="exitButton" layoutX="875.0" layoutY="703.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="255.0" styleClass="rounded-button" text="Exit">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
 
-            <HBox fx:id="usernameContainer" layoutX="542.0" layoutY="435.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
+            <HBox fx:id="usernameContainer" layoutX="539.0" layoutY="453.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
                <children>
                   <ImageView fitHeight="55.0" fitWidth="143.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -55,7 +55,7 @@
                </children>
             </HBox>
 
-            <HBox fx:id="passwordContainer" layoutX="558.0" layoutY="570.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
+            <HBox fx:id="passwordContainer" layoutX="539.0" layoutY="569.0" prefHeight="59.0" prefWidth="589.0" styleClass="input-container">
                <children>
                   <ImageView fitHeight="49.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                      <image>
