@@ -1,4 +1,4 @@
-package Classes;
+package Models;
 
 import java.sql.Timestamp;
 import java.sql.ResultSet;
@@ -11,13 +11,6 @@ import java.sql.SQLException;
  */
 
 public class User {
-    public int getLoginAttempts() {
-        return loginAttempts;
-    }
-
-    public void setLoginAttempts(int loginAttempts) {
-        this.loginAttempts = loginAttempts;
-    }
 
     public enum Role {
         REGIONAL_MANAGER(1),//warehouse id = null maneges many warehouses
@@ -105,6 +98,14 @@ public class User {
 
     public String getPicture() {
         return picture;
+    }
+
+    public int getLoginAttempts() {
+        return loginAttempts;
+    }
+
+    public void setLoginAttempts(int loginAttempts) {
+        this.loginAttempts = loginAttempts;
     }
 
 

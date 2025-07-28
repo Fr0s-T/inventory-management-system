@@ -1,27 +1,14 @@
 package Controllers;
 
-import Classes.DataBaseConnection;
-import Classes.HashingUtility;
-import Classes.User;
-import Classes.Session;
-
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.animation.PauseTransition;
-import javafx.util.Duration;
-
-import java.sql.*;
+import Models.*;
 import java.util.Optional;
 
 /**
@@ -59,9 +46,6 @@ public class SuFrame extends Application {
         LogoutBtn.setOnAction(event ->Logout());
 
     }
-
-
-
 
 
     @Override

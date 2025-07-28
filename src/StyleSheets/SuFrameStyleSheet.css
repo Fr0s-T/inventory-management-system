@@ -1,33 +1,32 @@
-/* Base Styles */
 .root {
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-background-color: #F8FAFC;
 }
 
-/* Sidebar Styles */
-/* Outer wrapper with gradient "border" */
+/ Sidebar Styles /
+/ Outer wrapper with gradient "border" /
 .sidebar-border {
-    -fx-background-color: linear-gradient(to right, #4e54c8, #8f94fb); /* gradient border */
-    -fx-padding: 2; /* thickness of the simulated border */
+    -fx-background-color: linear-gradient(to right, #4e54c8, #8f94fb); / gradient border /
+    -fx-padding: 2; / thickness of the simulated border /
     -fx-background-radius: 10;
 }
 
-/* Inner sidebar */
+/ Inner sidebar /
 .sidebar {
-    -fx-background-color: #F8FAFC; /* or your sidebar background */
+    -fx-background-color: #F8FAFC; / or your sidebar background /
     -fx-background-radius: 8;
 }
 
 
 
 
-/* Profile Image */
+/ Profile Image /
 .profile-image {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
     -fx-padding: 20 0 15 0;
 }
 
-/* User Info Labels */
+/ User Info Labels /
 .username-label {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
@@ -41,7 +40,7 @@
     -fx-padding: 0 0 20 0;
 }
 
-/* Alert Button */
+/ Alert Button /
 .alert-button {
     -fx-background-color: #FFFFFF;
     -fx-text-fill: black;
@@ -60,7 +59,7 @@
     -fx-border-color: #004AAB;
 }
 
-/* Logout Button */
+/ Logout Button /
 .logout-button {
     -fx-background-color: #FFFFFF;
     -fx-text-fill: black;
@@ -82,7 +81,7 @@
     -fx-border-color: #004AAB;
 }
 
-/* Main Content Area */
+/ Main Content Area */
 .content-pane {
     -fx-background-color: white;
     -fx-padding: 20;
