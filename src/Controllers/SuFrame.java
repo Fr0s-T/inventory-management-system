@@ -1,5 +1,6 @@
 package Controllers;
 
+import Services.LogOutService;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,26 +25,14 @@ public class SuFrame extends Application {
     @FXML private Button LogoutBtn;
     private Stage mainStage;
 
-    @FXML
-    private void Logout(){
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Logout Cpnfirmation");
-        alert.setHeaderText("Are you sure you want to logout?");
-        alert.setContentText("You will be redirected to the login screen.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Go back to login page
-            SceneLoader.loadScene("/FXML/LoginPage.fxml", null); // Adjust path if needed
-        }
-
-    }
     @FXML
-    private void Initialize(){
-        User user=Session.getCurrentUser();
+    private void initialize(){
+
+        User user = Session.getCurrentUser();
         UsernameLabel.setText(user.getUsername());
 
-        LogoutBtn.setOnAction(event ->Logout());
+        LogoutBtn.setOnAction(event -> LogOutService.Logout());
 
     }
 
@@ -57,7 +46,8 @@ public class SuFrame extends Application {
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.show();    }
+        stage.show();
+    }
 
     public static void main(String[] args) {
         launch(args);
