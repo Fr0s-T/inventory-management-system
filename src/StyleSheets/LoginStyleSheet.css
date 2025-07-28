@@ -60,4 +60,5 @@
 }
 .buttonHbox {
     -fx-spacing: 50px; /* adjust value as needed */
-    -fx-alignment: center; /* optional: centers buttons horizontally
+    -fx-alignment: center; /* optional: centers buttons horizontally*/
+    }
