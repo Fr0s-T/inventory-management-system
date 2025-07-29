@@ -8,8 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import Models.*;
+import jdk.jshell.Snippet;
+
 import java.util.Optional;
 
 /**
@@ -31,7 +34,8 @@ public class SuFrame extends Application {
 
         User user = Session.getCurrentUser();
         UsernameLabel.setText(user.getUsername());
-
+        StatusLabel.setTextFill(Paint.valueOf("green"));
+        StatusLabel.setText("ONLINE");
         LogoutBtn.setOnAction(event -> LogOutService.Logout());
 
     }

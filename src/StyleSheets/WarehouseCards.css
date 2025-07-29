@@ -1,0 +1,46 @@
+/* Base Card Style */
+.warehouse-card {
+    -fx-background-color: white;
+    -fx-border-color: #004AAB ;
+    -fx-border-width: 10;
+    -fx-border-radius: 100;
+    -fx-background-radius: 100;
+    -fx-padding: 10;
+}
+
+
+
+/* Label Style */
+.label-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003680; /* Dark blue */
+    -fx-underline: true;
+}
+#WarehouseNameLabel{
+        -fx-font-size: 16px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #003680; /* Dark blue */
+}
+
+.label-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #4a90e2;
+    -fx-effect: dropshadow(gaussian, rgba(0,54,128,0.2), 5, 0.5, 0, 2);
+}
+
+/* Optional: Rounded image style (if using CircleClip manually) */
+.image-view {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+.pane-view {
+    -fx-background-color: white;
+    -fx-border-color: #003680;
+    -fx-border-width: 3;
+    -fx-border-radius: 40;
+    -fx-background-radius: 40;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.2, 0, 4);
+}
+
