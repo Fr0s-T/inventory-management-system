@@ -1,9 +1,14 @@
 package Controllers;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+import Models.Warehouse;
+
+import java.util.ArrayList;
 //to do: add primaryStage.setMaximized(true);
 
 /**
@@ -41,6 +46,29 @@ public class SceneLoader {
             e.printStackTrace();
             throw new RuntimeException("Failed to load scene: " + fxmlPath);
         }
+    }
+    public static void loadCards(ArrayList<Warehouse> cards, FlowPane flowPane){
+        if (cards == null || flowPane == null) return;
+
+        try {
+            flowPane.getChildren().clear(); // Clear existing cards if needed
+
+            for (Warehouse warehouse : cards) {
+                FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource("/FXML/WarehouseCards.fxml"));
+                Node cardNode = loader.load();
+
+                // Set data on the card's controller
+                WarehouseCards controller = loader.getController();
+                controller.setData(warehouse);
+
+                flowPane.getChildren().add(cardNode);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to load warehouse cards.");
+        }
+
     }
 
 }

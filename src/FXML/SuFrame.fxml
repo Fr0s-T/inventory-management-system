@@ -5,6 +5,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -47,7 +48,7 @@
 
             <Region prefHeight="405.0" prefWidth="400.0" />
 
-            <Button  fx:id="LogoutBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="Logout">
+            <Button fx:id="LogoutBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="Logout">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0">
                      <image>
@@ -59,6 +60,9 @@
          </children>
       </VBox>
 
-      <Pane id="BackgroudPane" layoutX="250.4" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Pane id="BackgroudPane" layoutX="250.4" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <FlowPane fx:id="carpanel" layoutX="227.0" layoutY="123.0" prefHeight="200.0" prefWidth="200.0" />
+         </children></Pane>
    </children>
 </AnchorPane>
