@@ -179,8 +179,9 @@ public class LogInService {
                 rs.getInt("RoleID"),
                 rs.getInt("WarehouseID"),
                 rs.getString("Picture"),
-                0,
-                null
+                rs.getInt("FailedAttempts"),
+                rs.getTimestamp("LockoutUntil"),
+                rs.getBoolean("IsLoggedIn")
         );
     }
 }

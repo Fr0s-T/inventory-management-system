@@ -49,8 +49,9 @@ public class User {
     private int loginAttempts=0;
     private final int failedAttempts;
     private final Timestamp lockoutUntil;
+    private final boolean IsLoggedIn;
 
-    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId, String picture,int failedAttempts,Timestamp lockoutUntil) {
+    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId, String picture,int failedAttempts,Timestamp lockoutUntil,boolean IsLoggedIn) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -61,10 +62,10 @@ public class User {
         this.picture = picture;
         this.failedAttempts = failedAttempts;
         this.lockoutUntil = lockoutUntil;
-
+        this.IsLoggedIn= IsLoggedIn;
     }
-    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId,int failedAttempts, Timestamp lockoutUntil) {
-        this(id, firstName, middleName, lastName, username, roleId, warehouseId, null, failedAttempts, lockoutUntil);
+    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId,int failedAttempts, Timestamp lockoutUntil,boolean IsLoggedIn) {
+        this(id, firstName, middleName, lastName, username, roleId, warehouseId, null, failedAttempts, lockoutUntil, IsLoggedIn);
     }
     // Getters for all fields
 
@@ -104,6 +105,8 @@ public class User {
         return loginAttempts;
     }
 
+    public boolean getIsLoggedIn(){return IsLoggedIn;}
+
     public void setLoginAttempts(int loginAttempts) {
         this.loginAttempts = loginAttempts;
     }
@@ -118,8 +121,9 @@ public class User {
         this.role = Role.fromId(rs.getInt("RoleID"));
         this.warehouseId = rs.getInt("WarehouseID");
         this.picture = rs.getString("Picture");
-        this.failedAttempts = rs.getInt("Failedtempts");
-        this.lockoutUntil=rs.getTimestamp("lockoutUntil");// only if column exists
+        this.failedAttempts = rs.getInt("FailedAttempts");
+        this.lockoutUntil=rs.getTimestamp("lockoutUntil");
+        this.IsLoggedIn=rs.getBoolean("IsLoggedIn");
     }
 
     @Override

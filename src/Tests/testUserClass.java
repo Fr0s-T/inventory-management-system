@@ -45,7 +45,8 @@ public class testUserClass {
                             rs.getInt("WarehouseID"),
                             rs.getString("Picture"),
                             rs.getInt("FailedAttempts"),
-                            rs.getTimestamp("LockoutUntil")
+                            rs.getTimestamp("LockoutUntil"),
+                            rs.getBoolean("IsLoggedIn")
                     );
 
                     users.add(user);

@@ -30,6 +30,7 @@ public class SceneLoader {
             // ✅ Automatically maximize SuFrame
             if (fxmlPath.contains("LoginPage.fxml")) {
                 primaryStage.setMaximized(false);
+                primaryStage.centerOnScreen();
             } else {
                 //primaryStage.setMaximized(true);
                 primaryStage.centerOnScreen(); // optional for login page
