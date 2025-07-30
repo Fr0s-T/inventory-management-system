@@ -21,23 +21,23 @@
                   <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label alignment="CENTER" prefHeight="55.0" prefWidth="203.0" styleClass="label-title" text="Location" />
-                        <Label id="LocationLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="107.0" prefWidth="210.0" styleClass="label-value" text="Location" />
+                        <Label id="LocationLabel" fx:id="LocationLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="107.0" prefWidth="210.0" styleClass="label-value" text="Location" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label alignment="CENTER" prefHeight="58.0" prefWidth="210.0" styleClass="label-title" text="Manager" />
-                        <Label id="ManagerLabel" alignment="TOP_CENTER" prefHeight="110.0" prefWidth="210.0" styleClass="label-value" text="Manager" />
+                        <Label id="ManagerLabel" fx:id="ManagerLabel" alignment="TOP_CENTER" prefHeight="110.0" prefWidth="210.0" styleClass="label-value" text="Manager" />
                      </children>
                   </VBox>
                   <VBox prefHeight="190.0" prefWidth="70.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label alignment="CENTER" prefHeight="58.0" prefWidth="210.0" styleClass="label-title" text="Capacity" />
-                        <Label id="CapacityLabel" alignment="TOP_CENTER" prefHeight="110.0" prefWidth="210.0" styleClass="label-value" text="Capacity" />
+                        <Label id="CapacityLabel" fx:id="CapacityLabel" alignment="TOP_CENTER" prefHeight="110.0" prefWidth="210.0" styleClass="label-value" text="Capacity" />
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <Label id="WarehouseNameLabel" alignment="CENTER" layoutX="217.0" layoutY="167.0" prefHeight="53.0" prefWidth="180.0" text="WarehouseName" />
+            <Label id="WarehouseNameLabel" fx:id="WarehouseNameLabel" alignment="CENTER" layoutX="217.0" layoutY="167.0" prefHeight="53.0" prefWidth="180.0" text="WarehouseName" />
          </children>
       </Pane>

@@ -1,28 +1,29 @@
 package Controllers;
 
+import Models.Warehouse;
 import javafx.fxml.FXML;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 public class WarehouseCards {
 
 
-//    @FXML
-//    private AnchorPane card;
-//
-//    @FXML
-//    public void initialize() {
-//        Rectangle clip = new Rectangle();
-//        clip.widthProperty().bind(card.widthProperty());
-//        clip.heightProperty().bind(card.heightProperty());
-//        clip.setArcWidth(100);   // match your CSS radius
-//        clip.setArcHeight(100);  // match your CSS radius
-//        card.setClip(clip);
-//    }
+    @FXML private Pane card;
+    @FXML private ImageView WarehouseImage;
+    @FXML private Label LocationLabel;
+    @FXML private Label ManagerLabel;
+    @FXML private Label CapacityLabel;
+    @FXML private Label WarehouseNameLabel;
 
-    @FXML
-    private Pane card;
+
+    public void setData(Warehouse warehouse) {
+        LocationLabel.setText(warehouse.getLocation());
+        ManagerLabel.setText(String.valueOf(warehouse.getManegeId()));
+        CapacityLabel.setText(String.valueOf(warehouse.getCapacity()));
+        WarehouseNameLabel.setText(warehouse.getName());
+    }
 
     public void initialize() {
         Rectangle clip = new Rectangle();

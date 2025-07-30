@@ -2,10 +2,19 @@ package Models;
 
 public class Warehouse {
 
+    private String name;
     private int id;
     private int manegeId;
     private int capacity;
     private String location;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Warehouse(int id, int manegeId, int capacity, String location) {
         this.id = id;
