@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Models.*;
 import jdk.jshell.Snippet;
@@ -34,6 +35,7 @@ public class SuFrame extends Application {
     @FXML private Button LogoutBtn;
     @FXML private Button DeletedLogs;
     @FXML private FlowPane flowPane;
+    @FXML private Button AddWarehouseBtn;
 
     private Stage mainStage;
 
@@ -47,12 +49,40 @@ public class SuFrame extends Application {
         StatusLabel.setText("ONLINE");
 
         ArrayList<Warehouse> warehouses = WareHouseService.getWarehousesFromDb();
+        Session.setWarehouses(warehouses);
         SceneLoader.loadWarehouseCards(warehouses,flowPane);
 
         LogoutBtn.setOnAction(event -> LogOutService.Logout());
         DeletedLogs.setOnAction(actionEvent -> {
             DeletedLogsService.saveDeletedLogsToAFileAsync("C:\\Users\\fouad\\Desktop\\Workspace\\DeletedLogs.txt");
         });
+
+        AddWarehouseBtn.setOnAction(actionEvent -> {
+            try {
+                // Load FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Views/AddWarehouse.fxml"));
+                AnchorPane page = loader.load();
+
+                // Create popup Stage
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Add Warehouse");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(AddWarehouseBtn.getScene().getWindow());
+
+                Scene scene = new Scene(page);
+                dialogStage.setScene(scene);
+
+                // Pass stage to controller
+                ViewsControllers.AddWarehouse controller = loader.getController();
+                controller.setDialogStage(dialogStage);
+
+                // Show popup
+                dialogStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
 
     }
 

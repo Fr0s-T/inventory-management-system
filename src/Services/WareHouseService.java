@@ -4,10 +4,7 @@ import Models.Session;
 import Models.Warehouse;
 import Utilities.DataBaseConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 /**
@@ -32,7 +29,6 @@ public class WareHouseService {
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            // ✅ SET THE PARAMETER VALUE HERE
             statement.setInt(1, Session.getCurrentUser().getId());
 
             ResultSet rs = statement.executeQuery();
@@ -51,4 +47,30 @@ public class WareHouseService {
         return warehouses;
     }
 
+    public static void addWarehouse(String name, String location, int capacity) {
+        Warehouse newWarehouse = new Warehouse(name, Session.getCurrentUser().getUsername(), capacity, location);
+
+        final String insertSql = "INSERT INTO Warehouse (Name, Location, Capacity, RegionalManager) VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement insertStmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+            insertStmt.setString(1, name);
+            insertStmt.setString(2, location);
+            insertStmt.setInt(3, capacity);
+            insertStmt.setInt(4, Session.getCurrentUser().getId());
+            insertStmt.executeUpdate();
+
+            ResultSet generatedKeys = insertStmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                newWarehouse.setId(generatedKeys.getInt(1));
+            } else {
+                throw new SQLException("Creating warehouse failed, no ID obtained.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

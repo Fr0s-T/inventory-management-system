@@ -29,6 +29,14 @@ public class Warehouse {
         this.capacity = capacity;
         this.location = location;
     }
+
+    public Warehouse(String name, String manegeUSerName, int capacity, String location) {
+        this.name = name;
+        this.manegeUSerName = manegeUSerName;
+        this.capacity = capacity;
+        this.location = location;
+    }
+
     public Warehouse(){}
 
     public int getCapacity() {
