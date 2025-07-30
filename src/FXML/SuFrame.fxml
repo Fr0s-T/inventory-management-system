@@ -5,7 +5,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -45,8 +44,18 @@
                   </ImageView>
                </graphic>
             </Button>
+            <Region layoutX="10.0" layoutY="401.0" prefHeight="14.0" prefWidth="258.0" />
+            <Button id="AddWarehouseBtn" fx:id="AddWarehouseBtn" layoutX="10.0" layoutY="251.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="250.0" styleClass="alert-button" text="Add Warehouse">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0">
+                     <image>
+                        <Image url="@/Icons/warehouse.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
 
-            <Region prefHeight="405.0" prefWidth="400.0" />
+            <Region prefHeight="315.0" prefWidth="258.0" />
 
             <Button fx:id="LogoutBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="Logout">
                <graphic>
@@ -60,9 +69,6 @@
          </children>
       </VBox>
 
-      <Pane id="BackgroudPane" layoutX="250.4" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <FlowPane fx:id="carpanel" layoutX="227.0" layoutY="123.0" prefHeight="200.0" prefWidth="200.0" />
-         </children></Pane>
+      <Pane id="BackgroundPane" layoutX="250.4" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

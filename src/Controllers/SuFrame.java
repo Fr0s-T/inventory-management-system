@@ -8,11 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import Models.*;
+import jdk.jshell.Snippet;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -26,7 +26,6 @@ public class SuFrame extends Application {
     @FXML private Label StatusLabel;
     @FXML private Button AlertBtn;
     @FXML private Button LogoutBtn;
-    @FXML private FlowPane carpanel;
     private Stage mainStage;
 
 
@@ -35,11 +34,8 @@ public class SuFrame extends Application {
 
         User user = Session.getCurrentUser();
         UsernameLabel.setText(user.getUsername());
-        ArrayList<Warehouse> warehouses = new ArrayList<>();
-        Warehouse warehouse = new Warehouse(1,1,1,"Dalhoun");
-        warehouses.add(warehouse);
-        SceneLoader.loadCards(warehouses,carpanel);
-
+        StatusLabel.setTextFill(Paint.valueOf("green"));
+        StatusLabel.setText("ONLINE");
         LogoutBtn.setOnAction(event -> LogOutService.Logout());
 
     }
