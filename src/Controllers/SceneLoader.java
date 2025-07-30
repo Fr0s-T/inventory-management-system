@@ -1,5 +1,6 @@
 package Controllers;
 
+import ViewsControllers.WarehouseCards;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -60,7 +61,7 @@ public class SceneLoader {
 
         for (Warehouse warehouse : warehouses) {
             try {
-                FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource("/FXML/WarehouseCards.fxml"));
+                FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource("/Views/WarehouseCards.fxml"));
                 Node card = loader.load();
 
                 WarehouseCards controller = loader.getController();

@@ -1,9 +1,8 @@
-package Controllers;
+package ViewsControllers;
 
 import Models.Warehouse;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
