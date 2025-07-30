@@ -1,6 +1,7 @@
 package Controllers;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -8,6 +9,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import Models.Warehouse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 //to do: add primaryStage.setMaximized(true);
 
@@ -47,28 +49,28 @@ public class SceneLoader {
             throw new RuntimeException("Failed to load scene: " + fxmlPath);
         }
     }
-    public static void loadCards(ArrayList<Warehouse> cards, FlowPane flowPane){
-        if (cards == null || flowPane == null) return;
+    public static void loadWarehouseCards(ArrayList<Warehouse> warehouses, FlowPane flowPane) {
+        flowPane.getChildren().clear(); // clear old cards if any
 
-        try {
-            flowPane.getChildren().clear(); // Clear existing cards if needed
+        // Layout setup
+        flowPane.setOrientation(Orientation.HORIZONTAL);
+        flowPane.setPrefWrapLength(600); // 2 cards of 280 + 20 gap
+        flowPane.setHgap(20); // horizontal space between cards
+        flowPane.setVgap(20); // vertical space between rows
 
-            for (Warehouse warehouse : cards) {
+        for (Warehouse warehouse : warehouses) {
+            try {
                 FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource("/FXML/WarehouseCards.fxml"));
-                Node cardNode = loader.load();
+                Node card = loader.load();
 
-                // Set data on the card's controller
                 WarehouseCards controller = loader.getController();
-                controller.setData(warehouse);
+                controller.setData(warehouse); // inject warehouse data
 
-                flowPane.getChildren().add(cardNode);
+                flowPane.getChildren().add(card);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load warehouse cards.");
         }
-
     }
-
 }
+

@@ -4,7 +4,7 @@ public class Warehouse {
 
     private String name;
     private int id;
-    private int manegeId;
+    private int manegeId = 6969;
     private int capacity;
     private String location;
 
@@ -16,12 +16,14 @@ public class Warehouse {
         this.name = name;
     }
 
-    public Warehouse(int id, int manegeId, int capacity, String location) {
+    public Warehouse(String name,int id, int manegeId, int capacity, String location) {
+        this.name = name;
         this.id = id;
         this.manegeId = manegeId;
         this.capacity = capacity;
         this.location = location;
     }
+    public Warehouse(){}
 
     public int getCapacity() {
         return capacity;

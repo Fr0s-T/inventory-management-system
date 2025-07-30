@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -69,6 +72,17 @@
          </children>
       </VBox>
 
-      <Pane id="BackgroundPane" layoutX="250.4" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Pane id="BackgroundPane" layoutX="250.0" layoutY="-18.0" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.40000000000009095" AnchorPane.topAnchor="-18.0">
+         <children>
+            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="811.0" prefWidth="1297.0" vbarPolicy="ALWAYS">
+               <FlowPane fx:id="flowPane" hgap="20" orientation="HORIZONTAL" prefHeight="723.0" prefWidth="1124.0" prefWrapLength="600" vgap="20">
+                  <padding>
+                     <Insets bottom="10" left="10" right="10" top="10" />
+                  </padding>
+               </FlowPane>
+            </ScrollPane>
+
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
