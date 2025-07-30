@@ -45,7 +45,7 @@
                </graphic>
             </Button>
             <Region layoutX="10.0" layoutY="401.0" prefHeight="14.0" prefWidth="258.0" />
-            <Button id="AddWarehouseBtn" fx:id="AddWarehouseBtn" layoutX="10.0" layoutY="251.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="250.0" styleClass="alert-button" text="Add Warehouse">
+            <Button id="AddWarehouseBtn" fx:id="AddWarehouseBtn" layoutX="10.0" layoutY="251.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="250.0" styleClass="AddWarehouse-button" text="Add Warehouse">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0">
                      <image>
