@@ -13,6 +13,12 @@ import javafx.stage.Stage;
 
 import java.sql.*;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
 public class LogInService {
     private Button loginButton;
     private Label errorLabel;

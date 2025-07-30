@@ -8,6 +8,13 @@ import javafx.scene.control.ButtonType;
 
 import java.util.Optional;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class LogOutService {
 
 

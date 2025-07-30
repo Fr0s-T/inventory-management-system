@@ -15,6 +15,12 @@ import javafx.stage.Stage;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
 public class LoginPage extends Application {
 
     @FXML private TextField usernameField;

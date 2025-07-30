@@ -7,6 +7,13 @@ import javafx.scene.shape.Rectangle;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
 public class WarehouseCards {
 
 
@@ -26,12 +33,7 @@ public class WarehouseCards {
     }
 
     public void initialize() {
-        Rectangle clip = new Rectangle();
-        clip.setArcWidth(40);
-        clip.setArcHeight(40);
-        clip.widthProperty().bind(card.widthProperty());
-        clip.heightProperty().bind(card.heightProperty());
-        card.setClip(clip);
+        return;
     }
 
 

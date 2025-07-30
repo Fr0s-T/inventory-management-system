@@ -1,5 +1,11 @@
 package Models;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
 public class Warehouse {
 
     private String name;

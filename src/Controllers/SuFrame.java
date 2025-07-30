@@ -1,5 +1,6 @@
 package Controllers;
 
+import Services.DeletedLogsService;
 import Services.LogOutService;
 import Services.WareHouseService;
 import javafx.application.Application;
@@ -15,6 +16,7 @@ import javafx.stage.Stage;
 import Models.*;
 import jdk.jshell.Snippet;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -30,6 +32,7 @@ public class SuFrame extends Application {
     @FXML private Label StatusLabel;
     @FXML private Button AlertBtn;
     @FXML private Button LogoutBtn;
+    @FXML private Button DeletedLogs;
     @FXML private FlowPane flowPane;
 
     private Stage mainStage;
@@ -47,6 +50,9 @@ public class SuFrame extends Application {
         SceneLoader.loadWarehouseCards(warehouses,flowPane);
 
         LogoutBtn.setOnAction(event -> LogOutService.Logout());
+        DeletedLogs.setOnAction(actionEvent -> {
+            DeletedLogsService.saveDeletedLogsToAFileAsync("C:\\Users\\fouad\\Desktop\\Workspace\\DeletedLogs.txt");
+        });
 
     }
 
