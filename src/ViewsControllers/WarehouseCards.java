@@ -26,7 +26,7 @@ public class WarehouseCards {
 
     public void setData(Warehouse warehouse) {
         LocationLabel.setText(warehouse.getLocation());
-        ManagerLabel.setText(String.valueOf(warehouse.getManegeId()));
+        ManagerLabel.setText(String.valueOf(warehouse.getManegeUSerName()));
         CapacityLabel.setText(String.valueOf(warehouse.getCapacity()));
         WarehouseNameLabel.setText(warehouse.getName());
     }

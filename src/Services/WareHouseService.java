@@ -20,23 +20,35 @@ public class WareHouseService {
 
     public static ArrayList<Warehouse> getWarehousesFromDb() throws SQLException, ClassNotFoundException {
         ArrayList<Warehouse> warehouses = new ArrayList<>();
-        final String sql = "Select * from Warehouse Where RegionalManager = "+ Session.getCurrentUser().getId();
+
+        final String sql = "SELECT w.ID, w.Name, w.Location, w.Capacity, e.Username " +
+                "FROM Employee AS e " +
+                "INNER JOIN Warehouse AS w ON e.WarehouseID = w.ID " +
+                "INNER JOIN [dbo].[Hierarchy] AS h ON e.ID = h.EmployeeID " +
+                "WHERE e.RoleID = 2 " +
+                "AND w.RegionalManager = h.ManagerID " +
+                "AND w.RegionalManager = ?";
 
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-             ResultSet rs = statement.executeQuery();
+            // ✅ SET THE PARAMETER VALUE HERE
+            statement.setInt(1, Session.getCurrentUser().getId());
 
-             while (rs.next()){
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
                 Warehouse newWarehouse = new Warehouse();
-                 newWarehouse.setName(rs.getString("Name"));
-                 newWarehouse.setId(rs.getInt("ID"));
-                 newWarehouse.setLocation(rs.getString("Location"));
-                 //TODO:manager joint query
-                 newWarehouse.setCapacity(rs.getInt("Capacity"));
-                 warehouses.add(newWarehouse);
-             }
+                newWarehouse.setId(rs.getInt("ID"));
+                newWarehouse.setName(rs.getString("Name"));
+                newWarehouse.setLocation(rs.getString("Location"));
+                newWarehouse.setCapacity(rs.getInt("Capacity"));
+                newWarehouse.setManegeUSerName(rs.getString("Username"));
+                warehouses.add(newWarehouse);
+            }
         }
+
         return warehouses;
     }
+
 }

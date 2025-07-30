@@ -10,7 +10,7 @@ public class Warehouse {
 
     private String name;
     private int id;
-    private int manegeId = 6969;
+    private String manegeUSerName = "6969";
     private int capacity;
     private String location;
 
@@ -22,10 +22,10 @@ public class Warehouse {
         this.name = name;
     }
 
-    public Warehouse(String name,int id, int manegeId, int capacity, String location) {
+    public Warehouse(String name,int id, String manegeUSerName, int capacity, String location) {
         this.name = name;
         this.id = id;
-        this.manegeId = manegeId;
+        this.manegeUSerName = manegeUSerName;
         this.capacity = capacity;
         this.location = location;
     }
@@ -47,12 +47,12 @@ public class Warehouse {
         this.capacity = capacity;
     }
 
-    public int getManegeId() {
-        return manegeId;
+    public String getManegeUSerName() {
+        return manegeUSerName;
     }
 
-    public void setManegeId(int manegeId) {
-        this.manegeId = manegeId;
+    public void setManegeUSerName(String manegeUSerName) {
+        this.manegeUSerName = manegeUSerName;
     }
 
     public int getId() {
