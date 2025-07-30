@@ -49,6 +49,11 @@ public class SuFrame extends Application {
         StatusLabel.setText("ONLINE");
 
         ArrayList<Warehouse> warehouses = WareHouseService.getWarehousesFromDb();
+
+        for (Warehouse warehouse:warehouses){
+            System.out.println(warehouse.getId());
+        }
+
         Session.setWarehouses(warehouses);
         SceneLoader.loadWarehouseCards(warehouses,flowPane);
 
@@ -60,7 +65,7 @@ public class SuFrame extends Application {
         AddWarehouseBtn.setOnAction(actionEvent -> {
             try {
                 // Load FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("Views/AddWarehouse.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/AddWarehouse.fxml"));
                 AnchorPane page = loader.load();
 
                 // Create popup Stage

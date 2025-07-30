@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Views.AddWarehouseController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.AddWarehouse">
     <children>
         <Pane layoutX="100.0" layoutY="27.0" prefHeight="290.0" prefWidth="371.0">
             <children>
@@ -18,6 +20,7 @@
                 <TextField fx:id="managerUsernameField" layoutX="111.0" layoutY="60.0" />
                 <TextField fx:id="capacityField" layoutX="102.0" layoutY="124.0" />
                 <TextField fx:id="locationField" layoutX="102.0" layoutY="172.0" />
+            <Button fx:id="Addbutton" layoutX="111.0" layoutY="229.0" mnemonicParsing="false" text="Add Warehouse" />
             </children>
         </Pane>
     </children>

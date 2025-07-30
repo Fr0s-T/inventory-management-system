@@ -2,6 +2,7 @@ package ViewsControllers;
 
 import Services.WareHouseService;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -10,6 +11,7 @@ public class AddWarehouse {
     @FXML private TextField managerUsernameField; // You might not need this, if you set manager from session.
     @FXML private TextField capacityField;
     @FXML private TextField locationField;
+    @FXML private Button Addbutton;
 
     private Stage dialogStage;
 
@@ -41,5 +43,7 @@ public class AddWarehouse {
     @FXML
     private void initialize() {
         // Optional initialization code here
+        Addbutton.setOnAction(actionEvent -> WareHouseService.addWarehouse(nameField.getText().trim(),
+                locationField.getText().trim(),Integer.parseInt(capacityField.getText().trim())));
     }
 }
