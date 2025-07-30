@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="card" prefHeight="400" prefWidth="600" styleClass="warehouse-card" stylesheets="@../StyleSheets/WarehouseCards.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.WarehouseCards">
    <children>
-      <Pane layoutX="30" layoutY="30" prefHeight="400" prefWidth="600" styleClass="pane-view">
+      <Pane layoutX="30" layoutY="30" prefHeight="400" prefWidth="600" style="-fx-background-color: gray;" styleClass="pane-view">
          <children>
             <ImageView id="WarehouseImage" fx:id="warehouseImage" fitHeight="150" fitWidth="200" layoutX="200" layoutY="14" pickOnBounds="true" preserveRatio="true">
                <image>
