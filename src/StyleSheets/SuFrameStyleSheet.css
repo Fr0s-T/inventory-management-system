@@ -55,11 +55,10 @@
 }
 
 .alert-button:hover {
-    -fx-background-color: #004AAB;
+    -fx-background-color: #FF0000;
     -fx-text-fill: white;
-    -fx-border-color: #004AAB;
+    -fx-border-color: #FF0000;
 }
-
 /* Logout Button */
 .logout-button {
     -fx-background-color: #FFFFFF;

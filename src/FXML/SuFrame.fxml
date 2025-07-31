@@ -48,7 +48,7 @@
                </graphic>
             </Button>
             <Region layoutX="10.0" layoutY="401.0" prefHeight="23.0" prefWidth="258.0" />
-            <Button id="AddWarehouseBtn" fx:id="AddWarehouseBtn" layoutX="10.0" layoutY="251.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="250.0" styleClass="alert-button" text="Add Warehouse">
+            <Button id="AddWarehouseBtn" fx:id="AddWarehouseBtn" layoutX="10.0" layoutY="251.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="250.0" styleClass="logout-button" text="Add Warehouse">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0">
                      <image>
@@ -58,8 +58,15 @@
                </graphic>
             </Button>
             <Region prefHeight="34.0" prefWidth="258.0" />
-            <Button fx:id="DeletedLogs" mnemonicParsing="false" prefHeight="68.0" prefWidth="255.0" styleClass="alert-button" text="Deleted Logs" />
-
+            <Button fx:id="DeletedLogs" mnemonicParsing="false" prefHeight="68.0" prefWidth="255.0" styleClass="logout-button" text="Deleted Logs" >
+             <graphic>
+               <ImageView fitHeight="30.0" fitWidth="30.0">
+                  <image>
+                     <Image url="@../Icons/records.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </Button>
             <Region prefHeight="210.0" prefWidth="258.0" />
 
             <Button fx:id="LogoutBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="Logout">
