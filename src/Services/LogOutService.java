@@ -8,6 +8,13 @@ import javafx.scene.control.ButtonType;
 
 import java.util.Optional;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class LogOutService {
 
 
@@ -23,6 +30,7 @@ public class LogOutService {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             Session.setCurrentUser(null);
+            Session.setWarehouses(null);
             SceneLoader.loadScene("/FXML/LoginPage.fxml", null); // Adjust path if needed
         }
     }

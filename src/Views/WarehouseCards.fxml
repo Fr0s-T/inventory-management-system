@@ -7,37 +7,37 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane fx:id="card" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #D3D3D3;" styleClass="warehouse-card" stylesheets="@../StyleSheets/WarehouseCards.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.WarehouseCards">
+<Pane fx:id="card" prefHeight="400.0" prefWidth="582.0" style="-fx-background-color: #D3D3D3;" styleClass="warehouse-card" stylesheets="@../StyleSheets/WarehouseCards.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.WarehouseCards">
 
 
        <children>
-            <ImageView id="WarehouseImage" fitHeight="150.0" fitWidth="300.0" layoutX="232.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView id="WarehouseImage" fitHeight="150.0" fitWidth="300.0" layoutX="206.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Icons/warehouse.png" />
                </image>
             </ImageView>
-            <HBox layoutX="10.0" layoutY="235.0" prefHeight="157.0" prefWidth="580.0">
+            <Label id="WarehouseNameLabel" fx:id="WarehouseNameLabel" alignment="CENTER" layoutX="180.0" layoutY="164.0" prefHeight="53.0" prefWidth="203.0" text="Warehouse Name" />
+            <HBox layoutX="-12.0" layoutY="229.0" prefHeight="157.0" prefWidth="580.0">
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label alignment="CENTER" prefHeight="55.0" prefWidth="203.0" styleClass="label-title" text="Location" />
-                        <Label id="LocationLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="107.0" prefWidth="210.0" styleClass="label-value" text="Location" />
+                        <Label id="LocationLabel" fx:id="LocationLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="107.0" prefWidth="210.0" styleClass="label-value" text="Location" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label alignment="CENTER" prefHeight="58.0" prefWidth="210.0" styleClass="label-title" text="Manager" />
-                        <Label id="ManagerLabel" alignment="TOP_CENTER" prefHeight="110.0" prefWidth="210.0" styleClass="label-value" text="Manager" />
+                        <Label id="ManagerLabel" fx:id="ManagerLabel" alignment="TOP_CENTER" prefHeight="110.0" prefWidth="210.0" styleClass="label-value" text="Manager" />
                      </children>
                   </VBox>
                   <VBox prefHeight="190.0" prefWidth="70.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label alignment="CENTER" prefHeight="58.0" prefWidth="210.0" styleClass="label-title" text="Capacity" />
-                        <Label id="CapacityLabel" alignment="TOP_CENTER" prefHeight="110.0" prefWidth="210.0" styleClass="label-value" text="Capacity" />
+                        <Label id="CapacityLabel" fx:id="CapacityLabel" alignment="TOP_CENTER" prefHeight="110.0" prefWidth="210.0" styleClass="label-value" text="Capacity" />
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <Label id="WarehouseNameLabel" alignment="CENTER" layoutX="217.0" layoutY="167.0" prefHeight="53.0" prefWidth="180.0" text="WarehouseName" />
          </children>
       </Pane>

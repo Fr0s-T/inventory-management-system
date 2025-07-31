@@ -59,24 +59,6 @@
     -fx-text-fill: white;
     -fx-border-color: #FF0000;
 }
-.AddWarehouse-button {
-    -fx-background-color: #FFFFFF;
-    -fx-text-fill: black;
-    -fx-font-weight: bold;
-    -fx-font-size: 20px;
-    -fx-border-radius: 30;
-    -fx-background-radius: 30;
-    -fx-padding: 12 25;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
-}
-
-.AddWarehouse-button:hover {
-    -fx-background-color: #004AAB;
-    -fx-text-fill: white;
-    -fx-border-color: #004AAB;
-}
-
 /* Logout Button */
 .logout-button {
     -fx-background-color: #FFFFFF;
@@ -107,4 +89,3 @@
 #BackgroudPane{
 -fx-background-color:#D3D3D3;
 }
-

@@ -1,6 +1,8 @@
 package Controllers;
 
+import Services.DeletedLogsService;
 import Services.LogOutService;
+import Services.WareHouseService;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,11 +10,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Models.*;
 import jdk.jshell.Snippet;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -26,17 +33,61 @@ public class SuFrame extends Application {
     @FXML private Label StatusLabel;
     @FXML private Button AlertBtn;
     @FXML private Button LogoutBtn;
+    @FXML private Button DeletedLogs;
+    @FXML private FlowPane flowPane;
+    @FXML private Button AddWarehouseBtn;
+
     private Stage mainStage;
 
 
     @FXML
-    private void initialize(){
+    private void initialize() throws SQLException, ClassNotFoundException {
 
         User user = Session.getCurrentUser();
         UsernameLabel.setText(user.getUsername());
         StatusLabel.setTextFill(Paint.valueOf("green"));
         StatusLabel.setText("ONLINE");
+
+        ArrayList<Warehouse> warehouses = WareHouseService.getWarehousesFromDb();
+
+        for (Warehouse warehouse:warehouses){
+            System.out.println(warehouse.getId());
+        }
+
+        Session.setWarehouses(warehouses);
+        SceneLoader.loadWarehouseCards(warehouses,flowPane);
+
         LogoutBtn.setOnAction(event -> LogOutService.Logout());
+        DeletedLogs.setOnAction(actionEvent -> {
+            DeletedLogsService.saveDeletedLogsToAFileAsync("C:\\Users\\fouad\\Desktop\\Workspace\\DeletedLogs.txt");
+        });
+
+        AddWarehouseBtn.setOnAction(actionEvent -> {
+            try {
+                // Load FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/AddWarehouse.fxml"));
+                AnchorPane page = loader.load();
+
+                // Create popup Stage
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Add Warehouse");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(AddWarehouseBtn.getScene().getWindow());
+
+                Scene scene = new Scene(page);
+                dialogStage.setScene(scene);
+
+                // Pass stage to controller
+                ViewsControllers.AddWarehouse controller = loader.getController();
+                controller.setDialogStage(dialogStage);
+
+                // Show popup
+                dialogStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
 
     }
 
