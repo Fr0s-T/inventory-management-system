@@ -3,6 +3,7 @@ package Controllers;
 import Services.DeletedLogsService;
 import Services.LogOutService;
 import Services.WareHouseService;
+import ViewsControllers.AddManager;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +37,7 @@ public class SuFrame extends Application {
     @FXML private Button DeletedLogs;
     @FXML private FlowPane flowPane;
     @FXML private Button AddWarehouseBtn;
+    @FXML private Button AddManagerBtn;
 
     private Stage mainStage;
 
@@ -79,6 +81,32 @@ public class SuFrame extends Application {
 
                 // Pass stage to controller
                 ViewsControllers.AddWarehouse controller = loader.getController();
+                controller.setDialogStage(dialogStage);
+
+                // Show popup
+                dialogStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        AddManagerBtn.setOnAction(actionEvent -> {
+            try {
+                // Load FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/AddManager.fxml"));
+                AnchorPane page = loader.load();
+
+                // Create popup Stage
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Add Manager");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(AddManagerBtn.getScene().getWindow());
+
+                Scene scene = new Scene(page);
+                dialogStage.setScene(scene);
+
+                // Pass stage to controller
+                ViewsControllers.AddManager controller = loader.getController();
                 controller.setDialogStage(dialogStage);
 
                 // Show popup

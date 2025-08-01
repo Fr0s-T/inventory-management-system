@@ -1,5 +1,6 @@
 package Services;
 
+import Models.Employee;
 import Models.Session;
 import Models.Warehouse;
 import Utilities.DataBaseConnection;
@@ -47,30 +48,38 @@ public class WareHouseService {
         return warehouses;
     }
 
-    public static void addWarehouse(String name, String location, int capacity) {
-        Warehouse newWarehouse = new Warehouse(name, Session.getCurrentUser().getUsername(), capacity, location);
+    public static void addWarehouse(String name, String location, int capacity, Employee selectedManager)
+            throws SQLException, ClassNotFoundException {
 
-        final String insertSql = "INSERT INTO Warehouse (Name, Location, Capacity, RegionalManager) VALUES (?, ?, ?, ?)";
+        String insertWarehouseSQL = "INSERT INTO Warehouse (Name, Location, Capacity, RegionalManager) VALUES (?, ?, ?, ?)";
+        String updateManagerSQL = "UPDATE Employee SET WarehouseID = ? WHERE ID = ?";
 
-        try (Connection connection = DataBaseConnection.getConnection();
-             PreparedStatement insertStmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement insertStmt = conn.prepareStatement(insertWarehouseSQL, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement updateStmt = conn.prepareStatement(updateManagerSQL)) {
+
+            // Insert warehouse with current user as RegionalManager
             insertStmt.setString(1, name);
             insertStmt.setString(2, location);
             insertStmt.setInt(3, capacity);
-            insertStmt.setInt(4, Session.getCurrentUser().getId());
+            insertStmt.setInt(4, Session.getCurrentUser().getId()); // regional manager is current user
+
             insertStmt.executeUpdate();
 
-            ResultSet generatedKeys = insertStmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                newWarehouse.setId(generatedKeys.getInt(1));
-            } else {
-                throw new SQLException("Creating warehouse failed, no ID obtained.");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+            ResultSet keys = insertStmt.getGeneratedKeys();
+            if (keys.next()) {
+                int newWarehouseId = keys.getInt(1);
 
+                // Update the selected manager to assign them this warehouse
+                updateStmt.setInt(1, newWarehouseId);
+                updateStmt.setInt(2, selectedManager.getId());
+                updateStmt.executeUpdate();
+
+            } else {
+                throw new SQLException("Creating warehouse failed: no ID obtained.");
+            }
+        }
     }
+
+
 }
