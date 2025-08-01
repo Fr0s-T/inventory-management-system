@@ -12,6 +12,9 @@ import java.sql.SQLException;
 
 public class User {
 
+    public void setId(int id) {
+    }
+
     public enum Role {
         REGIONAL_MANAGER(1),//warehouse id = null maneges many warehouses
         WAREHOUSE_MANAGER(2),
@@ -68,7 +71,7 @@ public class User {
         this(id, firstName, middleName, lastName, username, roleId, warehouseId, null, failedAttempts, lockoutUntil, IsLoggedIn);
     }
     // Getters for all fields
-
+    //public User(){}
     public int getId() {
         return id;
     }

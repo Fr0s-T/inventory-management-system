@@ -1,11 +1,12 @@
 package ViewsControllers;
 
-import Models.Employee;
+import Models.User;
 import Services.ManagerService;
 import Services.WareHouseService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 
 public class AddWarehouse {
     @FXML private TextField nameField;
-    @FXML private ComboBox<Employee> managerComboBox; // You might not need this, if you set manager from session.
+    @FXML private ComboBox<User> managerComboBox; // ✅ Changed to User
     @FXML private TextField capacityField;
     @FXML private TextField locationField;
     @FXML private Button SaveButton;
@@ -32,15 +33,17 @@ public class AddWarehouse {
             String name = nameField.getText();
             String location = locationField.getText();
             int capacity = Integer.parseInt(capacityField.getText());
-            Employee selectedManager= managerComboBox.getValue();
+            User selectedManager = managerComboBox.getValue(); // ✅ Now works
 
-            WareHouseService.addWarehouse(name, location, capacity, selectedManager);
-            dialogStage.close(); // Close after adding
+            if (selectedManager != null) {
+                WareHouseService.addWarehouse(name, location, capacity, selectedManager.getUsername());
+                dialogStage.close();
+            } else {
+                System.err.println("Please select a manager.");
+            }
         } catch (NumberFormatException e) {
-            // Handle invalid capacity input
             System.err.println("Capacity must be a number");
-            // Optionally show an alert dialog
-        }catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -52,24 +55,25 @@ public class AddWarehouse {
 
     @FXML
     private void initialize() {
-
         try {
-            ArrayList<Employee> managers = ManagerService.getWarehouseManagersFromDb();
+            ArrayList<User> managers = ManagerService.getWarehouseManagersFromDb();
             managerComboBox.getItems().clear();
-            managerComboBox.getItems().addAll(managers);
+            managerComboBox.getItems().addAll(managers); // ✅ Store objects, not strings
 
-            // Optional: How to display them nicely
-            managerComboBox.setCellFactory(lv -> new javafx.scene.control.ListCell<>() {
+            // Display full name in dropdown
+            managerComboBox.setCellFactory(lv -> new ListCell<>() {
                 @Override
-                protected void updateItem(Employee item, boolean empty) {
+                protected void updateItem(User item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty || item == null ? null : item.getFirstName() + " " + item.getLastName());
+                    setText(empty || item == null ? null : item.getFirstName() + " " +
+                            item.getLastName() + " " + item.getId());
                 }
             });
 
-            managerComboBox.setButtonCell(new javafx.scene.control.ListCell<>() {
+            // Display selected manager in button cell
+            managerComboBox.setButtonCell(new ListCell<>() {
                 @Override
-                protected void updateItem(Employee item, boolean empty) {
+                protected void updateItem(User item, boolean empty) {
                     super.updateItem(item, empty);
                     setText(empty || item == null ? null : item.getFirstName() + " " + item.getLastName());
                 }
@@ -79,27 +83,7 @@ public class AddWarehouse {
             e.printStackTrace();
         }
 
-        SaveButton.setOnAction(actionEvent -> {
-            try {
-                String name = nameField.getText().trim();
-                String location = locationField.getText().trim();
-                int capacity = Integer.parseInt(capacityField.getText().trim());
-                Employee selectedManager = managerComboBox.getValue();
-
-                if (selectedManager != null) {
-                    WareHouseService.addWarehouse(name, location, capacity, selectedManager);
-                    dialogStage.close();
-                } else {
-                    System.err.println("Please select a manager.");
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Capacity must be a number");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-
+        SaveButton.setOnAction(actionEvent -> handleAddWarehouse());
         CancelButton.setOnAction(actionEvent -> dialogStage.close());
     }
 }

@@ -4,6 +4,7 @@ import Models.Employee;
 import Models.Session;
 import Models.Warehouse;
 import Utilities.DataBaseConnection;
+import javafx.scene.control.Alert;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -48,38 +49,72 @@ public class WareHouseService {
         return warehouses;
     }
 
-    public static void addWarehouse(String name, String location, int capacity, Employee selectedManager)
+    public static void addWarehouse(String name, String location, int capacity, String selectedManager)
             throws SQLException, ClassNotFoundException {
+        Warehouse warehouse = new Warehouse(name,Session.getCurrentUser().getUsername(),capacity,location);
 
-        String insertWarehouseSQL = "INSERT INTO Warehouse (Name, Location, Capacity, RegionalManager) VALUES (?, ?, ?, ?)";
-        String updateManagerSQL = "UPDATE Employee SET WarehouseID = ? WHERE ID = ?";
+        String callSP = "{call AddWarehouseWithManagerValidation(?,?,?,?,?)}";
+        String updateManagerSQL = "UPDATE Employee SET WarehouseID = ? WHERE Username = ?";
 
         try (Connection conn = DataBaseConnection.getConnection();
-             PreparedStatement insertStmt = conn.prepareStatement(insertWarehouseSQL, Statement.RETURN_GENERATED_KEYS);
+             CallableStatement cs = conn.prepareCall(callSP);
              PreparedStatement updateStmt = conn.prepareStatement(updateManagerSQL)) {
+            System.out.println(Session.getCurrentUser().getId()+"  "+Session.getCurrentUser().getRole());
+            // Prepare the stored procedure call
+            cs.setString(1, name);
+            cs.setString(2, location);
+            cs.setInt(3, capacity);
+            cs.setInt(4, Session.getCurrentUser().getId()); // Must be a valid Employee ID (with RoleID = 1)
+            cs.registerOutParameter(5, java.sql.Types.INTEGER);
 
-            // Insert warehouse with current user as RegionalManager
-            insertStmt.setString(1, name);
-            insertStmt.setString(2, location);
-            insertStmt.setInt(3, capacity);
-            insertStmt.setInt(4, Session.getCurrentUser().getId()); // regional manager is current user
+            try {
+                cs.execute();
+                // **VERY IMPORTANT: flush any remaining results to ensure output param is available!**
+                while (cs.getMoreResults() || cs.getUpdateCount() != -1) { /* do nothing */ }
+            } catch (SQLException ex) {
+                // Handle validation error from RAISERROR in the SP (error code 50000 or custom)
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Warehouse Creation Failed");
+                alert.setHeaderText("Error");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+                return;
+            }
 
-            insertStmt.executeUpdate();
+            // Get the generated Warehouse ID
+            int newWarehouseId = cs.getInt(5);
+            System.out.println("✅ Generated Warehouse ID (SP output): " + newWarehouseId);
 
-            ResultSet keys = insertStmt.getGeneratedKeys();
-            if (keys.next()) {
-                int newWarehouseId = keys.getInt(1);
+            if (newWarehouseId == 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Warehouse Creation Failed");
+                alert.setHeaderText("No Warehouse Created");
+                alert.setContentText("Warehouse was not created. Check that the Regional Manager ID is a valid Employee with RoleID = 1.");
+                alert.showAndWait();
+                return;
+            }
 
-                // Update the selected manager to assign them this warehouse
-                updateStmt.setInt(1, newWarehouseId);
-                updateStmt.setInt(2, selectedManager.getId());
-                updateStmt.executeUpdate();
+            // Update the manager's warehouse assignment
+            updateStmt.setInt(1, newWarehouseId);
+            updateStmt.setString(2, selectedManager);
+            warehouse.setId(newWarehouseId);
+            Session.getWarehouses().add(warehouse);
+            int affected = updateStmt.executeUpdate();
 
+            if (affected == 0) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Manager Not Updated");
+                alert.setHeaderText("Warning");
+                alert.setContentText("Warehouse was created, but the manager could not be updated (username not found).");
+                alert.showAndWait();
             } else {
-                throw new SQLException("Creating warehouse failed: no ID obtained.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Manager Assigned");
+                alert.setHeaderText("Success");
+                alert.setContentText("Manager has been successfully assigned to the new warehouse.");
+                alert.showAndWait();
             }
         }
     }
-
 
 }

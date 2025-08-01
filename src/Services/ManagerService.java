@@ -2,6 +2,7 @@ package Services;
 
 import Models.Employee;
 import Models.Session;
+import Models.User;
 import Utilities.DataBaseConnection;
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,41 +11,44 @@ import java.util.ArrayList;
 public class ManagerService {
 
 
-    public static ArrayList<Employee> getWarehouseManagersFromDb() throws SQLException, ClassNotFoundException {
-        ArrayList<Employee> managers = new ArrayList<>();
+    public static ArrayList<User> getWarehouseManagersFromDb() throws SQLException, ClassNotFoundException {
+        ArrayList<User> managers = new ArrayList<>();
 
-        final String sql = "SELECT e.ID, e.FirstName, e.MiddleName, e.LastName, e.Username " +
+        final String sql = "SELECT e.ID, e.FirstName, e.MiddleName, e.LastName, e.Username, " +
+                "e.RoleID, e.WarehouseID, e.Picture, e.FailedAttempts, " +
+                "e.LockoutUntil, e.IsLoggedIn " +
                 "FROM Employee e " +
                 "INNER JOIN Hierarchy h ON e.ID = h.EmployeeID " +
                 "WHERE e.RoleID = 2 " +
                 "  AND e.WarehouseID IS NULL " +
-                "  AND h.ManagerID = ? ";
+                "  AND h.ManagerID = ?";
 
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, Session.getCurrentUser().getId());
-
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                Employee manager = new Employee();
-                manager.setId(rs.getInt("ID"));
-                manager.setFirstName(rs.getString("FirstName"));
-                manager.setMiddleName(rs.getString("MiddleName"));
-                manager.setLastName(rs.getString("LastName"));
-                manager.setUsername(rs.getString("Username"));
-                manager.setPassword(rs.getString("Password"));
-                manager.setOnDuty(rs.getBoolean("OnDuty"));
-                manager.setRoleID(rs.getInt("RoleID"));
-                manager.setWarehouseID(rs.getInt("WarehouseID"));
-
+                User manager = new User(
+                        rs.getInt("ID"),
+                        rs.getString("FirstName"),
+                        rs.getString("MiddleName"),
+                        rs.getString("LastName"),
+                        rs.getString("Username"),
+                        rs.getInt("RoleID"),
+                        rs.getInt("WarehouseID"),
+                        rs.getString("Picture"),
+                        rs.getInt("FailedAttempts"),
+                        rs.getTimestamp("LockoutUntil"),
+                        rs.getBoolean("IsLoggedIn")
+                );
                 managers.add(manager);
             }
         }
-
         return managers;
     }
+
 
     public static void addManager(String firstName, String middleName, String lastName,
                                   String username, String password)
