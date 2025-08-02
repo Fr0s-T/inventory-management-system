@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Models.*;
 
@@ -54,6 +55,7 @@ public class UserFrame extends Application {
             } else {
                 WarehouseLabel.setText(Session.getCurrentWarehouse().getName());
             }
+
             AddEmployeeBtn.setOnAction(actionEvent -> {
                 try {
                     // Load FXML
@@ -69,16 +71,14 @@ public class UserFrame extends Application {
                     Scene scene = new Scene(page);
                     dialogStage.setScene(scene);
 
-                    // Pass stage to controller
-                    ViewsControllers.AddManager controller = loader.getController();
+                    // Pass stage to controller (FIXED HERE)
+                    ViewsControllers.AddEmployeeController controller = loader.getController();
                     controller.setDialogStage(dialogStage);
 
                     // Show popup
                     dialogStage.showAndWait();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
             });
 

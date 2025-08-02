@@ -64,7 +64,7 @@
 
                 <Region prefHeight="408.0" prefWidth="258.0" />
 
-                <Button fx:id="LogoutBtn" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="Logout">
+                <Button fx:id="BackToDashboard" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="Logout">
                     <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0">
                             <image>

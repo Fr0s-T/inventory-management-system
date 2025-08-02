@@ -7,7 +7,12 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class ManagerService {
+/**
+ *
+ * Author: @Frost
+ *
+ */
+public class UserService {
 
 
     public static ArrayList<User> getWarehouseManagersFromDb() throws SQLException, ClassNotFoundException {
@@ -94,6 +99,53 @@ public class ManagerService {
             }
         }
     }
+
+    public static void addEmployee(String firstName, String middleName, String lastName,
+                                   String username, String password, Boolean isShiftManager)
+            throws SQLException, ClassNotFoundException {
+
+        int RoleID = 4;
+        if (isShiftManager) RoleID = 3;
+
+        String insertEmployeeSql = "INSERT INTO Employee " +
+                "(FirstName, MiddleName, LastName, Username, Password, OnDuty, RoleID, WarehouseID) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement insertStmt = connection.prepareStatement(insertEmployeeSql, Statement.RETURN_GENERATED_KEYS)) {
+
+            insertStmt.setString(1, firstName);
+            insertStmt.setString(2, middleName);
+            insertStmt.setString(3, lastName);
+            insertStmt.setString(4, username);
+            insertStmt.setString(5, password); // If hashing needed, hash before passing
+            insertStmt.setBoolean(6, true);
+            insertStmt.setInt(7, RoleID);
+            insertStmt.setInt(8, Session.getCurrentWarehouse().getId());
+
+            insertStmt.executeUpdate();
+
+            try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int newId = generatedKeys.getInt(1);
+
+                    final String insertHierarchySql = "INSERT INTO Hierarchy (EmployeeID, RoleID, ManagerID, StartDate) VALUES (?, ?, ?, ?)";
+
+                    try (PreparedStatement hierarchyStmt = connection.prepareStatement(insertHierarchySql)) {
+                        hierarchyStmt.setInt(1, newId);
+                        hierarchyStmt.setInt(2, RoleID); // RoleID for Warehouse Manager
+                        hierarchyStmt.setInt(3, Session.getCurrentUser().getId());
+                        hierarchyStmt.setDate(4, Date.valueOf(LocalDate.now())); // Current date
+
+                        hierarchyStmt.executeUpdate();
+                    }
+                } else {
+                    throw new SQLException("Creating employee failed, no ID obtained.");
+                }
+            }
+        }
+    }
+
 
 
 }
