@@ -13,6 +13,7 @@ public class Session {
     private static ArrayList<Warehouse> warehouses;
     private static ArrayList<Product> products;
     private static Warehouse currentWarehouse;
+    private static ArrayList<Warehouse> allWarehouses;
 
     public static Warehouse getCurrentWarehouse(){
         return currentWarehouse;
@@ -53,5 +54,13 @@ public class Session {
     public static void BackToDashboard(){
         currentWarehouse = null;
         products = null;
+    }
+
+    public static ArrayList<Warehouse> getAllWarehouses() {
+        return allWarehouses;
+    }
+
+    public static void setAllWarehouses(ArrayList<Warehouse> allWarehouses) {
+        Session.allWarehouses = allWarehouses;
     }
 }

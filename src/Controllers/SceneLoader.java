@@ -2,6 +2,7 @@ package Controllers;
 
 import Models.Product;
 import ViewsControllers.ProductsController;
+import ViewsControllers.ShipmentController;
 import ViewsControllers.WarehouseCards;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
@@ -92,6 +93,19 @@ public class SceneLoader {
         AnchorPane.setLeftAnchor(card, 0.0);
         AnchorPane.setRightAnchor(card, 0.0);
 
+    }
+    public static void loadShipment(AnchorPane dynamicPanel) throws IOException {
+        dynamicPanel.getChildren().clear();
+
+        FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource("/Views/Shipment.fxml"));
+        Node card = loader.load();
+        ShipmentController controller = loader.getController();
+        dynamicPanel.getChildren().add(card);
+
+        AnchorPane.setTopAnchor(card, 0.0);
+        AnchorPane.setBottomAnchor(card, 0.0);
+        AnchorPane.setLeftAnchor(card, 0.0);
+        AnchorPane.setRightAnchor(card, 0.0);
     }
 
 }

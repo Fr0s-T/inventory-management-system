@@ -1,5 +1,6 @@
 package ViewsControllers;
 
+import Models.Session;
 import Models.Warehouse;
 import Services.WareHouseService;
 import javafx.fxml.FXML;
@@ -28,34 +29,39 @@ public class ShipmentController {
 
         RadioButton selected = (RadioButton) ShipmentType.getSelectedToggle();
 
-        try {
-            List<Warehouse> warehouses = WareHouseService.getWarehousesFromDb();
-
-            // Extract warehouse names
-            List<String> warehouseNames = new ArrayList<>();
-            for (Warehouse warehouse : warehouses) {
-                warehouseNames.add(warehouse.getName());
-            }
-
-            // Add to both ComboBoxes
-            SourceComboBox.getItems().addAll(warehouseNames);
-            DestinationComboBox.getItems().addAll(warehouseNames);
-
-            // Optional: Set default selections
-            if (!warehouseNames.isEmpty()) {
-                SourceComboBox.getSelectionModel().selectFirst();
-                DestinationComboBox.getSelectionModel().selectFirst();
-            }
-
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            // Optional: show an alert to the user
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Database Error");
-            alert.setHeaderText("Failed to load warehouses");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        ArrayList<Warehouse> warehouses;
+        if (Session.getAllWarehouses() == null) {
+            WareHouseService.getAllWarehouses();
         }
+        warehouses = Session.getAllWarehouses();
+
+        // Extract warehouse names
+        List<String> warehouseNames = new ArrayList<>();
+        for (Warehouse warehouse : warehouses) {
+            warehouseNames.add(warehouse.getName());
+        }
+        // Add to both ComboBoxes
+        SourceComboBox.getItems().addAll(warehouseNames);
+        DestinationComboBox.getItems().addAll(warehouseNames);
+
+        // Optional: Set default selections
+        if (!warehouseNames.isEmpty()) {
+            SourceComboBox.getSelectionModel().selectFirst();
+            DestinationComboBox.getSelectionModel().selectFirst();
+        }
+
+        ShipmentType.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle == ExpeditionRadioButton) {
+                SourceComboBox.getSelectionModel().select(Session.getCurrentWarehouse().getName());
+                SourceComboBox.setDisable(true);
+                DestinationComboBox.setDisable(false);
+            } else if (newToggle == ReceptionRadioButton) {
+                DestinationComboBox.getSelectionModel().select(Session.getCurrentWarehouse().getName());
+                DestinationComboBox.setDisable(true);
+                SourceComboBox.setDisable(false);
+            }
+        });
+
 
         if(ReceptionRadioButton.isSelected()){
             DestinationComboBox.getSelectionModel();

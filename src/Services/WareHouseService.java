@@ -140,4 +140,28 @@ public class WareHouseService {
             }
         }
     }
+    public static void getAllWarehouses(){
+        final String sql = "Select * From Warehouse";
+        ArrayList<Warehouse> warehouses = new ArrayList<>();
+
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                Warehouse newWarehouse = new Warehouse();
+                newWarehouse.setId(rs.getInt("ID"));
+                newWarehouse.setName(rs.getString("Name"));
+                newWarehouse.setLocation(rs.getString("Location"));
+                newWarehouse.setCapacity(rs.getInt("Capacity"));
+                // Removed: newWarehouse.setManegeUSerName(rs.getString("Username"));
+                warehouses.add(newWarehouse);
+            }
+            Session.setAllWarehouses(warehouses);
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
