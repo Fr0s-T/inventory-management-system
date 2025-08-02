@@ -1,5 +1,6 @@
 package Services;
 
+
 import Models.Session;
 import Models.Warehouse;
 import Utilities.DataBaseConnection;
@@ -115,5 +116,28 @@ public class WareHouseService {
             }
         }
     }
+    public static void getCurrentWarehouseInfo() throws SQLException, ClassNotFoundException {
+        final String sql = "SELECT w.ID, w.Name, w.Location, w.Capacity, e.Username " +
+                "FROM Warehouse w " +
+                "LEFT JOIN Employee e ON e.WarehouseID = w.ID AND e.RoleID = 2 " +
+                "WHERE w.ID = ?";
 
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, Session.getCurrentUser().getWarehouseId());
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                Warehouse warehouse = new Warehouse(
+                        rs.getString("Name"),
+                        rs.getInt("ID"),
+                        rs.getString("Username"),  // now comes from Employee
+                        rs.getInt("Capacity"),
+                        rs.getString("Location")
+                );
+                Session.setCurrentWarehouse(warehouse);
+            }
+        }
+    }
 }
