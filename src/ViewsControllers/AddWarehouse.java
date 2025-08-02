@@ -1,7 +1,7 @@
 package ViewsControllers;
 
 import Models.User;
-import Services.ManagerService;
+import Services.UserService;
 import Services.WareHouseService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -56,7 +56,7 @@ public class AddWarehouse {
     @FXML
     private void initialize() {
         try {
-            ArrayList<User> managers = ManagerService.getWarehouseManagersFromDb();
+            ArrayList<User> managers = UserService.getWarehouseManagersFromDb();
             managerComboBox.getItems().clear();
             managerComboBox.getItems().addAll(managers); // ✅ Store objects, not strings
 
