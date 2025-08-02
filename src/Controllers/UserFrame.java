@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import Models.*;
 
@@ -26,6 +25,7 @@ public class UserFrame extends Application {
     @FXML private Label UsernameLabel;
     @FXML private Label WarehouseLabel;
     @FXML private Button AlertBtn;
+    @FXML private Button AddEmployeeBtn;
     @FXML private Button LogoutBtn;
     @FXML private Button ProductsBtn;
     @FXML private Button ShipmentsBtn;
@@ -54,6 +54,33 @@ public class UserFrame extends Application {
             } else {
                 WarehouseLabel.setText(Session.getCurrentWarehouse().getName());
             }
+            AddEmployeeBtn.setOnAction(actionEvent -> {
+                try {
+                    // Load FXML
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/AddEmployee.fxml"));
+                    AnchorPane page = loader.load();
+
+                    // Create popup Stage
+                    Stage dialogStage = new Stage();
+                    dialogStage.setTitle("Add Employee");
+                    dialogStage.initModality(Modality.WINDOW_MODAL);
+                    dialogStage.initOwner(AddEmployeeBtn.getScene().getWindow());
+
+                    Scene scene = new Scene(page);
+                    dialogStage.setScene(scene);
+
+                    // Pass stage to controller
+                    ViewsControllers.AddManager controller = loader.getController();
+                    controller.setDialogStage(dialogStage);
+
+                    // Show popup
+                    dialogStage.showAndWait();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             ProductsBtn.setOnAction(actionEvent -> {
                 try {
@@ -77,6 +104,8 @@ public class UserFrame extends Application {
         }
         //ProductsBtn.setOnAction(actionEvent -> );
     }
+
+
 
 
 
