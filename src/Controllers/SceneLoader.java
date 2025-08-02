@@ -1,15 +1,21 @@
 package Controllers;
 
+import Models.Product;
+import ViewsControllers.ProductsController;
 import ViewsControllers.WarehouseCards;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import Models.Warehouse;
 
+import javax.smartcardio.Card;
 import java.io.IOException;
 import java.util.ArrayList;
 //to do: add primaryStage.setMaximized(true);
@@ -73,5 +79,21 @@ public class SceneLoader {
             }
         }
     }
+    public static void loadProducts(AnchorPane dynamicPanel) throws IOException {
+        dynamicPanel.getChildren().clear();
+
+        FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource("/Views/Products.fxml"));
+        Node card = loader.load();
+        ProductsController controller = loader.getController();
+        dynamicPanel.getChildren().add(card);
+
+        AnchorPane.setTopAnchor(card, 0.0);
+        AnchorPane.setBottomAnchor(card, 0.0);
+        AnchorPane.setLeftAnchor(card, 0.0);
+        AnchorPane.setRightAnchor(card, 0.0);
+
+    }
+
+
 }
 

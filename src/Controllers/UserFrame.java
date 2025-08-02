@@ -9,9 +9,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import Models.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -29,6 +31,7 @@ public class UserFrame extends Application {
     @FXML private Button ShipmentsBtn;
     @FXML private Button ReportsBtn;
     @FXML private Button UsersBtn;
+    @FXML private AnchorPane dynamicPanel;
     private Stage mainStage;
 
 
@@ -51,6 +54,13 @@ public class UserFrame extends Application {
                 WarehouseLabel.setText(Session.getCurrentWarehouse().getName());
             }
 
+            ProductsBtn.setOnAction(actionEvent -> {
+                try {
+                    SceneLoader.loadProducts(dynamicPanel);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             // Handle logout
             LogoutBtn.setOnAction(event -> LogOutService.Logout());
 

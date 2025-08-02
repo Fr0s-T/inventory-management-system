@@ -7,6 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -109,5 +110,7 @@
          </children>
       </HBox>
       <Region layoutX="717.0" layoutY="230.0" prefHeight="15.0" prefWidth="1293.0" style="-fx-background-color: #708090;" AnchorPane.leftAnchor="257.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
+        <AnchorPane fx:id="dynamicPanel" layoutX="267.0" layoutY="116.0" prefHeight="678.0" prefWidth="1279.0" style="-fx-background-color: gray;" />
+
     </children>
 </AnchorPane>
