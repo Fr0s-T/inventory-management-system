@@ -50,14 +50,18 @@ public class SuFrame extends Application {
         StatusLabel.setTextFill(Paint.valueOf("green"));
         StatusLabel.setText("ONLINE");
 
-        ArrayList<Warehouse> warehouses = WareHouseService.getWarehousesFromDb();
+        ArrayList<Warehouse> warehouses = Session.getWarehouses();
+        if (warehouses == null) {
+            warehouses = WareHouseService.getWarehousesFromDb();  // Fetch from DB
+            Session.setWarehouses(warehouses);                    // Cache it
+        }
 
-        for (Warehouse warehouse:warehouses){
+// (Optional) Only print IDs if you just loaded from DB
+        for (Warehouse warehouse : warehouses) {
             System.out.println(warehouse.getId());
         }
 
-        Session.setWarehouses(warehouses);
-        SceneLoader.loadWarehouseCards(warehouses,flowPane);
+        SceneLoader.loadWarehouseCards(warehouses, flowPane);
 
         LogoutBtn.setOnAction(event -> LogOutService.Logout());
         DeletedLogs.setOnAction(actionEvent -> {

@@ -24,7 +24,8 @@ public class ProductsController {
 
     @FXML
     public void initialize() {
-        ProductsService.getProducts();
+
+        if (Session.getProducts() == null) ProductsService.getProducts();
         // Set up columns
         itemCodeColumn.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
         colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
