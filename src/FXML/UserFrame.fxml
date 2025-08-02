@@ -31,7 +31,7 @@
                     </font>
                 </Label>
 
-                <Label id="WarehouseLabel" fx:id="StatusLabel" alignment="CENTER" prefHeight="54.0" prefWidth="270.0" text="Warehouse">
+                <Label id="WarehouseLabel" fx:id="WarehouseLabel" alignment="CENTER" prefHeight="54.0" prefWidth="270.0" text="Warehouse">
                     <font>
                         <Font size="16.0" />
                     </font>

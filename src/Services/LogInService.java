@@ -90,8 +90,8 @@ public class LogInService {
                 case REGIONAL_MANAGER: // Regional Manager
                     SceneLoader.loadScene("/FXML/SuFrame.fxml", mainStage);
                     break;
-                case WAREHOUSE_MANAGER: // Warehouse Manager
-                    SceneLoader.loadScene("/FXML/WarehouseManagerDashboard.fxml", mainStage);
+                case WAREHOUSE_MANAGER, SHIFT_MANAGER, EMPLOYEE: // Warehouse Manager
+                    SceneLoader.loadScene("/FXML/UserFrame.fxml", mainStage);
                     break;
                 default:
                     showError("Unknown user role or scene not available.");
