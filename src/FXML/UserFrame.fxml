@@ -46,14 +46,14 @@
                         </ImageView>
                     </graphic>
                <VBox.margin>
-                  <Insets left="10.0" right="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" />
                </VBox.margin>
                 </Button>
             <Button id="AddEmpoyeeBtn" fx:id="AddEmployeeBtn" layoutX="10.0" layoutY="249.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="250.0" styleClass="logout-button" text="Add Employee">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0">
                      <image>
-                        <Image url="@/Icons/notification.png" />
+                        <Image url="@/Icons/employee.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -62,13 +62,13 @@
                </VBox.margin>
             </Button>
 
-                <Region prefHeight="408.0" prefWidth="258.0" />
+                <Region prefHeight="334.0" prefWidth="258.0" />
 
-                <Button fx:id="BackToDashboard" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="BackToDashboard">
+                <Button fx:id="BackToDashboard" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="Dashboard">
                     <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0">
                             <image>
-                                <Image url="@../Icons/logout_icon.png" />
+                                <Image url="@../Icons/back.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -76,7 +76,6 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" />
                </VBox.margin>
                 </Button>
-            <Region prefHeight="36.0" prefWidth="258.0" />
             <Button fx:id="LogoutBtn" layoutX="10.0" layoutY="731.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="248.0" styleClass="logout-button" text="Logout">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -85,10 +84,13 @@
                      </image>
                   </ImageView>
                </graphic>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
             </Button>
             </children>
         </VBox>
-      <HBox layoutX="960.0" layoutY="144.0" prefHeight="100.0" prefWidth="1293.0" AnchorPane.leftAnchor="257.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox layoutX="960.0" layoutY="144.0" prefHeight="100.0" prefWidth="1293.0" style="-fx-background-color: #708090;" AnchorPane.leftAnchor="257.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
              <Button id="ProductsBtn" fx:id="ProductsBtn" mnemonicParsing="false" prefHeight="130.0" prefWidth="430.0" text="Products" HBox.hgrow="ALWAYS">
                <styleClass>
@@ -138,7 +140,7 @@
          </children>
       </HBox>
       <Region layoutX="717.0" layoutY="230.0" prefHeight="15.0" prefWidth="1293.0" style="-fx-background-color: #708090;" AnchorPane.leftAnchor="257.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
-        <AnchorPane fx:id="dynamicPanel" layoutX="267.0" layoutY="116.0" prefHeight="678.0" prefWidth="1279.0" style="-fx-background-color: gray;" />
+        <AnchorPane fx:id="dynamicPanel" layoutX="262.0" layoutY="118.0" prefHeight="678.0" prefWidth="1279.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="257.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="115.0" />
 
     </children>
 </AnchorPane>
