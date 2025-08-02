@@ -61,7 +61,30 @@ public class SuFrame extends Application {
 
         LogoutBtn.setOnAction(event -> LogOutService.Logout());
         DeletedLogs.setOnAction(actionEvent -> {
-            DeletedLogsService.saveDeletedLogsToAFileAsync("C:\\Users\\fouad\\Desktop\\Workspace\\DeletedLogs.txt");
+            try {
+                // Load FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeletedLogs.fxml"));
+                AnchorPane page = loader.load();
+
+                // Create popup Stage
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Save deleted logs");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(DeletedLogs.getScene().getWindow());
+
+                Scene scene = new Scene(page);
+                dialogStage.setScene(scene);
+
+                // Pass stage to controller
+                ViewsControllers.DeletedLogs controller = loader.getController();
+                controller.setDialogStage(dialogStage);
+
+                // Show popup
+                dialogStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         });
 
         AddWarehouseBtn.setOnAction(actionEvent -> {
