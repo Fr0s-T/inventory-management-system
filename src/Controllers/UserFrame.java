@@ -31,6 +31,7 @@ public class UserFrame extends Application {
     @FXML private Button ShipmentsBtn;
     @FXML private Button ReportsBtn;
     @FXML private Button UsersBtn;
+    @FXML private Button BackToDashboard;
     @FXML private AnchorPane dynamicPanel;
     private Stage mainStage;
 
@@ -61,6 +62,7 @@ public class UserFrame extends Application {
                     throw new RuntimeException(e);
                 }
             });
+            BackToDashboard.setOnAction(actionEvent -> LogOutService.BackToDashboard());
             // Handle logout
             LogoutBtn.setOnAction(event -> LogOutService.Logout());
 

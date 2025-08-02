@@ -50,4 +50,9 @@ public class Session {
         warehouses = null;
         products = null;
     }
+
+    public static void BackToDashboard(){
+        currentWarehouse = null;
+        products = null;
+    }
 }
