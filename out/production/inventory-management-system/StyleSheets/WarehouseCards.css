@@ -1,0 +1,60 @@
+.warehouse-card {
+    -fx-background-color: white;
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 10px 20px;
+    -fx-background-insets: 0;
+    -fx-snap-to-pixel: true;
+
+}
+
+.warehouse-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 58, 153, 0.35), 24, 0.2, 0, 6);
+}
+
+
+/ === Labels === /
+.label-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003680;
+    -fx-underline: true;
+}
+
+#WarehouseNameLabel {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003680;
+}
+
+.label-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #4A90E2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 58, 153, 0.2), 5, 0.3, 0, 2);
+}
+
+
+/ === Image View === /
+.image-view {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+
+/ === Pane Border & Shadow === /
+.pane-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #004AAB;
+    -fx-border-width: 3;
+    -fx-border-radius: 40;
+    -fx-background-radius: 40;
+    -fx-effect: dropshadow(gaussian, rgba(0, 58, 153, 0.15), 12, 0.2, 0, 4);
+}
+
+
+/ === Optional Root Background (if needed) === */
+.root {
+    -fx-background-color: #F5F9FF;
+}

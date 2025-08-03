@@ -46,6 +46,7 @@ public class User {
     private final String middleName;
     private final String lastName;
     private final String username;
+    private final Boolean onDuty;
     private final Role role;
     private final int warehouseId;
     private final String picture;
@@ -54,12 +55,13 @@ public class User {
     private final Timestamp lockoutUntil;
     private final boolean IsLoggedIn;
 
-    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId, String picture,int failedAttempts,Timestamp lockoutUntil,boolean IsLoggedIn) {
+    public User(int id, String firstName, String middleName, String lastName, String username, Boolean onDuty, int roleId, int warehouseId, String picture,int failedAttempts,Timestamp lockoutUntil,boolean IsLoggedIn) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.username = username;
+        this.onDuty=onDuty;
         this.role = Role.fromId(roleId);
         this.warehouseId = warehouseId;
         this.picture = picture;
@@ -67,8 +69,8 @@ public class User {
         this.lockoutUntil = lockoutUntil;
         this.IsLoggedIn= IsLoggedIn;
     }
-    public User(int id, String firstName, String middleName, String lastName, String username, int roleId, int warehouseId,int failedAttempts, Timestamp lockoutUntil,boolean IsLoggedIn) {
-        this(id, firstName, middleName, lastName, username, roleId, warehouseId, null, failedAttempts, lockoutUntil, IsLoggedIn);
+    public User(int id, String firstName, String middleName, String lastName, String username, Boolean onDuty, int roleId, int warehouseId,int failedAttempts, Timestamp lockoutUntil,boolean IsLoggedIn) {
+        this(id, firstName, middleName, lastName, username, onDuty, roleId, warehouseId, null, failedAttempts, lockoutUntil, IsLoggedIn);
     }
     // Getters for all fields
     //public User(){}
@@ -91,6 +93,8 @@ public class User {
     public String getUsername() {
         return username;
     }
+
+    public Boolean getOnDuty(){return onDuty;}
 
     public Role getRole() {
         return role;
@@ -121,6 +125,7 @@ public class User {
         this.middleName = rs.getString("MiddleName");
         this.lastName = rs.getString("LastName");
         this.username = rs.getString("Username");
+        this.onDuty=rs.getBoolean("OnDuty");
         this.role = Role.fromId(rs.getInt("RoleID"));
         this.warehouseId = rs.getInt("WarehouseID");
         this.picture = rs.getString("Picture");

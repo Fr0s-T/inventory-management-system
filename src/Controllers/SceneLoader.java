@@ -105,7 +105,7 @@ public class SceneLoader {
         AnchorPane.setLeftAnchor(card, 0.0);
         AnchorPane.setRightAnchor(card, 0.0);
     }
-    public static void loadEditeEmployee(AnchorPane dynamicPanel) throws IOException {
+    public static void loadEditEmployee(AnchorPane dynamicPanel) throws IOException {
         dynamicPanel.getChildren().clear();
 
         FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource("/Views/Users.fxml"));

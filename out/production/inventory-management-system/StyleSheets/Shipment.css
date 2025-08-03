@@ -1,0 +1,64 @@
+/* Root background: optional if you want to change entire scene */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f5faff;
+}
+
+/* ===== Buttons ===== */
+.button {
+    -fx-background-color: #1976D2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.button:hover {
+    -fx-background-color: #1565C0;
+}
+
+.button:pressed {
+    -fx-background-color: #0D47A1;
+}
+
+/* ===== Labels ===== */
+.label {
+    -fx-text-fill: #0D47A1;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* ===== RadioButtons ===== */
+.radio-button {
+    -fx-text-fill: #0D47A1;
+    -fx-font-size: 14px;
+}
+
+.radio-button:selected {
+    -fx-mark-color: #1976D2;
+}
+
+/* ===== ComboBoxes ===== */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #90CAF9;
+    -fx-border-radius: 5;
+    -fx-font-size: 13px;
+}
+
+/* ===== ListView ===== */
+.list-view {
+    -fx-background-color: white;
+    -fx-border-color: #90CAF9;
+    -fx-font-size: 13px;
+}
+
+/* ===== TextFields ===== */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #90CAF9;
+    -fx-border-radius: 5;
+    -fx-font-size: 13px;
+    -fx-text-fill: #0D47A1;
+}

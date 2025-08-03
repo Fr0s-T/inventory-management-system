@@ -1,0 +1,60 @@
+/* Applies to root */
+
+.root {
+	-fx-font-size: 24px;
+}
+
+/* Error message */
+.error-text {
+	-fx-text-fill: red;
+}
+
+/* TextFields and PasswordFields */
+.text-field {
+	-fx-font-size: 24px;
+	-fx-font-style: italic;
+	-fx-background-color: transparent;
+	-fx-border-width: 0;
+}
+
+/* Container style */
+.input-container {
+	-fx-background-color: white;
+	-fx-background-radius: 50px;
+	-fx-border-radius: 50px;
+	-fx-padding: 10px;
+	-fx-border-color: black;
+	-fx-border-width: 1px;
+	-fx-background-insets: 0;
+	-fx-snap-to-pixel: true;
+}
+
+/* Rounded button style */
+.rounded-button {
+	-fx-background-color: white;
+	-fx-background-radius: 50px;
+	-fx-border-radius: 50px;
+	-fx-border-color: transparent;
+	-fx-border-width: 0;
+	-fx-padding: 10px 20px;
+	-fx-background-insets: 0;
+	-fx-snap-to-pixel: true;
+}
+
+/* Splash background */
+.splash-background {
+	-fx-background-color: #D3D3D4;
+
+}
+.rounded-button:hover {
+    -fx-background-color: #0073e6; /* stronger blue */
+    -fx-cursor: hand;
+}
+
+.rounded-button:pressed {
+    -fx-background-color: #004aab; /* royal blue */
+}
+.buttonHbox {
+    -fx-spacing: 50px; /* adjust value as needed */
+    -fx-alignment: center; /* optional: centers buttons horizontally*/
+    }

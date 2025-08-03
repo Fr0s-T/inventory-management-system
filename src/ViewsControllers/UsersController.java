@@ -1,4 +1,138 @@
 package ViewsControllers;
 
+import Models.Session;
+import Models.User;
+import Services.EditUserServices;
+import Services.UserService;
+import Utilities.HashingUtility;
+import javafx.beans.value.ChangeListener;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+
+import java.nio.Buffer;
+
 public class UsersController {
+
+    @FXML private TextField IDtxt;
+    @FXML private TextField Fnametxt;
+    @FXML private TextField Mnametxt;
+    @FXML private TextField Lnametxt;
+    @FXML private TextField Usernametxt;
+    @FXML private PasswordField Passwordtxt;
+    @FXML private CheckBox ShiftManagerCheckBox;
+    @FXML private CheckBox StatusCheckBox;
+    @FXML private Button FetchBtn;
+    @FXML private Button SaveBtn;
+    @FXML private Button ClearBtn;
+
+    @FXML public void initialize(){
+        SaveBtn.setDisable(true);
+
+        FetchBtn.setOnAction(actionEvent -> {
+            try {
+                int userId = Integer.parseInt(IDtxt.getText());
+                User user = EditUserServices.fetchUser(userId);
+
+                if (user.getRole() == User.Role.REGIONAL_MANAGER || user.getRole() == User.Role.WAREHOUSE_MANAGER) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Access Denied");
+                    alert.setHeaderText("Permission Denied");
+                    alert.setContentText("You don't have the permission to fetch this user's data.");
+                    alert.showAndWait();
+                    return; // Stop execution here
+                }
+                if (user.getWarehouseId() != Session.getCurrentWarehouse().getId()) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Access Denied");
+                    alert.setHeaderText("Permission Denied");
+                    alert.setContentText("This user does not work in your warehouse.");
+                    alert.showAndWait();
+                    return;
+                }
+
+                Fnametxt.setText(user.getFirstName());
+                Mnametxt.setText(user.getMiddleName());
+                Lnametxt.setText(user.getLastName());
+
+                ShiftManagerCheckBox.setSelected(user.getRole() == User.Role.SHIFT_MANAGER);
+                StatusCheckBox.setSelected(Boolean.TRUE.equals(user.getOnDuty()));
+                SaveBtn.setDisable(false);
+
+            } catch (NumberFormatException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid Input");
+                alert.setHeaderText("ID Format Error");
+                alert.setContentText("Please enter a valid numeric user ID.");
+                alert.showAndWait();
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Unexpected Error");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            }
+        });
+
+
+        ClearBtn.setOnAction(actionEvent ->{
+            IDtxt.clear();
+            Fnametxt.clear();
+            Mnametxt.clear();
+            Lnametxt.clear();
+            Passwordtxt.clear();
+            ShiftManagerCheckBox.setSelected(false);
+            StatusCheckBox.setSelected(false);
+        } );
+        SaveBtn.setOnAction(actionEvent ->{
+            try {
+                int id = Integer.parseInt(IDtxt.getText());
+                String fname = Fnametxt.getText();
+                String mname = Mnametxt.getText();
+                String lname = Lnametxt.getText();
+                String rawPassword = Passwordtxt.getText();
+                int roleId = ShiftManagerCheckBox.isSelected() ? 3 : 4;
+                boolean onDuty = StatusCheckBox.isSelected();
+                String hashedPassword = (rawPassword != null && !rawPassword.trim().isEmpty())
+                        ? HashingUtility.md5Hash(rawPassword)
+                        : "";
+
+                EditUserServices.updateEmployee(id, fname, mname, lname, roleId, onDuty, hashedPassword);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText("User updated");
+                alert.setContentText("Employee data updated successfully.");
+                alert.showAndWait();
+                SaveBtn.setDisable(true);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Failed to update employee");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            }
+
+        } );
+
+
+        ChangeListener<String> updateListener = (
+                obs, oldVal, newVal) -> updateUsernameField();
+        Fnametxt.textProperty().addListener(updateListener);
+        Lnametxt.textProperty().addListener(updateListener);
+    }
+
+    private void updateUsernameField() {
+        String fname = Fnametxt.getText().trim();
+        String lname = Lnametxt.getText().trim();
+
+        if (!fname.isEmpty() && !lname.isEmpty()) {
+            String username = fname.charAt(0) + "." + lname;
+            Usernametxt.setText(username.toLowerCase());
+        } else {
+            Usernametxt.clear();
+        }
+    }
+
 }

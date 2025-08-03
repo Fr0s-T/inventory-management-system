@@ -100,7 +100,7 @@ public class UserFrame extends Application {
             BackToDashboard.setOnAction(actionEvent -> LogOutService.BackToDashboard());
             UsersBtn.setOnAction(actionEvent -> {
                 try {
-                    SceneLoader.loadEditeEmployee(dynamicPanel);
+                    SceneLoader.loadEditEmployee(dynamicPanel);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
