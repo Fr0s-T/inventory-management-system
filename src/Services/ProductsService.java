@@ -11,17 +11,18 @@ import java.util.Date;
 public class ProductsService {
 
     public static void getProducts(){
-        final String sql = "SELECT pt.ItemCode, " +
-                "pt.Color, " +
-                "p.UnitPrice, " +
-                "pt.Quantity, " +
-                "pt.Size, " +
-                "pt.Section, " +
-                "pt.Picture, " +
-                "pt.ShipmentDetailsID " +
-                "FROM Product AS p " +
-                "JOIN ProductType AS pt ON p.ItemCode = pt.ItemCode " +
-                "WHERE p.WarehouseID = ?";
+        final String sql =
+                "SELECT " +
+                        "  p.ItemCode, " +
+                        "  p.Color, " +
+                        "  q.Quantity, " +
+                        "  p.Size, " +
+                        "  p.Section, " +
+                        "  p.Picture " +
+                        "FROM Quantity AS q " +
+                        "INNER JOIN ProductType AS p ON q.ItemCode = p.ItemCode " +
+                        "INNER JOIN Warehouse AS w ON q.WarehouseID = w.ID " +
+                        "WHERE w.ID = ?";
 
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)){
@@ -38,31 +39,30 @@ public class ProductsService {
                         rs.getInt("Quantity"),
                         rs.getString("Size"),
                         rs.getString("Section"),
-                        rs.getString("Picture"),
-                        rs.getInt("ShipmentDetailsID")
+                        rs.getString("Picture")
                 );
                 products.add(product);
             }
             Session.setProducts(products);
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
     public static ArrayList<Product> getProductsByWarehouseId(int warehouseId) {
-        final String sql = "SELECT pt.ItemCode, " +
-                "pt.Color, " +
-                "p.UnitPrice, " +
-                "pt.Quantity, " +
-                "pt.Size, " +
-                "pt.Section, " +
-                "pt.Picture, " +
-                "pt.ShipmentDetailsID " +
-                "FROM Product AS p " +
-                "JOIN ProductType AS pt ON p.ItemCode = pt.ItemCode " +
-                "WHERE p.WarehouseID = ?";
+        final String sql =
+                "SELECT " +
+                        "  p.ItemCode, " +
+                        "  p.Color, " +
+                        "  q.Quantity, " +
+                        "  p.Size, " +
+                        "  p.Section, " +
+                        "  p.Picture " +
+                        "FROM Quantity AS q " +
+                        "INNER JOIN ProductType AS p ON q.ItemCode = p.ItemCode " +
+                        "INNER JOIN Warehouse AS w ON q.WarehouseID = w.ID " +
+                        "WHERE w.ID = ?";
+
 
 
         ArrayList<Product> products = new ArrayList<>();
@@ -81,8 +81,7 @@ public class ProductsService {
                         rs.getInt("Quantity"),
                         rs.getString("Size"),
                         rs.getString("Section"),
-                        rs.getString("Picture"),
-                        rs.getInt("ShipmentDetailsID")
+                        rs.getString("Picture")
                 );
                 products.add(product);
             }

@@ -23,6 +23,15 @@ public class Product {
         this.shipmentDetailsID = shipmentDetailsID;
     }
 
+    public Product(String itemCode, String color, int quantity, String size, String section, String picture) {
+        this.itemCode = itemCode;
+        this.color = color;
+        this.quantity = quantity;
+        this.size = size;
+        this.section = section;
+        this.picture = picture;
+    }
+
     // ✅ Getters and Setters
     public String getItemCode() {
         return itemCode;

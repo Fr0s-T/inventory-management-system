@@ -20,7 +20,6 @@ public class ProductsController {
     @FXML private TableColumn<Product, Integer> quantityColumn;
     @FXML private TableColumn<Product, String> sizeColumn;
     @FXML private TableColumn<Product, String> sectionColumn;
-    @FXML private TableColumn<Product, Integer> shipmentDetailsIDColumn;
 
     @FXML
     public void initialize() {
@@ -33,7 +32,6 @@ public class ProductsController {
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         sectionColumn.setCellValueFactory(new PropertyValueFactory<>("section"));
         pictureColumn.setCellValueFactory(new PropertyValueFactory<>("picture"));
-        shipmentDetailsIDColumn.setCellValueFactory(new PropertyValueFactory<>("shipmentDetailsID"));
         ProductsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         // Fill the table
         ProductsTable.setItems(FXCollections.observableArrayList(Session.getProducts()));
