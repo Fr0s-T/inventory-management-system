@@ -35,5 +35,6 @@ public class ProductsController {
         ProductsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         // Fill the table
         ProductsTable.setItems(FXCollections.observableArrayList(Session.getProducts()));
+
     }
 }
