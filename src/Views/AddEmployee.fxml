@@ -11,7 +11,10 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="417.0" prefWidth="600.0" stylesheets="@../StyleSheets/AddWarehouse.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.AddEmployeeController">
+<AnchorPane prefHeight="417.0"
+            prefWidth="600.0" stylesheets="@../StyleSheets/AddWarehouse.css"
+            xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ViewsControllers.AddEmployeeController">
     <children>
         <Pane layoutX="69.0" layoutY="28.0" prefHeight="450.0" prefWidth="600.0" styleClass="form-background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>

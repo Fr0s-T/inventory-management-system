@@ -13,7 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="685.0" prefWidth="1193.0" styleClass="" stylesheets="@../StyleSheets/Users.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Views.Users">
+<AnchorPane prefHeight="685.0" prefWidth="1193.0" styleClass=""
+            stylesheets="@../StyleSheets/Users.css"
+            xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.UsersController">
    <children>
       <Pane layoutX="133.0" layoutY="29.0" prefHeight="140.0" prefWidth="1193.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

@@ -47,6 +47,7 @@ public class UserFrame extends Application {
             if (Session.getWarehouses() == null) {
                 WareHouseService.getCurrentWarehouseInfo();
                 Warehouse currentWarehouse = Session.getCurrentWarehouse();
+
                 if (currentWarehouse != null) {
                     WarehouseLabel.setText(currentWarehouse.getName());
                 } else {
@@ -97,6 +98,13 @@ public class UserFrame extends Application {
                 }
             });
             BackToDashboard.setOnAction(actionEvent -> LogOutService.BackToDashboard());
+            UsersBtn.setOnAction(actionEvent -> {
+                try {
+                    SceneLoader.loadEditeEmployee(dynamicPanel);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             // Handle logout
             LogoutBtn.setOnAction(event -> LogOutService.Logout());
 
