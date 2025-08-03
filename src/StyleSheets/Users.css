@@ -1,0 +1,24 @@
+.toggle-switch {
+    -fx-background-color: #ccc;
+    -fx-background-radius: 20;
+    -fx-padding: 2;
+    -fx-min-width: 50;
+    -fx-min-height: 25;
+}
+
+.toggle-switch:selected {
+    -fx-background-color: #4caf50;
+}
+
+.toggle-switch .box {
+    -fx-background-color: white;
+    -fx-background-radius: 50%;
+    -fx-min-width: 20;
+    -fx-min-height: 20;
+    -fx-translate-x: 0;
+    -fx-transition: translate 0.2s ease;
+}
+
+.toggle-switch:selected .box {
+    -fx-translate-x: 25;
+}
