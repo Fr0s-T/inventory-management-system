@@ -4,6 +4,7 @@ public class Product {
     private String itemCode;
     private String color;
     private int quantity;
+    private float unitPrice;
     private String size;
     private String section;
     private String picture;
@@ -23,13 +24,14 @@ public class Product {
         this.shipmentDetailsID = shipmentDetailsID;
     }
 
-    public Product(String itemCode, String color, int quantity, String size, String section, String picture) {
+    public Product(String itemCode, String color, int quantity, String size, String section, String picture, float unitPrice) {
         this.itemCode = itemCode;
         this.color = color;
         this.quantity = quantity;
         this.size = size;
         this.section = section;
         this.picture = picture;
+        this.unitPrice = unitPrice;
     }
 
     // ✅ Getters and Setters
@@ -83,6 +85,15 @@ public class Product {
 
     public int getShipmentDetailsID() {
         return shipmentDetailsID;
+    }
+
+
+    public float getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(float unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     public void setShipmentDetailsID(int shipmentDetailsID) {

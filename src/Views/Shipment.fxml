@@ -35,6 +35,8 @@
             <TextField id="TotalQuantityTxt" fx:id="TotalQuantityTxt" editable="false" layoutX="373.0" layoutY="296.0" prefHeight="50.0" prefWidth="150.0" />
             <Label alignment="CENTER" layoutX="253.0" layoutY="296.0" prefHeight="50.0" prefWidth="120.0" text="Total Qty:" />
             <Label alignment="CENTER" layoutX="43.0" layoutY="296.0" prefHeight="50.0" prefWidth="150.0" text="Product List" />
+            <Button fx:id="AddBtn" layoutX="1046.0" layoutY="184.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="90.0" text="Add" />
+            <ComboBox fx:id="ExpadistionComboBox" layoutX="825.0" layoutY="155.0" prefWidth="150.0" />
          </children>
       </Pane>
    </children>

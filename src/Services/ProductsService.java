@@ -6,7 +6,6 @@ import Utilities.DataBaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ProductsService {
 
@@ -18,7 +17,8 @@ public class ProductsService {
                         "  q.Quantity, " +
                         "  p.Size, " +
                         "  p.Section, " +
-                        "  p.Picture " +
+                        "  p.Picture, " +
+                        "  p.UnitPrice " +         // ✅ Added
                         "FROM Quantity AS q " +
                         "INNER JOIN ProductType AS p ON q.ItemCode = p.ItemCode " +
                         "INNER JOIN Warehouse AS w ON q.WarehouseID = w.ID " +
@@ -39,7 +39,8 @@ public class ProductsService {
                         rs.getInt("Quantity"),
                         rs.getString("Size"),
                         rs.getString("Section"),
-                        rs.getString("Picture")
+                        rs.getString("Picture"),
+                        rs.getFloat("UnitPrice")
                 );
                 products.add(product);
             }
@@ -49,6 +50,7 @@ public class ProductsService {
             throw new RuntimeException(e);
         }
     }
+
     public static ArrayList<Product> getProductsByWarehouseId(int warehouseId) {
         final String sql =
                 "SELECT " +
@@ -57,13 +59,12 @@ public class ProductsService {
                         "  q.Quantity, " +
                         "  p.Size, " +
                         "  p.Section, " +
-                        "  p.Picture " +
+                        "  p.Picture, " +          // ✅ Added comma
+                        "  p.UnitPrice " +         // ✅ Added
                         "FROM Quantity AS q " +
                         "INNER JOIN ProductType AS p ON q.ItemCode = p.ItemCode " +
                         "INNER JOIN Warehouse AS w ON q.WarehouseID = w.ID " +
                         "WHERE w.ID = ?";
-
-
 
         ArrayList<Product> products = new ArrayList<>();
 
@@ -81,16 +82,16 @@ public class ProductsService {
                         rs.getInt("Quantity"),
                         rs.getString("Size"),
                         rs.getString("Section"),
-                        rs.getString("Picture")
+                        rs.getString("Picture"),
+                        rs.getFloat("UnitPrice")
                 );
                 products.add(product);
             }
 
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace(); // For testing, prints error in console
+            e.printStackTrace();
         }
 
         return products;
     }
-
 }
