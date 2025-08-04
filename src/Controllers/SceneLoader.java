@@ -118,6 +118,19 @@ public class SceneLoader {
         AnchorPane.setLeftAnchor(card, 0.0);
         AnchorPane.setRightAnchor(card, 0.0);
     }
+    public static void loadReports(AnchorPane dynamicPanel) throws IOException {
+        dynamicPanel.getChildren().clear();
+
+        FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource("/Views/Reports.fxml"));
+        Node card = loader.load();
+        ReportsController controller = loader.getController();
+        dynamicPanel.getChildren().add(card);
+
+        AnchorPane.setTopAnchor(card, 0.0);
+        AnchorPane.setBottomAnchor(card, 0.0);
+        AnchorPane.setLeftAnchor(card, 0.0);
+        AnchorPane.setRightAnchor(card, 0.0);
+    }
 
 
 }

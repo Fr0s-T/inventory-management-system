@@ -105,6 +105,13 @@ public class UserFrame extends Application {
                     throw new RuntimeException(e);
                 }
             });
+            ReportsBtn.setOnAction(actionEvent -> {
+                try {
+                    SceneLoader.loadReports(dynamicPanel);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             // Handle logout
             LogoutBtn.setOnAction(event -> LogOutService.Logout());
 
