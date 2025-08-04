@@ -4,6 +4,8 @@ import Models.Product;
 import Models.Session;
 import Models.Warehouse;
 import Utilities.DataBaseConnection;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,20 +23,46 @@ public class ShipmentServices {
     public static void expedition(Warehouse selectedSourceWarehouse, Warehouse selectedDestinationWarehouse,
                                   ArrayList<Product> items, ArrayList<Integer> quantity, int totQuantity, float totalPrice) {
 
-        try (Connection connection = DataBaseConnection.getConnection()) {
+        // ✅ Validate inputs before proceeding
+        if (items == null || items.isEmpty()) {
+            showAlert("Error", "No products selected for shipment.", Alert.AlertType.ERROR);
+            return;
+        }
+        if (quantity == null || quantity.isEmpty()) {
+            showAlert("Error", "Quantity list is empty.", Alert.AlertType.ERROR);
+            return;
+        }
+        if (totQuantity <= 0) {
+            showAlert("Error", "Total quantity cannot be zero.", Alert.AlertType.ERROR);
+            return;
+        }
 
-            // 1️⃣ Create Shipment
+        Connection connection = null;
+        try {
+            connection = DataBaseConnection.getConnection();
+            connection.setAutoCommit(false);
+
             int shipmentId = createShipment(connection, selectedSourceWarehouse, selectedDestinationWarehouse, totQuantity);
-
-            // 2️⃣ Create ShipmentDetails
             int shipmentDetailsId = createShipmentDetails(connection, shipmentId, totalPrice, totQuantity);
 
-            System.out.println("Shipment created: " + shipmentId + ", Details ID: " + shipmentDetailsId);
+            addShipmentItems(connection, shipmentDetailsId, items, quantity);
+            reduceQuantityFromQuantityTable(connection, selectedSourceWarehouse, items, quantity);
 
-             addShipmentItems(connection, shipmentDetailsId, items, quantity);
+            connection.commit();
+            ProductsService.getProducts(); // Refresh products after commit
+
+            // ✅ Success alert
+            showAlert("Success", "Shipment created successfully (ID: " + shipmentId + ").", Alert.AlertType.INFORMATION);
 
         } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException("Error creating shipment: " + e.getMessage(), e);
+            if (connection != null) {
+                try { connection.rollback(); } catch (SQLException ignored) {}
+            }
+            showAlert("Error", "Failed to create shipment: " + e.getMessage(), Alert.AlertType.ERROR);
+        } finally {
+            if (connection != null) {
+                try { connection.close(); } catch (SQLException ignored) {}
+            }
         }
     }
 
@@ -84,5 +112,34 @@ public class ShipmentServices {
             }
             ps.executeBatch();
         }
+    }
+
+    private static void reduceQuantityFromQuantityTable(Connection connection, Warehouse selectedSourceWarehouse,
+                                                        ArrayList<Product> items,
+                                                        ArrayList<Integer> quantity) throws SQLException {
+        final String sql = "UPDATE Quantity " +
+                "SET Quantity = Quantity - ? " +
+                "WHERE ItemCode = ? AND WarehouseID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (int i = 0; i < items.size(); i++) {
+                ps.setInt(1, quantity.get(i));
+                ps.setString(2, items.get(i).getItemCode());
+                ps.setInt(3, selectedSourceWarehouse.getId());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+    }
+
+    // ✅ Reusable alert method
+    private static void showAlert(String title, String message, Alert.AlertType type) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(type);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 }

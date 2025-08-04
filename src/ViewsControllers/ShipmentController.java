@@ -21,6 +21,7 @@ public class ShipmentController {
     @FXML private TextField ItemCodeTxt;
     @FXML private TextField QuantityTxt;
     @FXML private TextField TotalQuantityTxt;
+    @FXML private TextField TotalPriceTxtField;
     @FXML private ListView<String> ProductsListView;
     @FXML private Button SaveButton;
     @FXML private Button CancelButton;
@@ -30,7 +31,7 @@ public class ShipmentController {
     private ArrayList<Product> items = new ArrayList<>();
     private ArrayList<Integer> quantity = new ArrayList<>();
     private int totalQuantity = 0;
-    private float totalPrice = 0; // ✅ Added for price calculation
+    private float totalPrice = 0;
 
     @FXML public void initialize() {
         setDefaultSelection();
@@ -121,6 +122,7 @@ public class ShipmentController {
         SaveButton.setOnAction(actionEvent -> {
             if (ReceptionRadioButton.isSelected()){
                 ShipmentServices.reception();
+                resetForm();
             }
             else if (ExpeditionRadioButton.isSelected()){
                 ShipmentServices.expedition(
@@ -129,10 +131,13 @@ public class ShipmentController {
                         items,
                         quantity,
                         totalQuantity,
-                        totalPrice // ✅ Send calculated total price
+                        totalPrice
                 );
             }
         });
+        CancelButton.setOnAction(actionEvent -> {
+                resetForm();
+            });
     }
 
     // -------------------- Mode Switching Methods --------------------
@@ -193,6 +198,11 @@ public class ShipmentController {
         }
 
         int qty = Integer.parseInt(qtyText);
+
+        if (qty == 0){
+            showAlert("Not enough","Quantity cant be 0");
+            return;
+        }
         if (qty > selectedProduct.getQuantity()){
             showAlert("Too much","Max quantity available is: "+ selectedProduct.getQuantity());
             return;
@@ -216,6 +226,7 @@ public class ShipmentController {
 
         ProductsListView.getItems().add(product.getItemCode() + " - Qty: " + qty);
         TotalQuantityTxt.setText(String.valueOf(totalQuantity));
+        TotalPriceTxtField.setText(String.valueOf(totalPrice));
     }
 
     private Warehouse getSelectedSourceWarehouse() {
@@ -249,5 +260,16 @@ public class ShipmentController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    private void resetForm() {
+        items.clear();
+        quantity.clear();
+        totalPrice = 0;
+        totalQuantity = 0;
+
+        QuantityTxt.clear();
+        TotalPriceTxtField.clear();
+        TotalQuantityTxt.clear();
+        ProductsListView.getItems().clear();
     }
 }

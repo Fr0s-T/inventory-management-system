@@ -37,6 +37,8 @@
             <Label alignment="CENTER" layoutX="43.0" layoutY="296.0" prefHeight="50.0" prefWidth="150.0" text="Product List" />
             <Button fx:id="AddBtn" layoutX="1046.0" layoutY="184.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="90.0" text="Add" />
             <ComboBox fx:id="ExpadistionComboBox" layoutX="825.0" layoutY="155.0" prefWidth="150.0" />
+            <Label layoutX="536.0" layoutY="313.0" text="Total Price:" />
+            <TextField fx:id="TotalPriceTxtField" layoutX="621.0" layoutY="296.0" prefHeight="50.0" prefWidth="150.0" />
          </children>
       </Pane>
    </children>
