@@ -92,7 +92,7 @@ public class ShipmentFormHandler {
         }
 
         if (isReception) {
-            ShipmentServices.reception();
+            ShipmentServices.reception(source, destination, items, quantities, totalQuantity, totalPrice);
         } else {
             if (source.equals(destination)) {
                 AlertUtils.showWarning("Invalid Warehouses", "Source and destination cannot be the same.");
