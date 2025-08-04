@@ -1,7 +1,8 @@
-package ViewsControllers;
+package ViewsControllers.ShipmentForm;
 
 import Models.Product;
 import Models.Warehouse;
+import Models.Session;
 import Services.ShipmentServices;
 import Utilities.AlertUtils;
 import javafx.scene.control.ListView;
@@ -14,6 +15,8 @@ public class ShipmentFormHandler {
     private final ListView<String> productsListView;
     private final TextField totalQuantityTxt;
     private final TextField totalPriceTxt;
+    private final TextField unitPriceField;
+    private final TextField itemCodeField;
 
     private final ArrayList<Product> items = new ArrayList<>();
     private final ArrayList<Integer> quantities = new ArrayList<>();
@@ -22,19 +25,77 @@ public class ShipmentFormHandler {
 
     public ShipmentFormHandler(ListView<String> productsListView,
                                TextField totalQuantityTxt,
-                               TextField totalPriceTxt) {
+                               TextField totalPriceTxt,
+                               TextField unitPriceField,
+                               TextField itemCodeField) {
         this.productsListView = productsListView;
         this.totalQuantityTxt = totalQuantityTxt;
         this.totalPriceTxt = totalPriceTxt;
+        this.unitPriceField = unitPriceField;
+        this.itemCodeField = itemCodeField;
+
+        setupAutoFillPrice();
+    }
+
+    /**
+     * Automatically checks product price once the user finishes entering the item code.
+     */
+    private void setupAutoFillPrice() {
+        itemCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // Field lost focus
+                autoFillPrice(itemCodeField.getText());
+            }
+        });
+    }
+
+    private void autoFillPrice(String code) {
+        if (code == null || code.isEmpty()) return;
+
+        Product existingProduct = Session.getProducts().stream()
+                .filter(p -> p.getItemCode().equalsIgnoreCase(code))
+                .findFirst()
+                .orElse(null);
+
+        if (existingProduct != null && existingProduct.getUnitPrice() > 0) {
+            unitPriceField.setText(String.valueOf(existingProduct.getUnitPrice()));
+            unitPriceField.setDisable(true); // Disable editing for existing products
+        } else {
+            unitPriceField.clear();
+            unitPriceField.setDisable(false); // Allow entering price for new products
+        }
     }
 
     public void handleReception(String code, String qtyText) {
-        if (validateInput(code, qtyText)) {
-            Product product = new Product();
-            product.setItemCode(code);
-            addProduct(product, Integer.parseInt(qtyText));
+        if (!validateInput(code, qtyText)) return;
+
+        // ✅ Check if product exists in the session
+        Product existingProduct = Session.getProducts().stream()
+                .filter(p -> p.getItemCode().equalsIgnoreCase(code))
+                .findFirst()
+                .orElse(null);
+
+        // ✅ If new product and no price entered → show alert
+        if ((existingProduct == null || existingProduct.getUnitPrice() <= 0) &&
+                unitPriceField.getText().trim().isEmpty()) {
+            AlertUtils.showWarning("Missing Price", "You must enter a unit price for new products.");
+            return;
         }
+
+        float unitPrice;
+
+        if (!unitPriceField.getText().trim().isEmpty()) {
+            unitPrice = Float.parseFloat(unitPriceField.getText().trim());
+        } else {
+            // If existing product already has a price
+            assert existingProduct != null;
+            unitPrice = existingProduct.getUnitPrice();
+        }
+
+        Product product = new Product(code, qtyText, unitPrice);
+        product.setItemCode(code);
+        addProduct(product, Integer.parseInt(qtyText));
     }
+
 
     public void handleExpedition(Product selectedProduct, String qtyText) {
         if (selectedProduct == null) {
@@ -85,7 +146,6 @@ public class ShipmentFormHandler {
     }
 
     public void save(boolean isReception, Warehouse source, Warehouse destination) {
-
         if (items.isEmpty()) {
             AlertUtils.showWarning("No Items", "Please add at least one product before saving the shipment.");
             return;
@@ -112,5 +172,8 @@ public class ShipmentFormHandler {
         productsListView.getItems().clear();
         totalQuantityTxt.clear();
         totalPriceTxt.clear();
+        unitPriceField.clear();
+        unitPriceField.setDisable(false); // ✅ Re-enable for next input
+        itemCodeField.clear();
     }
 }

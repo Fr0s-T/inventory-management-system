@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="685.0" prefWidth="1193.0" stylesheets="@../StyleSheets/Shipment.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.ShipmentController">
+<AnchorPane prefHeight="685.0" prefWidth="1193.0" stylesheets="@../StyleSheets/Shipment.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.ShipmentForm.ShipmentController">
    <children>
       <Pane layoutX="148.0" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ADD8E6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -39,6 +39,7 @@
             <ComboBox fx:id="ExpadistionComboBox" layoutX="825.0" layoutY="155.0" prefWidth="150.0" />
             <Label layoutX="536.0" layoutY="313.0" text="Total Price:" />
             <TextField fx:id="TotalPriceTxtField" layoutX="621.0" layoutY="296.0" prefHeight="50.0" prefWidth="150.0" />
+            <TextField fx:id="UnitPriceField" layoutX="822.0" layoutY="339.0" />
          </children>
       </Pane>
    </children>

@@ -69,6 +69,7 @@ public class ShipmentServices {
             // ✅ Insert new products into Product table
             if (!newProducts.isEmpty()) {
                 insertNewProducts(connection, newProducts);
+                insertNewProductValuesIntoQuantity(connection, newProducts, newProductsQty, selectedDestinationWarehouse);
             }
 
             // ✅ Update existing quantities
@@ -210,8 +211,7 @@ public class ShipmentServices {
     }
 
     private static void insertNewProducts(Connection connection, ArrayList<Product> newProducts) throws SQLException {
-        final String sql = "INSERT INTO Product (ItemCode, UnitPrice, Color, Size, Section) VALUES (?, ?, ?, ?, ?)";
-
+        final String sql = "INSERT INTO ProductType (ItemCode, UnitPrice, Color, Size, Section) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             for (Product p : newProducts) {
                 ps.setString(1, p.getItemCode());
@@ -224,6 +224,28 @@ public class ShipmentServices {
             ps.executeBatch();
         }
     }
+
+    private static void insertNewProductValuesIntoQuantity(Connection connection,
+                                                    ArrayList<Product> newProducts,
+                                                    ArrayList<Integer> newProductsQty,
+                                                    Warehouse destinationWarehouse) throws SQLException {
+        final String sql = "INSERT INTO Quantity (ItemCode, Quantity, WarehouseID) VALUES (?, ?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (int i = 0; i < newProducts.size(); i++) {
+                Product product = newProducts.get(i);
+                int qty = newProductsQty.get(i);
+
+                ps.setString(1, product.getItemCode());
+                ps.setInt(2, qty);
+                ps.setInt(3, destinationWarehouse.getId());
+
+                ps.addBatch();
+            }
+            ps.executeBatch(); // Execute all insert statements at once
+        }
+    }
+
 
     private static void increaseQuantityInQuantityTable(Connection connection, Warehouse destinationWarehouse,
                                                         ArrayList<Product> items, ArrayList<Integer> quantity) throws SQLException {

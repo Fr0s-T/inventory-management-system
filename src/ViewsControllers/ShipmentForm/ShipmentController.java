@@ -1,4 +1,4 @@
-package ViewsControllers;
+package ViewsControllers.ShipmentForm;
 
 import Models.Product;
 import Models.Session;
@@ -21,6 +21,7 @@ public class ShipmentController {
     @FXML private TextField QuantityTxt;
     @FXML private TextField TotalQuantityTxt;
     @FXML private TextField TotalPriceTxtField;
+    @FXML private TextField UnitPriceField;
     @FXML private ListView<String> ProductsListView;
     @FXML private Button SaveButton;
     @FXML private Button CancelButton;
@@ -31,7 +32,14 @@ public class ShipmentController {
 
     @FXML
     public void initialize() {
-        formHandler = new ShipmentFormHandler(ProductsListView, TotalQuantityTxt, TotalPriceTxtField);
+        formHandler = new ShipmentFormHandler(
+                ProductsListView,
+                TotalQuantityTxt,
+                TotalPriceTxtField,
+                UnitPriceField,
+                ItemCodeTxt
+        );
+
 
         setupWarehouses();
         setupProducts();
@@ -112,12 +120,26 @@ public class ShipmentController {
 
     private void setupRadioButtons() {
         ShipmentType.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+
             if (newToggle == ExpeditionRadioButton) {
+                for (Warehouse warehouse : SourceComboBox.getItems()) {
+                    if (warehouse.getId() == Session.getCurrentWarehouse().getId()) {
+                        SourceComboBox.getSelectionModel().select(warehouse);
+                        break;
+                    }
+                }
                 SourceComboBox.setDisable(true);
                 DestinationComboBox.setDisable(false);
                 ItemCodeTxt.setVisible(false);
                 ExpadistionComboBox.setVisible(true);
             } else {
+
+                for (Warehouse warehouse : DestinationComboBox.getItems()) {
+                    if (warehouse.getId() == Session.getCurrentWarehouse().getId()) {
+                        DestinationComboBox.getSelectionModel().select(warehouse);
+                        break;
+                    }
+                }
                 DestinationComboBox.setDisable(true);
                 SourceComboBox.setDisable(false);
                 ItemCodeTxt.setVisible(true);
