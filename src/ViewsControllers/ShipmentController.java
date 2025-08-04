@@ -4,7 +4,6 @@ import Models.Product;
 import Models.Session;
 import Models.Warehouse;
 import Services.ProductsService;
-import Services.ShipmentServices;
 import Services.WareHouseService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -28,49 +27,66 @@ public class ShipmentController {
     @FXML private Button AddBtn;
     @FXML private ComboBox<Product> ExpadistionComboBox;
 
-    private ArrayList<Product> items = new ArrayList<>();
-    private ArrayList<Integer> quantity = new ArrayList<>();
-    private int totalQuantity = 0;
-    private float totalPrice = 0;
+    private ShipmentFormHandler formHandler;
 
-    @FXML public void initialize() {
-        setDefaultSelection();
-        setupUIVisibility();
+    @FXML
+    public void initialize() {
+        formHandler = new ShipmentFormHandler(ProductsListView, TotalQuantityTxt, TotalPriceTxtField);
+
         setupWarehouses();
         setupProducts();
-        setupRadioButtonBehavior();
+        setupRadioButtons();
         setupButtons();
-    }
 
-    // -------------------- Initialization Methods --------------------
-
-    private void setDefaultSelection() {
-        ShipmentType.selectToggle(ReceptionRadioButton); // Reception by default
-    }
-
-    private void setupUIVisibility() {
-        ExpadistionComboBox.setVisible(false); // Hidden initially
+        ShipmentType.selectToggle(ReceptionRadioButton); // Default
     }
 
     private void setupWarehouses() {
-        ArrayList<Warehouse> warehouses = getWarehouses();
+        if (Session.getAllWarehouses() == null) {
+            WareHouseService.getAllWarehouses();
+        }
+
+        ArrayList<Warehouse> warehouses = Session.getAllWarehouses();
+
         SourceComboBox.getItems().addAll(warehouses);
         DestinationComboBox.getItems().addAll(warehouses);
 
-        setupWarehouseComboBox(SourceComboBox);
-        setupWarehouseComboBox(DestinationComboBox);
+        SourceComboBox.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Warehouse warehouse, boolean empty) {
+                super.updateItem(warehouse, empty);
+                setText(empty || warehouse == null ? "" : warehouse.getName());
+            }
+        });
+        SourceComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Warehouse warehouse, boolean empty) {
+                super.updateItem(warehouse, empty);
+                setText(empty || warehouse == null ? "" : warehouse.getName());
+            }
+        });
+
+        DestinationComboBox.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Warehouse warehouse, boolean empty) {
+                super.updateItem(warehouse, empty);
+                setText(empty || warehouse == null ? "" : warehouse.getName());
+            }
+        });
+        DestinationComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Warehouse warehouse, boolean empty) {
+                super.updateItem(warehouse, empty);
+                setText(empty || warehouse == null ? "" : warehouse.getName());
+            }
+        });
+
+
 
         if (!warehouses.isEmpty()) {
             SourceComboBox.getSelectionModel().selectFirst();
             DestinationComboBox.getSelectionModel().selectFirst();
         }
-    }
-
-    private ArrayList<Warehouse> getWarehouses() {
-        if (Session.getAllWarehouses() == null) {
-            WareHouseService.getAllWarehouses();
-        }
-        return Session.getAllWarehouses();
     }
 
     private void setupProducts() {
@@ -92,184 +108,39 @@ public class ShipmentController {
                 setText(empty || product == null ? "" : product.getItemCode());
             }
         });
-
-        ExpadistionComboBox.setOnAction(e -> {
-            Product selected = ExpadistionComboBox.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                System.out.println("Selected product: " + selected.getItemCode());
-            }
-        });
     }
 
-    private void setupRadioButtonBehavior() {
+    private void setupRadioButtons() {
         ShipmentType.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             if (newToggle == ExpeditionRadioButton) {
-                enableExpeditionMode();
-            } else if (newToggle == ReceptionRadioButton) {
-                enableReceptionMode();
+                SourceComboBox.setDisable(true);
+                DestinationComboBox.setDisable(false);
+                ItemCodeTxt.setVisible(false);
+                ExpadistionComboBox.setVisible(true);
+            } else {
+                DestinationComboBox.setDisable(true);
+                SourceComboBox.setDisable(false);
+                ItemCodeTxt.setVisible(true);
+                ExpadistionComboBox.setVisible(false);
             }
         });
     }
 
     private void setupButtons() {
-        AddBtn.setOnAction(actionEvent -> {
+        AddBtn.setOnAction(event -> {
             if (ReceptionRadioButton.isSelected()) {
-                handleReceptionAdd();
-            } else if (ExpeditionRadioButton.isSelected()) {
-                handleExpeditionAdd();
+                formHandler.handleReception(ItemCodeTxt.getText(), QuantityTxt.getText());
+            } else {
+                formHandler.handleExpedition(ExpadistionComboBox.getValue(), QuantityTxt.getText());
             }
         });
-        SaveButton.setOnAction(actionEvent -> {
-            if (ReceptionRadioButton.isSelected()){
-                ShipmentServices.reception();
-                resetForm();
-            }
-            else if (ExpeditionRadioButton.isSelected()){
-                ShipmentServices.expedition(
-                        getSelectedSourceWarehouse(),
-                        getSelectedDestinationWarehouse(),
-                        items,
-                        quantity,
-                        totalQuantity,
-                        totalPrice
-                );
-            }
-        });
-        CancelButton.setOnAction(actionEvent -> {
-                resetForm();
-            });
-    }
 
-    // -------------------- Mode Switching Methods --------------------
+        SaveButton.setOnAction(event -> formHandler.save(
+                ReceptionRadioButton.isSelected(),
+                SourceComboBox.getValue(),
+                DestinationComboBox.getValue()
+        ));
 
-    private void enableExpeditionMode() {
-        SourceComboBox.getSelectionModel().select(Session.getCurrentWarehouse());
-        SourceComboBox.setDisable(true);
-        DestinationComboBox.setDisable(false);
-
-        ItemCodeTxt.setVisible(false);
-        ExpadistionComboBox.setVisible(true);
-    }
-
-    private void enableReceptionMode() {
-        DestinationComboBox.getSelectionModel().select(Session.getCurrentWarehouse());
-        DestinationComboBox.setDisable(true);
-        SourceComboBox.setDisable(false);
-
-        ItemCodeTxt.setVisible(true);
-        ExpadistionComboBox.setVisible(false);
-    }
-
-    // -------------------- Utility Methods --------------------
-
-    private void handleReceptionAdd() {
-        String code = ItemCodeTxt.getText().trim();
-        String qtyText = QuantityTxt.getText().trim();
-
-        if (code.isEmpty()) {
-            showAlert("Item Code Missing", "Please enter an item code.");
-            return;
-        }
-        if (qtyText.isEmpty()) {
-            showAlert("Quantity Missing", "Please enter a quantity.");
-            return;
-        }
-
-        int qty = Integer.parseInt(qtyText);
-
-        Product product = new Product();
-        product.setItemCode(code);
-        product.setUnitPrice(0); // No price info for manual reception
-
-        addProductToList(product, qty);
-    }
-
-    private void handleExpeditionAdd() {
-        Product selectedProduct = ExpadistionComboBox.getSelectionModel().getSelectedItem();
-        String qtyText = QuantityTxt.getText().trim();
-
-        if (selectedProduct == null) {
-            showAlert("Product Selection Missing", "Please select a product for expedition.");
-            return;
-        }
-        if (qtyText.isEmpty()) {
-            showAlert("Quantity Missing", "Please enter a quantity.");
-            return;
-        }
-
-        int qty = Integer.parseInt(qtyText);
-
-        if (qty == 0){
-            showAlert("Not enough","Quantity cant be 0");
-            return;
-        }
-        if (qty > selectedProduct.getQuantity()){
-            showAlert("Too much","Max quantity available is: "+ selectedProduct.getQuantity());
-            return;
-        }
-
-        addProductToList(selectedProduct, qty);
-    }
-
-    private void addProductToList(Product product, int qty) {
-        if (items.stream().anyMatch(p -> p.getItemCode().equals(product.getItemCode()))) {
-            showAlert("Duplicate Item", "This product is already added.");
-            return;
-        }
-
-        items.add(product);
-        quantity.add(qty);
-        totalQuantity += qty;
-
-        // ✅ Calculate total price
-        totalPrice += product.getUnitPrice() * qty;
-
-        ProductsListView.getItems().add(product.getItemCode() + " - Qty: " + qty);
-        TotalQuantityTxt.setText(String.valueOf(totalQuantity));
-        TotalPriceTxtField.setText(String.valueOf(totalPrice));
-    }
-
-    private Warehouse getSelectedSourceWarehouse() {
-        return SourceComboBox.getSelectionModel().getSelectedItem();
-    }
-
-    private Warehouse getSelectedDestinationWarehouse() {
-        return DestinationComboBox.getSelectionModel().getSelectedItem();
-    }
-
-    private void setupWarehouseComboBox(ComboBox<Warehouse> comboBox) {
-        comboBox.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Warehouse warehouse, boolean empty) {
-                super.updateItem(warehouse, empty);
-                setText(empty || warehouse == null ? "" : warehouse.getName());
-            }
-        });
-        comboBox.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Warehouse warehouse, boolean empty) {
-                super.updateItem(warehouse, empty);
-                setText(empty || warehouse == null ? "" : warehouse.getName());
-            }
-        });
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-    private void resetForm() {
-        items.clear();
-        quantity.clear();
-        totalPrice = 0;
-        totalQuantity = 0;
-
-        QuantityTxt.clear();
-        TotalPriceTxtField.clear();
-        TotalQuantityTxt.clear();
-        ProductsListView.getItems().clear();
+        CancelButton.setOnAction(event -> formHandler.reset());
     }
 }
