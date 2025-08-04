@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class EditUserServices {
 
@@ -45,16 +46,55 @@ public class EditUserServices {
     }
 
 
-    //public static void UpdateHierarchy{
+    public static void endCurrentHierarchy(int employeeId){
+        String query = "UPDATE Hierarchy SET EndDate = ? WHERE EmployeeID = ? AND EndDate IS NULL";
+
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            stmt.setInt(2, employeeId);
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Hierarchy updated for EmployeeID " + employeeId);
+            } else {
+                System.out.println("No active hierarchy found for EmployeeID " + employeeId);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
+    }
 
-   // }
+    public static void insertToHierarchy(int employeeId, int roleId, int managerId) {
+        String query = "INSERT INTO Hierarchy (EmployeeID, RoleID, ManagerID, StartDate, EndDate) " +
+                "VALUES (?, ?, ?, ?, NULL)";
 
-    //public static void insertToHierarchy{
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
+            stmt.setInt(1, employeeId);
+            stmt.setInt(2, roleId);
+            stmt.setInt(3, managerId);
+            stmt.setDate(4, java.sql.Date.valueOf(LocalDate.now()));
 
-    //}
+            int rowsInserted = stmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("New hierarchy record inserted for EmployeeID " + employeeId);
+            } else {
+                System.out.println("Failed to insert new hierarchy.");
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static User fetchUser(int id) {
         String query = "SELECT * FROM Employee WHERE ID = ?";
@@ -66,7 +106,7 @@ public class EditUserServices {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new User(rs); // uses your constructor that maps all fields
+                return new User(rs);
             }
 
         } catch (SQLException | ClassNotFoundException e) {

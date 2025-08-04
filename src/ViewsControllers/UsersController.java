@@ -24,6 +24,7 @@ public class UsersController {
     @FXML private Button FetchBtn;
     @FXML private Button SaveBtn;
     @FXML private Button ClearBtn;
+    private User fetchedUser= null;
 
     @FXML public void initialize(){
         SaveBtn.setDisable(true);
@@ -39,7 +40,7 @@ public class UsersController {
                     alert.setHeaderText("Permission Denied");
                     alert.setContentText("You don't have the permission to fetch this user's data.");
                     alert.showAndWait();
-                    return; // Stop execution here
+                    return;
                 }
                 if (user.getWarehouseId() != Session.getCurrentWarehouse().getId()) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -57,6 +58,7 @@ public class UsersController {
                 ShiftManagerCheckBox.setSelected(user.getRole() == User.Role.SHIFT_MANAGER);
                 StatusCheckBox.setSelected(Boolean.TRUE.equals(user.getOnDuty()));
                 SaveBtn.setDisable(false);
+                fetchedUser = user;
 
             } catch (NumberFormatException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -83,20 +85,34 @@ public class UsersController {
             ShiftManagerCheckBox.setSelected(false);
             StatusCheckBox.setSelected(false);
         } );
-        SaveBtn.setOnAction(actionEvent ->{
+        SaveBtn.setOnAction(actionEvent -> {
             try {
                 int id = Integer.parseInt(IDtxt.getText());
                 String fname = Fnametxt.getText();
                 String mname = Mnametxt.getText();
                 String lname = Lnametxt.getText();
                 String rawPassword = Passwordtxt.getText();
-                int roleId = ShiftManagerCheckBox.isSelected() ? 3 : 4;
                 boolean onDuty = StatusCheckBox.isSelected();
+                int newRoleId = ShiftManagerCheckBox.isSelected() ? 3 : 4;
                 String hashedPassword = (rawPassword != null && !rawPassword.trim().isEmpty())
                         ? HashingUtility.md5Hash(rawPassword)
                         : "";
 
-                EditUserServices.updateEmployee(id, fname, mname, lname, roleId, onDuty, hashedPassword);
+                // Get the current role before updating
+                int currentRoleId = fetchedUser.getRole().getId();
+
+                // If role has changed, update hierarchy
+                if (currentRoleId != newRoleId) {
+                    // 1. Set EndDate on the current record
+                    EditUserServices.endCurrentHierarchy(id);
+
+                    // 2. Insert new hierarchy row
+                    int managerId = Session.getCurrentUser().getId();
+                    EditUserServices.insertToHierarchy(id, newRoleId, managerId);
+                }
+
+                // Update employee info
+                EditUserServices.updateEmployee(id, fname, mname, lname, newRoleId, onDuty, hashedPassword);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
@@ -113,8 +129,8 @@ public class UsersController {
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
             }
+        });
 
-        } );
 
 
         ChangeListener<String> updateListener = (
