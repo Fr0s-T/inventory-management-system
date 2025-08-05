@@ -36,8 +36,8 @@
       <TableView id="EmployeesTable" fx:id="EmployeesTable" layoutX="488.0" layoutY="376.0" opacity="0.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="260.0">
         <columns>
             <TableColumn id="TEC1" fx:id="EmpIdC" prefWidth="185.0" text="ID" />
-<!--          <TableColumn id="TEC2" fx:id="FnameC" prefWidth="185.0" text="First Name" />-->
-<!--            <TableColumn id="TEC3" fx:id="MnameC" prefWidth="185.0" text="Middle Name" />-->
+            <TableColumn id="TEC2" fx:id="FnameC" prefWidth="185.0" text="First Name" />
+            <TableColumn id="TEC3" fx:id="MnameC" prefWidth="185.0" text="Middle Name" />
             <TableColumn id="TEC4" fx:id="LnameC" prefWidth="185.0" text="Last Name" />
             <TableColumn id="TEC5" fx:id="UsernameC" prefWidth="185.0" text="Username" />
             <TableColumn id="TEC6" fx:id="RoleC" prefWidth="185.0" text="Role" />
@@ -54,12 +54,12 @@
             <TableColumn id="TSC6" fx:id="HandeledByC" prefWidth="220.0" text="Handled by" />
          </columns>
       </TableView>
-      <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="260.0">
+      <TableView id="StockLevelTable" fx:id="StockLevelTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="260.0">
         <columns>
-          <TableColumn prefWidth="225.0" text="Item Code" />
-          <TableColumn prefWidth="225.0" text="Quantity" />
-            <TableColumn prefWidth="225.0" text="Unit Price" />
-            <TableColumn prefWidth="225.0" text="Total Price" />
+          <TableColumn id="ItemCodeC" fx:id="ItemCodeC" prefWidth="225.0" text="Item Code" />
+          <TableColumn id="ItemQuantityC" fx:id="ItemQuantityC" prefWidth="225.0" text="Quantity" />
+            <TableColumn id="UnitPriceC" fx:id="UnitPriceC" prefWidth="225.0" text="Unit Price" />
+            <TableColumn id="TotalPriceC" fx:id="TotalPriceC" prefWidth="225.0" text="Total Price" />
         </columns>
       </TableView>
       <Label id="StockLevelL" fx:id="StockLevelL" layoutX="1013.0" layoutY="240.0" prefHeight="50.0" prefWidth="180.0" text="Stock Level" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="260.0" />
