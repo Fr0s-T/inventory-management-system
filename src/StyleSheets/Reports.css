@@ -25,6 +25,28 @@
     -fx-background-color: #7e57c2;
 }
 
+/* Label for reports */
+.report-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a148c; /* Deep purple */
+}
+
+/* TextField for reports */
+.report-field {
+    -fx-background-color: #f3e5f5; /* Light lavender */
+    -fx-text-fill: #4a148c;
+    -fx-font-size: 14px;
+    -fx-border-color: #9575cd;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-pref-height: 34px;
+    -fx-pref-width: 150px;
+    -fx-padding: 4 8 4 8;
+}
+
+
+
 /* TableView Styling */
 /*.table-view {
     -fx-background-color: white;

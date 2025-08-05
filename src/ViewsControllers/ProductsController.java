@@ -3,6 +3,7 @@ package ViewsControllers;
 import Models.Product;
 import Models.Session;
 import Services.ProductsService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -26,6 +27,7 @@ public class ProductsController {
     @FXML private TableColumn<Product, Integer> quantityColumn;
     @FXML private TableColumn<Product, String> sizeColumn;
     @FXML private TableColumn<Product, String> sectionColumn;
+    @FXML private TableColumn<Product, String> UnitPriceColumn;
 
     @FXML
     public void initialize() {
@@ -38,9 +40,18 @@ public class ProductsController {
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         sectionColumn.setCellValueFactory(new PropertyValueFactory<>("section"));
         pictureColumn.setCellValueFactory(new PropertyValueFactory<>("picture"));
+        UnitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
         ProductsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         // Fill the table
         ProductsTable.setItems(FXCollections.observableArrayList(Session.getProducts()));
+
+        Platform.runLater(() -> {
+            ProductsTable.lookupAll(".column-header").forEach(node -> {
+                node.setOnMouseDragged(event -> event.consume());  // disable dragging
+                node.setOnMousePressed(event -> event.consume());  // prevent header click-drag start
+            });
+        });
+
 
     }
 }
