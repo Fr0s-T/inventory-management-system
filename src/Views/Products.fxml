@@ -28,8 +28,8 @@
             <TableColumn fx:id="quantityColumn" prefWidth="75.0" text="Quantity" />
             <TableColumn fx:id="sizeColumn" prefWidth="75.0" text="Size" />
             <TableColumn fx:id="sectionColumn" prefWidth="75.0" text="Section" />
+            <TableColumn fx:id="UnitPriceColumn" prefWidth="75.0" text="Unit Price" />
         </columns>
       </TableView>
    </children>
 </AnchorPane>
-

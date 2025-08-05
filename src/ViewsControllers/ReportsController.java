@@ -1,22 +1,17 @@
 package ViewsControllers;
 
-import Models.Session;
-import Models.Shipment;
-import Models.User;
-import Models.Warehouse;
+import Models.*;
+import Services.ProductsService;
 import Services.ReportsService;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  *
@@ -50,21 +45,42 @@ public class ReportsController {
     @FXML private TableColumn<Shipment, String> SourceC;
     @FXML private TableColumn<Shipment, String> DestinationC;
     @FXML private TableColumn<Shipment, Integer> QuantityC;
-    @FXML private TableColumn<Shipment, String> HandeledByC;
+    @FXML private TableColumn<Shipment, String> HandledByC;
     //Stock Level table and columns
-    @FXML private TableView<Shipment> StockLevelTable;
-    @FXML private TableColumn<Shipment, Integer> ItemCodeC;
-    @FXML private TableColumn<Shipment, String> ItemQuantityC;
-    @FXML private TableColumn<Shipment, String> UnitPriceC;
-    @FXML private TableColumn<Shipment, String> TotalPriceC;
+    @FXML private TableView<Product> StockLevelTable;
+    @FXML private TableColumn<Product, String> ItemCodeC;
+    @FXML private TableColumn<Product, Integer> ItemQuantityC;
+    @FXML private TableColumn<Product, Integer> UnitPriceC;
+    @FXML private TableColumn<Product, String> TotalPriceC;
 
 
     @FXML public void initialize(){
+        ClearPage();
 
-        EmployeesTable.setVisible(false);
-        ShipmentsTable.setVisible(false);
+        EmployeesInfoBtn.setOnAction(actionEvent -> showEmployeesTable());
+        LockColumns(EmployeesTable);
 
-        //Initialize Employees Table Columns
+        ShipmentIdC.setCellValueFactory(new PropertyValueFactory<>("id"));
+        DateC.setCellValueFactory(new PropertyValueFactory<>("date"));
+        SourceC.setCellValueFactory(new PropertyValueFactory<>("source"));
+        DestinationC.setCellValueFactory(new PropertyValueFactory<>("destination"));
+        QuantityC.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        HandledByC.setCellValueFactory(new PropertyValueFactory<>("handledBy"));
+
+        ReceivedBtn.setOnAction(actionEvent -> showReceptionShipments());
+        SentBtn.setOnAction(actionEvent -> showExpeditionShipments());
+        LockColumns(ShipmentsTable);
+
+        //Initialize Valuation table and columns
+
+        StockValuationBtn.setOnAction(actionEvent -> showValuationTable());
+        LockColumns(StockLevelTable);
+
+
+    }
+
+    @FXML
+    private void showEmployeesTable() {
 
         EmpIdC.setCellValueFactory(new PropertyValueFactory<>("id"));
         FnameC.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -72,7 +88,7 @@ public class ReportsController {
         LnameC.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         UsernameC.setCellValueFactory(new PropertyValueFactory<>("username"));
         RoleC.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getRole().name())); // enum as string
+                new SimpleStringProperty(cellData.getValue().getRole().name()));
         StatusC.setCellValueFactory(cellData -> {
             boolean onDuty = cellData.getValue().getOnDuty();
             String statusText = onDuty ? "On Duty" : "Off Duty";
@@ -80,33 +96,54 @@ public class ReportsController {
 
         });
 
-        EmployeesInfoBtn.setOnAction(actionEvent -> showEmployeesTable());
-        LockColumns(EmployeesTable);
-
-        //Initialize Shipments Table Columns
-
-        ShipmentIdC.setCellValueFactory(new PropertyValueFactory<>("id"));
-        DateC.setCellValueFactory(new PropertyValueFactory<>("date"));
-        SourceC.setCellValueFactory(new PropertyValueFactory<>("source"));
-        DestinationC.setCellValueFactory(new PropertyValueFactory<>("destination"));
-        QuantityC.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        HandeledByC.setCellValueFactory(new PropertyValueFactory<>("handledBy"));
-
-        ReceivedBtn.setOnAction(actionEvent -> showReceptionShipments());
-        SentBtn.setOnAction(actionEvent -> showExpeditionShipments());
-        LockColumns(ShipmentsTable);
-    }
-
-    @FXML
-    private void showEmployeesTable() {
         EmployeesTable.setVisible(true);
         ShipmentsTable.setVisible(false);
+        StockLeveltxt.setVisible(false);
+        Valuetxt.setVisible(false);
+        StockLevelL.setVisible(false);
+        ValueL.setVisible(false);
+        StockLevelTable.setVisible(false);
         try {
             ArrayList<User> users = ReportsService.getEmployeesFromDb();
             EmployeesTable.setItems(javafx.collections.FXCollections.observableArrayList(users));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private void showValuationTable() {
+        EmployeesTable.setVisible(false);
+        ShipmentsTable.setVisible(false);
+        StockLeveltxt.setVisible(true);
+        Valuetxt.setVisible(true);
+        StockLevelL.setVisible(true);
+        ValueL.setVisible(true);
+        StockLevelTable.setVisible(true);
+
+        if (Session.getProducts() == null) ProductsService.getProducts();
+
+        ItemCodeC.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+        ItemQuantityC.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        UnitPriceC.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        TotalPriceC.setCellValueFactory(cellData -> {
+            Product product = cellData.getValue();
+            double total = product.getQuantity() * product.getUnitPrice();
+            return new SimpleStringProperty(String.format("%.2f", total));
+        });
+
+        StockLevelTable.setItems(FXCollections.observableArrayList(Session.getProducts()));
+        int totalQuantity = StockLevelTable.getItems()
+                .stream()
+                .mapToInt(Product::getQuantity)
+                .sum();
+        StockLeveltxt.setText(String.valueOf(totalQuantity));
+        double totalValue = StockLevelTable.getItems()
+                .stream()
+                .mapToDouble(p -> p.getQuantity() * p.getUnitPrice())
+                .sum();
+
+        Valuetxt.setText(String.format("%.2f", totalValue));
+
+
     }
 
     private void LockColumns(TableView<?> tableView) {
@@ -130,8 +167,13 @@ public class ReportsController {
             ShipmentsTable.getItems().setAll(receptions);
             ShipmentsTable.setVisible(true);
             EmployeesTable.setVisible(false);
+            StockLeveltxt.setVisible(false);
+            Valuetxt.setVisible(false);
+            StockLevelL.setVisible(false);
+            ValueL.setVisible(false);
+            StockLevelTable.setVisible(false);
         } catch (Exception e) {
-            e.printStackTrace(); // Handle error (you can show an alert)
+            e.printStackTrace();
         }
     }
 
@@ -148,9 +190,24 @@ public class ReportsController {
             ShipmentsTable.getItems().setAll(expeditions);
             ShipmentsTable.setVisible(true);
             EmployeesTable.setVisible(false);
+            StockLeveltxt.setVisible(false);
+            Valuetxt.setVisible(false);
+            StockLevelL.setVisible(false);
+            ValueL.setVisible(false);
+            StockLevelTable.setVisible(false);
         } catch (Exception e) {
             e.printStackTrace(); // Handle error (you can show an alert)
         }
+    }
+    public void ClearPage(){
+
+        StockLeveltxt.setVisible(false);
+        Valuetxt.setVisible(false);
+        StockLevelL.setVisible(false);
+        ValueL.setVisible(false);
+        StockLevelTable.setVisible(false);
+        EmployeesTable.setVisible(false);
+        ShipmentsTable.setVisible(false);
     }
 
 

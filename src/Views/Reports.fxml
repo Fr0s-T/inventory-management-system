@@ -33,7 +33,7 @@
             </Button>
          </children>
       </HBox>
-      <TableView id="EmployeesTable" fx:id="EmployeesTable" layoutX="488.0" layoutY="376.0" opacity="0.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="260.0">
+      <TableView id="EmployeesTable" fx:id="EmployeesTable" layoutX="488.0" layoutY="376.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="260.0">
         <columns>
             <TableColumn id="TEC1" fx:id="EmpIdC" prefWidth="185.0" text="ID" />
             <TableColumn id="TEC2" fx:id="FnameC" prefWidth="185.0" text="First Name" />
@@ -44,14 +44,14 @@
             <TableColumn id="TEC7" fx:id="StatusC" prefWidth="185.0" text="Status" />
         </columns>
       </TableView>
-      <TableView id="ShipmentsTable" fx:id="ShipmentsTable" layoutX="10.0" layoutY="270.0" opacity="0.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="260.0">
+      <TableView id="ShipmentsTable" fx:id="ShipmentsTable" layoutX="10.0" layoutY="270.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="260.0">
          <columns>
             <TableColumn id="TSC1" fx:id="ShipmentIdC" prefWidth="210.0" text="ID" />
             <TableColumn id="TSC2" fx:id="DateC" prefWidth="220.0" text="Date" />
             <TableColumn id="TSC3" fx:id="SourceC" prefWidth="220.0" text="Source" />
             <TableColumn id="TSC4" fx:id="DestinationC" prefWidth="220.0" text="Destination" />
             <TableColumn id="TSC5" fx:id="QuantityC" prefWidth="220.0" text="Quantity" />
-            <TableColumn id="TSC6" fx:id="HandeledByC" prefWidth="220.0" text="Handled by" />
+            <TableColumn id="TSC6" fx:id="HandledByC" prefWidth="220.0" text="Handled by" />
          </columns>
       </TableView>
       <TableView id="StockLevelTable" fx:id="StockLevelTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="260.0">
@@ -62,9 +62,9 @@
             <TableColumn id="TotalPriceC" fx:id="TotalPriceC" prefWidth="225.0" text="Total Price" />
         </columns>
       </TableView>
-      <Label id="StockLevelL" fx:id="StockLevelL" layoutX="1013.0" layoutY="240.0" prefHeight="50.0" prefWidth="180.0" text="Stock Level" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="260.0" />
-      <Label id="ValueL" fx:id="ValueL" alignment="CENTER" layoutX="1070.0" layoutY="431.2" prefHeight="50.0" prefWidth="110.0" text="Value" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="431.0" />
-      <TextField id="StockLeveltxt" fx:id="StockLeveltxt" editable="false" layoutX="1010.0" layoutY="231.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="330.0" />
-      <TextField id="Valuetxt" fx:id="Valuetxt" editable="false" layoutX="967.0" layoutY="440.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="500.0" />
+      <Label id="StockLevelL" fx:id="StockLevelL" alignment="CENTER" layoutX="1013.0" layoutY="240.0" prefHeight="50.0" prefWidth="180.0" styleClass="report-label" text="Stock Level" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="260.0" />
+      <Label id="ValueL" fx:id="ValueL" alignment="CENTER" layoutX="1070.0" layoutY="431.2" prefHeight="50.0" prefWidth="110.0" styleClass="report-label" text="Value" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="431.0" />
+      <TextField id="StockLeveltxt" fx:id="StockLeveltxt" editable="false" layoutX="1010.0" layoutY="231.0" prefHeight="40.0" prefWidth="200.0" styleClass="report-field" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="330.0" />
+      <TextField id="Valuetxt" fx:id="Valuetxt" editable="false" layoutX="967.0" layoutY="440.0" prefHeight="40.0" prefWidth="200.0" styleClass="report-field" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="500.0" />
    </children>
 </AnchorPane>
