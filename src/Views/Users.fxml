@@ -13,24 +13,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="685.0" prefWidth="1193.0" styleClass=""
-            stylesheets="@../StyleSheets/Users.css"
-            xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.UsersController">
+<AnchorPane prefHeight="685.0" prefWidth="1193.0" stylesheets="@../StyleSheets/Users.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.UsersController">
    <children>
-      <Pane layoutX="133.0" layoutY="29.0" prefHeight="140.0" prefWidth="1193.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane layoutX="133.0" layoutY="29.0" prefHeight="121.0" prefWidth="1193.0" style="-fx-background-color: linear-gradient(to bottom, #ffcc80, #ffa726);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label alignment="CENTER" layoutX="423.0" layoutY="27.0" prefHeight="90.0" prefWidth="400.0" text="Edit User Information">
+            <Label alignment="CENTER" layoutX="398.0" layoutY="19.0" prefHeight="90.0" prefWidth="400.0" styleClass="title-label" text="Edit User Information">
                <font>
-                  <Font size="36.0" />
+                  <Font name="System Bold" size="36.0" />
                </font>
             </Label>
          </children>
       </Pane>
       <Pane layoutX="496.0" layoutY="310.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="140.0">
          <children>
-            <Button layoutX="1020.0" layoutY="470.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="120.0" text="Cancel" />
-            <Button layoutX="870.0" layoutY="470.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="120.0" text="Save" />
-            <Button layoutX="720.0" layoutY="470.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="120.0" text="Fetch" />
+            <Button id="ClearBtn" fx:id="ClearBtn" layoutX="1020.0" layoutY="470.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="120.0" text="Clear" />
+            <Button id="SaveBtn" fx:id="SaveBtn" layoutX="870.0" layoutY="470.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="120.0" text="Save" />
+            <Button id="FetchBtn" fx:id="FetchBtn" layoutX="720.0" layoutY="470.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="120.0" text="Fetch" />
             <VBox prefHeight="545.0" prefWidth="430.0" spacing="20.0">
                <children>
                   <Label prefHeight="40.0" prefWidth="140.0" text="Search by ID:">
@@ -38,7 +36,7 @@
                         <Insets left="20.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField prefHeight="40.0" prefWidth="80.0">
+                  <TextField id="IDtxt" fx:id="IDtxt" prefHeight="40.0" prefWidth="80.0">
                      <VBox.margin>
                         <Insets left="5.0" />
                      </VBox.margin>
@@ -48,7 +46,7 @@
                         <Insets left="20.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField prefHeight="40.0" prefWidth="180.0">
+                  <TextField id="Fnametxt" fx:id="Fnametxt" prefHeight="40.0" prefWidth="180.0">
                      <VBox.margin>
                         <Insets left="5.0" />
                      </VBox.margin>
@@ -58,7 +56,7 @@
                         <Insets left="20.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField prefHeight="40.0" prefWidth="180.0">
+                  <TextField id="Mnametxt" fx:id="Mnametxt" prefHeight="40.0" prefWidth="180.0">
                      <VBox.margin>
                         <Insets left="5.0" />
                      </VBox.margin>
@@ -68,7 +66,7 @@
                         <Insets left="20.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField prefHeight="40.0" prefWidth="180.0">
+                  <TextField id="Lnametxt" fx:id="Lnametxt" prefHeight="40.0" prefWidth="180.0">
                      <VBox.margin>
                         <Insets left="5.0" />
                      </VBox.margin>
@@ -82,21 +80,21 @@
                         <Insets left="20.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField prefHeight="40.0" prefWidth="180.0" />
+                  <TextField id="Usernametxt" fx:id="Usernametxt" editable="false" prefHeight="40.0" prefWidth="180.0" />
                   <Label prefHeight="40.0" prefWidth="140.0" text="Password:">
                      <VBox.margin>
                         <Insets left="20.0" />
                      </VBox.margin>
                   </Label>
-                  <PasswordField prefHeight="40.0" prefWidth="180.0" />
+                  <PasswordField id="Passwordtxt" fx:id="Passwordtxt" prefHeight="40.0" prefWidth="180.0" />
                   <HBox prefHeight="103.0" prefWidth="430.0" spacing="40.0">
                      <children>
-                        <CheckBox mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="Status">
+                        <CheckBox id="StatusCheckBox" fx:id="StatusCheckBox" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" styleClass="toggle-switch" text="         Status">
                            <HBox.margin>
                               <Insets top="60.0" />
                            </HBox.margin>
                         </CheckBox>
-                        <CheckBox layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="Is shift Manager">
+                        <CheckBox id="ShiftManagerCheckBox" fx:id="ShiftManagerCheckBox" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" styleClass="toggle-switch" text=" Shift Manager">
                            <HBox.margin>
                               <Insets top="60.0" />
                            </HBox.margin>

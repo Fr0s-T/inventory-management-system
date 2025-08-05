@@ -34,7 +34,18 @@ public class Product {
         this.unitPrice = unitPrice;
     }
 
-    // ✅ Getters and Setters
+    public Product(String code, String qtyText, float i) {
+        itemCode = code;
+        quantity = Integer.parseInt(qtyText);
+        unitPrice = i;
+        color = "Default Color";
+        size = "Default Size";
+        section = "Default Section";
+        picture = "";
+
+    }
+
+    //  Getters and Setters
     public String getItemCode() {
         return itemCode;
     }

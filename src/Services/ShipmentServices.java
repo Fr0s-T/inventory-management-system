@@ -4,6 +4,8 @@ import Models.Product;
 import Models.Session;
 import Models.Warehouse;
 import Utilities.DataBaseConnection;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,39 +16,143 @@ import java.util.ArrayList;
 
 public class ShipmentServices {
 
-    public static void reception() {
-        // Reception logic will be added later
+    public static void reception(Warehouse selectedSourceWarehouse, Warehouse selectedDestinationWarehouse,
+                                 ArrayList<Product> items, ArrayList<Integer> quantity, int totQuantity, float totalPrice) {
+        if (items == null || items.isEmpty()) {
+            showAlert("Error", "No products selected for shipment.", Alert.AlertType.ERROR);
+            return;
+        }
+        if (quantity == null || quantity.isEmpty()) {
+            showAlert("Error", "Quantity list is empty.", Alert.AlertType.ERROR);
+            return;
+        }
+        if (totQuantity <= 0) {
+            showAlert("Error", "Total quantity cannot be zero.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        Connection connection = null;
+        try {
+            connection = DataBaseConnection.getConnection();
+            connection.setAutoCommit(false);
+
+            // ✅ Create shipment record
+            int shipmentId = createShipment(connection, selectedSourceWarehouse, selectedDestinationWarehouse, totQuantity, "IN");
+            int shipmentDetailsId = createShipmentDetails(connection, shipmentId, totalPrice, totQuantity);
+
+            // ✅ Fetch latest products to avoid stale data
+            ProductsService.getProducts();
+            ArrayList<Product> warehouseProducts = Session.getProducts();
+
+            // ✅ Separate new and existing products
+            ArrayList<Product> newProducts = new ArrayList<>();
+            ArrayList<Product> existingProducts = new ArrayList<>();
+            ArrayList<Integer> newProductsQty = new ArrayList<>();
+            ArrayList<Integer> existingProductsQty = new ArrayList<>();
+
+            for (int i = 0; i < items.size(); i++) {
+                Product incomingProduct = items.get(i);
+                int qty = quantity.get(i);
+
+                boolean exists = warehouseProducts.stream()
+                        .anyMatch(p -> p.getItemCode().equalsIgnoreCase(incomingProduct.getItemCode()));
+
+                if (exists) {
+                    existingProducts.add(incomingProduct);
+                    existingProductsQty.add(qty);
+                } else {
+                    newProducts.add(incomingProduct);
+                    newProductsQty.add(qty);
+                }
+            }
+
+            // ✅ Insert new products into Product table
+            if (!newProducts.isEmpty()) {
+                insertNewProducts(connection, newProducts);
+                insertNewProductValuesIntoQuantity(connection, newProducts, newProductsQty, selectedDestinationWarehouse);
+            }
+
+            // ✅ Update existing quantities
+            if (!existingProducts.isEmpty()) {
+                increaseQuantityInQuantityTable(connection, selectedDestinationWarehouse, existingProducts, existingProductsQty);
+            }
+
+            // ✅ Add shipment items
+            addShipmentItems(connection, shipmentDetailsId, items, quantity);
+
+            connection.commit();
+            ProductsService.getProducts(); // Refresh products
+
+            showAlert("Success", "Reception created successfully (ID: " + shipmentId + ").", Alert.AlertType.INFORMATION);
+
+        } catch (SQLException | ClassNotFoundException e) {
+            if (connection != null) {
+                try { connection.rollback(); } catch (SQLException ignored) {}
+            }
+            showAlert("Error", "Failed to create reception: " + e.getMessage(), Alert.AlertType.ERROR);
+        } finally {
+            if (connection != null) {
+                try { connection.close(); } catch (SQLException ignored) {}
+            }
+        }
     }
+
 
     public static void expedition(Warehouse selectedSourceWarehouse, Warehouse selectedDestinationWarehouse,
                                   ArrayList<Product> items, ArrayList<Integer> quantity, int totQuantity, float totalPrice) {
 
-        try (Connection connection = DataBaseConnection.getConnection()) {
+        // ✅ Validate inputs before proceeding
+        if (items == null || items.isEmpty()) {
+            showAlert("Error", "No products selected for shipment.", Alert.AlertType.ERROR);
+            return;
+        }
+        if (quantity == null || quantity.isEmpty()) {
+            showAlert("Error", "Quantity list is empty.", Alert.AlertType.ERROR);
+            return;
+        }
+        if (totQuantity <= 0) {
+            showAlert("Error", "Total quantity cannot be zero.", Alert.AlertType.ERROR);
+            return;
+        }
 
-            // 1️⃣ Create Shipment
-            int shipmentId = createShipment(connection, selectedSourceWarehouse, selectedDestinationWarehouse, totQuantity);
+        Connection connection = null;
+        try {
+            connection = DataBaseConnection.getConnection();
+            connection.setAutoCommit(false);
 
-            // 2️⃣ Create ShipmentDetails
+            int shipmentId = createShipment(connection, selectedSourceWarehouse, selectedDestinationWarehouse, totQuantity,"OUT");
             int shipmentDetailsId = createShipmentDetails(connection, shipmentId, totalPrice, totQuantity);
 
-            System.out.println("Shipment created: " + shipmentId + ", Details ID: " + shipmentDetailsId);
+            addShipmentItems(connection, shipmentDetailsId, items, quantity);
+            reduceQuantityFromQuantityTable(connection, selectedSourceWarehouse, items, quantity);
 
-             addShipmentItems(connection, shipmentDetailsId, items, quantity);
+            connection.commit();
+            ProductsService.getProducts(); // Refresh products after commit
+
+            // ✅ Success alert
+            showAlert("Success", "Shipment created successfully (ID: " + shipmentId + ").", Alert.AlertType.INFORMATION);
 
         } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException("Error creating shipment: " + e.getMessage(), e);
+            if (connection != null) {
+                try { connection.rollback(); } catch (SQLException ignored) {}
+            }
+            showAlert("Error", "Failed to create shipment: " + e.getMessage(), Alert.AlertType.ERROR);
+        } finally {
+            if (connection != null) {
+                try { connection.close(); } catch (SQLException ignored) {}
+            }
         }
     }
 
     // -------------------- Sub-methods --------------------
 
-    private static int createShipment(Connection connection, Warehouse source, Warehouse destination, int totQuantity) throws SQLException {
+    private static int createShipment(Connection connection, Warehouse source, Warehouse destination, int totQuantity, String type) throws SQLException {
         final String sql = "INSERT INTO Shipment (Date, Type, SourceID, DestinationID, TotalQuantity, EmployeeID) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setDate(1, new java.sql.Date(System.currentTimeMillis()));
-            ps.setString(2, "OUT");
+            ps.setString(2, type);
             ps.setInt(3, source.getId());
             ps.setInt(4, destination.getId());
             ps.setInt(5, totQuantity);
@@ -84,5 +190,88 @@ public class ShipmentServices {
             }
             ps.executeBatch();
         }
+    }
+
+    private static void reduceQuantityFromQuantityTable(Connection connection, Warehouse selectedSourceWarehouse,
+                                                        ArrayList<Product> items,
+                                                        ArrayList<Integer> quantity) throws SQLException {
+        final String sql = "UPDATE Quantity " +
+                "SET Quantity = Quantity - ? " +
+                "WHERE ItemCode = ? AND WarehouseID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (int i = 0; i < items.size(); i++) {
+                ps.setInt(1, quantity.get(i));
+                ps.setString(2, items.get(i).getItemCode());
+                ps.setInt(3, selectedSourceWarehouse.getId());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+    }
+
+    private static void insertNewProducts(Connection connection, ArrayList<Product> newProducts) throws SQLException {
+        final String sql = "INSERT INTO ProductType (ItemCode, UnitPrice, Color, Size, Section) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (Product p : newProducts) {
+                ps.setString(1, p.getItemCode());
+                ps.setFloat(2, p.getUnitPrice());
+                ps.setString(3, p.getColor() != null ? p.getColor() : "");
+                ps.setString(4, p.getSize() != null ? p.getSize() : "");
+                ps.setString(5, p.getSection() != null ? p.getSection() : "");
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+    }
+
+    private static void insertNewProductValuesIntoQuantity(Connection connection,
+                                                    ArrayList<Product> newProducts,
+                                                    ArrayList<Integer> newProductsQty,
+                                                    Warehouse destinationWarehouse) throws SQLException {
+        final String sql = "INSERT INTO Quantity (ItemCode, Quantity, WarehouseID) VALUES (?, ?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (int i = 0; i < newProducts.size(); i++) {
+                Product product = newProducts.get(i);
+                int qty = newProductsQty.get(i);
+
+                ps.setString(1, product.getItemCode());
+                ps.setInt(2, qty);
+                ps.setInt(3, destinationWarehouse.getId());
+
+                ps.addBatch();
+            }
+            ps.executeBatch(); // Execute all insert statements at once
+        }
+    }
+
+
+    private static void increaseQuantityInQuantityTable(Connection connection, Warehouse destinationWarehouse,
+                                                        ArrayList<Product> items, ArrayList<Integer> quantity) throws SQLException {
+        final String sql = "UPDATE Quantity SET Quantity = Quantity + ? WHERE ItemCode = ? AND WarehouseID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (int i = 0; i < items.size(); i++) {
+                ps.setInt(1, quantity.get(i));
+                ps.setString(2, items.get(i).getItemCode());
+                ps.setInt(3, destinationWarehouse.getId());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+    }
+
+
+
+    // ✅ Reusable alert method
+    private static void showAlert(String title, String message, Alert.AlertType type) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(type);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 }
