@@ -6,6 +6,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class DeletedLogs {
     @FXML private TextField Pathtxt;
     @FXML private Button SaveButton;

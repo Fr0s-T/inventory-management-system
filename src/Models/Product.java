@@ -1,5 +1,12 @@
 package Models;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class Product {
     private String itemCode;
     private String color;

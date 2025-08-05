@@ -2,6 +2,14 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import Controllers.SceneLoader;
 
+/**
+ *
+ *
+ * Authors: @Frost,@Ilia
+ * Entry point of the program
+ *
+ */
+
 public class Main extends Application {
 //SuFrame.fxml
     @Override

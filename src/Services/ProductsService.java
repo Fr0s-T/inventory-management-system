@@ -7,6 +7,13 @@ import Utilities.DataBaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class ProductsService {
 
     public static void getProducts(){

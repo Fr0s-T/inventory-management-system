@@ -4,7 +4,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /*
+*
  * Author: @Frost
+ *
  */
 
 public class HashingUtility {

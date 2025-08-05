@@ -4,6 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class DataBaseConnection {
     private static final String server = "inventorymanegmentsystem-srv.database.windows.net";
     private static final String database = "IMS";

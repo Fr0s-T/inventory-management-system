@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * Author: @Frost
+ * Author: @Frost,@Ilia
  *
  */
 public class UserFrame extends Application {

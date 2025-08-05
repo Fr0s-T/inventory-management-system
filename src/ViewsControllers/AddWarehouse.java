@@ -13,6 +13,13 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class AddWarehouse {
     @FXML private TextField nameField;
     @FXML private ComboBox<User> managerComboBox; // ✅ Changed to User

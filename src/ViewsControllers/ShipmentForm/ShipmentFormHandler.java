@@ -10,6 +10,12 @@ import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
 
+/**
+ *
+ * Author: @Frost
+ *
+ */
+
 public class ShipmentFormHandler {
 
     private final ListView<String> productsListView;

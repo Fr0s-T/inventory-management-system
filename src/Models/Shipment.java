@@ -1,5 +1,12 @@
 package Models;
 
+/**
+ *
+ * Author: @Ilia
+ *
+ */
+
+
 public class Shipment {
     private final int id;
     private final String date;
