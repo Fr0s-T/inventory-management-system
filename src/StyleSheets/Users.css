@@ -1,3 +1,74 @@
+/* ===== Root Background ===== */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #fdfdfc; /* clean, warm-neutral */
+}
+
+/* ===== Title Label ===== */
+.label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.label:focused {
+    -fx-font-size: 36px;
+    -fx-text-fill: #e65100; /* warm highlight just for the title */
+    -fx-font-weight: bold;
+}
+
+/* ===== TextFields & PasswordFields ===== */
+.text-field,
+.password-field {
+    -fx-background-color: white;
+    -fx-border-color: #ccc; /* neutral gray border */
+    -fx-border-radius: 5;
+    -fx-padding: 5 10 5 10;
+    -fx-font-size: 13px;
+    -fx-text-fill: #2e2e2e; /* neutral readable text */
+}
+
+/* Focused input field highlight */
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #ffb74d; /* subtle warm glow when focused */
+    -fx-border-width: 1.5px;
+}
+
+/* ===== Buttons ===== */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #ffa726, #fb8c00);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: #f57c00;
+}
+
+.button:pressed {
+    -fx-background-color: #e65100;
+}
+
+/* ===== CheckBoxes ===== */
+.check-box {
+    -fx-text-fill: #444444;
+    -fx-font-size: 13px;
+}
+
+/* ===== Optional Image Shadow ===== */
+.image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.1, 0, 2);
+}
+.title-label {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e65100; /* warm orange to match top pane */
+}
 .toggle-switch {
     -fx-background-color: #ccc;
     -fx-background-radius: 20;
@@ -20,5 +91,7 @@
 }
 
 .toggle-switch:selected .box {
-    -fx-translate-x: 25;
+    -fx-translate-x: 110;
 }
+
+

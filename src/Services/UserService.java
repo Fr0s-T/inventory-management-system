@@ -40,6 +40,7 @@ public class UserService {
                         rs.getString("MiddleName"),
                         rs.getString("LastName"),
                         rs.getString("Username"),
+                        rs.getBoolean("OnDuty"),
                         rs.getInt("RoleID"),
                         rs.getInt("WarehouseID"),
                         rs.getString("Picture"),
