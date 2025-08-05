@@ -3,9 +3,8 @@ package Services;
 import Models.Product;
 import Models.Session;
 import Models.Warehouse;
+import Utilities.AlertUtils;
 import Utilities.DataBaseConnection;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,15 +25,15 @@ public class ShipmentServices {
     public static void reception(Warehouse selectedSourceWarehouse, Warehouse selectedDestinationWarehouse,
                                  ArrayList<Product> items, ArrayList<Integer> quantity, int totQuantity, float totalPrice) {
         if (items == null || items.isEmpty()) {
-            showAlert("Error", "No products selected for shipment.", Alert.AlertType.ERROR);
+            AlertUtils.showError("Error", "No products selected for shipment.");
             return;
         }
         if (quantity == null || quantity.isEmpty()) {
-            showAlert("Error", "Quantity list is empty.", Alert.AlertType.ERROR);
+            AlertUtils.showError("Error", "Quantity list is empty.");
             return;
         }
         if (totQuantity <= 0) {
-            showAlert("Error", "Total quantity cannot be zero.", Alert.AlertType.ERROR);
+            AlertUtils.showError("Error", "Total quantity cannot be zero.");
             return;
         }
 
@@ -90,13 +89,13 @@ public class ShipmentServices {
             connection.commit();
             ProductsService.getProducts(); // Refresh products
 
-            showAlert("Success", "Reception created successfully (ID: " + shipmentId + ").", Alert.AlertType.INFORMATION);
+            AlertUtils.showSuccess("Reception created successfully (ID: " + shipmentId + ").");
 
         } catch (SQLException | ClassNotFoundException e) {
             if (connection != null) {
                 try { connection.rollback(); } catch (SQLException ignored) {}
             }
-            showAlert("Error", "Failed to create reception: " + e.getMessage(), Alert.AlertType.ERROR);
+            AlertUtils.showError("Error", "Failed to create reception: " + e.getMessage());
         } finally {
             if (connection != null) {
                 try { connection.close(); } catch (SQLException ignored) {}
@@ -110,15 +109,15 @@ public class ShipmentServices {
 
         // ✅ Validate inputs before proceeding
         if (items == null || items.isEmpty()) {
-            showAlert("Error", "No products selected for shipment.", Alert.AlertType.ERROR);
+            AlertUtils.showError("Error", "No products selected for shipment.");
             return;
         }
         if (quantity == null || quantity.isEmpty()) {
-            showAlert("Error", "Quantity list is empty.", Alert.AlertType.ERROR);
+            AlertUtils.showError("Error", "Quantity list is empty.");
             return;
         }
         if (totQuantity <= 0) {
-            showAlert("Error", "Total quantity cannot be zero.", Alert.AlertType.ERROR);
+            AlertUtils.showError("Error", "Total quantity cannot be zero.");
             return;
         }
 
@@ -137,13 +136,13 @@ public class ShipmentServices {
             ProductsService.getProducts(); // Refresh products after commit
 
             // ✅ Success alert
-            showAlert("Success", "Shipment created successfully (ID: " + shipmentId + ").", Alert.AlertType.INFORMATION);
+            AlertUtils.showSuccess( "Shipment created successfully (ID: " + shipmentId + ").");
 
         } catch (SQLException | ClassNotFoundException e) {
             if (connection != null) {
                 try { connection.rollback(); } catch (SQLException ignored) {}
             }
-            showAlert("Error", "Failed to create shipment: " + e.getMessage(), Alert.AlertType.ERROR);
+            AlertUtils.showError("Error", "Failed to create shipment: " + e.getMessage());
         } finally {
             if (connection != null) {
                 try { connection.close(); } catch (SQLException ignored) {}
@@ -269,16 +268,4 @@ public class ShipmentServices {
         }
     }
 
-
-
-    // ✅ Reusable alert method
-    private static void showAlert(String title, String message, Alert.AlertType type) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(type);
-            alert.setTitle(title);
-            alert.setHeaderText(null);
-            alert.setContentText(message);
-            alert.showAndWait();
-        });
-    }
 }

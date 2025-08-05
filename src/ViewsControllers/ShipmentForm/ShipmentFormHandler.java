@@ -72,7 +72,7 @@ public class ShipmentFormHandler {
     }
 
     public void handleReception(String code, String qtyText) {
-        if (!validateInput(code, qtyText)) return;
+        if (validateInput(code, qtyText)) return;
 
         // ✅ Check if product exists in the session
         Product existingProduct = Session.getProducts().stream()
@@ -108,7 +108,16 @@ public class ShipmentFormHandler {
             AlertUtils.showWarning("Product Selection Missing", "Please select a product for expedition.");
             return;
         }
-        if (!validateInput(selectedProduct.getItemCode(), qtyText)) return;
+        if (validateInput(selectedProduct.getItemCode(), qtyText)) return;
+
+        // ✅ Auto-fill unit price
+        if (selectedProduct.getUnitPrice() > 0) {
+            unitPriceField.setText(String.valueOf(selectedProduct.getUnitPrice()));
+            unitPriceField.setDisable(true);
+        } else {
+            unitPriceField.clear();
+            unitPriceField.setDisable(false);
+        }
 
         int qty = Integer.parseInt(qtyText);
         if (qty > selectedProduct.getQuantity()) {
@@ -118,22 +127,23 @@ public class ShipmentFormHandler {
         addProduct(selectedProduct, qty);
     }
 
+
     private boolean validateInput(String code, String qtyText) {
         if (code == null || code.isEmpty()) {
             AlertUtils.showWarning("Item Code Missing", "Please enter an item code.");
-            return false;
+            return true;
         }
         try {
             int qty = Integer.parseInt(qtyText);
             if (qty <= 0) {
                 AlertUtils.showWarning("Invalid Quantity", "Quantity must be greater than 0.");
-                return false;
+                return true;
             }
         } catch (NumberFormatException e) {
             AlertUtils.showWarning("Invalid Input", "Quantity must be a number.");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     private void addProduct(Product product, int qty) {
@@ -182,4 +192,39 @@ public class ShipmentFormHandler {
         unitPriceField.setDisable(false); // ✅ Re-enable for next input
         itemCodeField.clear();
     }
+
+    public void removeItem(String itemCode) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getItemCode().equalsIgnoreCase(itemCode)) {
+                totalQuantity -= quantities.get(i);
+                totalPrice -= items.get(i).getUnitPrice() * quantities.get(i);
+                items.remove(i);
+                quantities.remove(i);
+                break;
+            }
+        }
+
+        totalQuantityTxt.setText(String.valueOf(totalQuantity));
+        totalPriceTxt.setText(String.valueOf(totalPrice));
+    }
+
+    public void removeItem() {
+        String selectedEntry = productsListView.getSelectionModel().getSelectedItem();
+        if (selectedEntry == null) {
+            AlertUtils.showWarning("No Selection", "Please select an item to remove.");
+            return;
+        }
+
+        String[] parts = selectedEntry.split(" - Qty: ");
+        if (parts.length != 2) {
+            AlertUtils.showWarning("Invalid Format", "Cannot identify the selected product.");
+            return;
+        }
+
+        String itemCode = parts[0].trim();
+        removeItem(itemCode);
+        productsListView.getItems().remove(selectedEntry);
+    }
+
+
 }

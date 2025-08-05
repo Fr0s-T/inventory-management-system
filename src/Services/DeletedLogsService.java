@@ -2,6 +2,7 @@ package Services;
 
 import Models.Session;
 import Models.User;
+import Utilities.AlertUtils;
 import Utilities.DataBaseConnection;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -51,10 +52,11 @@ public class DeletedLogsService {
 
                 // Show success alert on the JavaFX Application Thread
                 Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("File Created");
-                    alert.setContentText("Deleted logs are saved into:\n" + filepath);
-                    alert.showAndWait();
+                    Throwable ex = getException();
+                    Platform.runLater(() -> AlertUtils.showError(
+                            "Error",
+                            "Could not save deleted logs.\n" + ex.getMessage()
+                    ));
                 });
 
                 return null;

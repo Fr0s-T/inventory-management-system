@@ -1,8 +1,9 @@
 package Services;
 
 import Models.User;
+import Utilities.AlertUtils;
 import Utilities.DataBaseConnection;
-import Utilities.HashingUtility;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +17,6 @@ import java.time.LocalDate;
  */
 
 public class EditUserServices {
-
 
     public static void updateEmployee(int id, String firstName, String middleName, String lastName,
                                       int roleId, boolean onDuty, String password)
@@ -47,12 +47,20 @@ public class EditUserServices {
                 stmt.setInt(6, id);
             }
 
-            stmt.executeUpdate();
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                AlertUtils.showSuccess("Employee updated successfully.");
+            } else {
+                AlertUtils.showWarning("Update", "No employee found with ID: " + id);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            AlertUtils.showError("Database Error", e.getMessage());
+            throw e;
         }
     }
 
-
-    public static void endCurrentHierarchy(int employeeId){
+    public static void endCurrentHierarchy(int employeeId) {
         String query = "UPDATE Hierarchy SET EndDate = ? WHERE EmployeeID = ? AND EndDate IS NULL";
 
         try (Connection conn = DataBaseConnection.getConnection();
@@ -64,16 +72,14 @@ public class EditUserServices {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Hierarchy updated for EmployeeID " + employeeId);
+                AlertUtils.showSuccess("Hierarchy updated for EmployeeID " + employeeId);
             } else {
-                System.out.println("No active hierarchy found for EmployeeID " + employeeId);
+                AlertUtils.showWarning("No Update", "No active hierarchy found for EmployeeID " + employeeId);
             }
 
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            AlertUtils.showError("Database Error", e.getMessage());
         }
-
-
     }
 
     public static void insertToHierarchy(int employeeId, int roleId, int managerId) {
@@ -91,16 +97,15 @@ public class EditUserServices {
             int rowsInserted = stmt.executeUpdate();
 
             if (rowsInserted > 0) {
-                System.out.println("New hierarchy record inserted for EmployeeID " + employeeId);
+                AlertUtils.showSuccess("New hierarchy record inserted for EmployeeID " + employeeId);
             } else {
-                System.out.println("Failed to insert new hierarchy.");
+                AlertUtils.showWarning("Insert Failed", "Failed to insert new hierarchy.");
             }
 
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            AlertUtils.showError("Database Error", e.getMessage());
         }
     }
-
 
     public static User fetchUser(int id) {
         String query = "SELECT * FROM Employee WHERE ID = ?";
@@ -113,10 +118,12 @@ public class EditUserServices {
 
             if (rs.next()) {
                 return new User(rs);
+            } else {
+                AlertUtils.showWarning("Fetch User", "No user found with ID: " + id);
             }
 
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            AlertUtils.showError("Database Error", e.getMessage());
         }
 
         return null;

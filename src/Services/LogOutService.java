@@ -2,9 +2,7 @@ package Services;
 
 import Controllers.SceneLoader;
 import Models.Session;
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import Utilities.AlertUtils;
 
 import java.util.Optional;
 
@@ -14,36 +12,27 @@ import java.util.Optional;
  *
  */
 
-
 public class LogOutService {
 
-
     public static void Logout() {
+        boolean confirmed = AlertUtils.showConfirmation(
+                "Logout Confirmation",
+                "Are you sure you want to logout?\nYou will be redirected to the login screen."
+        );
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-
-        alert.setTitle("Logout Confirmation");
-        alert.setHeaderText("Are you sure you want to logout?");
-        alert.setContentText("You will be redirected to the login screen.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (confirmed) {
             Session.logOut();
             SceneLoader.loadScene("/FXML/LoginPage.fxml", null); // Adjust path if needed
         }
     }
-    public static void BackToDashboard(){
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    public static void BackToDashboard() {
+        boolean confirmed = AlertUtils.showConfirmation(
+                "Back To Regional Manager Dashboard",
+                "Are you sure you want to logout?\nYou will be redirected to the Regional Manager Dashboard."
+        );
 
-        alert.setTitle("Back To Regional Manager Dashboard");
-        alert.setHeaderText("Are you sure you want to logout?");
-        alert.setContentText("You will be redirected to the Regional Manager Dashboard");
-
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (confirmed) {
             Session.BackToDashboard();
             SceneLoader.loadScene("/FXML/SuFrame.fxml", null); // Adjust path if needed
         }
