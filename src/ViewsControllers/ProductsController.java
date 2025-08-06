@@ -2,6 +2,7 @@ package ViewsControllers;
 
 import Models.Product;
 import Models.Session;
+import Controllers.SceneLoader;
 import Services.ProductsService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -33,14 +34,21 @@ public class ProductsController {
     @FXML private TableColumn<Product, String> sectionColumn;
     @FXML private TableColumn<Product, String> UnitPriceColumn;
 
+    private static ProductsController instance;
+
     @FXML
     private ObservableList<Product> originalProductList;
 
     @FXML
     public void initialize() {
         if (Session.getProducts() == null) ProductsService.getProducts();
+        if (instance == null) instance = this;
 
         originalProductList = FXCollections.observableArrayList(Session.getProducts());
+
+        if (SceneLoader.getCurrentScene().equals("Products.fxml")) {
+            ProductsController.refreshTable();
+        }
 
         // Set up columns
         itemCodeColumn.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
@@ -83,6 +91,15 @@ public class ProductsController {
         );
 
         ProductsTable.setItems(filteredList);
+    }
+
+    public static void refreshTable() {
+        if (instance != null && instance.ProductsTable != null) {
+            Platform.runLater(() -> {
+                instance.originalProductList.setAll(Session.getProducts());
+                instance.ProductsTable.refresh();
+            });
+        }
     }
 
 }

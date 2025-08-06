@@ -1,6 +1,7 @@
 package Controllers;
 
 import Services.LogOutService;
+import Services.ProductsService;
 import Services.WareHouseService;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -36,84 +37,28 @@ public class UserFrame extends Application {
     @FXML private AnchorPane dynamicPanel;
     private Stage mainStage;
 
-
     @FXML
     private void initialize() {
         try {
             User user = Session.getCurrentUser();
-            // Set username label
             UsernameLabel.setText(user.getUsername());
-            // Fetch and display warehouse info if user is linked to one
+
+            // ✅ Load warehouse info if not cached
             if (Session.getWarehouses() == null) {
                 WareHouseService.getCurrentWarehouseInfo();
-                Warehouse currentWarehouse = Session.getCurrentWarehouse();
-
-                if (currentWarehouse != null) {
-                    WarehouseLabel.setText(currentWarehouse.getName());
-                } else {
-                    WarehouseLabel.setText("No warehouse assigned");
-                }
-            } else {
-                WarehouseLabel.setText(Session.getCurrentWarehouse().getName());
             }
 
-            AddEmployeeBtn.setOnAction(actionEvent -> {
-                try {
-                    // Load FXML
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/AddEmployee.fxml"));
-                    AnchorPane page = loader.load();
+            Warehouse currentWarehouse = Session.getCurrentWarehouse();
+            if (currentWarehouse != null) {
+                WarehouseLabel.setText(currentWarehouse.getName());
 
-                    // Create popup Stage
-                    Stage dialogStage = new Stage();
-                    dialogStage.setTitle("Add Employee");
-                    dialogStage.initModality(Modality.WINDOW_MODAL);
-                    dialogStage.initOwner(AddEmployeeBtn.getScene().getWindow());
+                // ✅ Start background sync now that warehouse is available
+                ProductsService.startBackgroundSync();
+            } else {
+                WarehouseLabel.setText("No warehouse assigned");
+            }
 
-                    Scene scene = new Scene(page);
-                    dialogStage.setScene(scene);
-
-                    // Pass stage to controller (FIXED HERE)
-                    ViewsControllers.AddEmployeeController controller = loader.getController();
-                    controller.setDialogStage(dialogStage);
-
-                    // Show popup
-                    dialogStage.showAndWait();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-
-            ProductsBtn.setOnAction(actionEvent -> {
-                try {
-                    SceneLoader.loadProducts(dynamicPanel);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            ShipmentsBtn.setOnAction(actionEvent -> {
-                try {
-                    SceneLoader.loadShipment(dynamicPanel);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            BackToDashboard.setOnAction(actionEvent -> LogOutService.BackToDashboard());
-            UsersBtn.setOnAction(actionEvent -> {
-                try {
-                    SceneLoader.loadEditEmployee(dynamicPanel);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            ReportsBtn.setOnAction(actionEvent -> {
-                try {
-                    SceneLoader.loadReports(dynamicPanel);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            // Handle logout
-            LogoutBtn.setOnAction(event -> LogOutService.Logout());
+            setupButtons();
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -124,18 +69,72 @@ public class UserFrame extends Application {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        //ProductsBtn.setOnAction(actionEvent -> );
     }
 
+    private void setupButtons() {
+        AddEmployeeBtn.setOnAction(actionEvent -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/AddEmployee.fxml"));
+                AnchorPane page = loader.load();
 
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Add Employee");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(AddEmployeeBtn.getScene().getWindow());
 
+                Scene scene = new Scene(page);
+                dialogStage.setScene(scene);
 
+                ViewsControllers.AddEmployeeController controller = loader.getController();
+                controller.setDialogStage(dialogStage);
+
+                dialogStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        ProductsBtn.setOnAction(actionEvent -> {
+            try {
+                SceneLoader.loadProducts(dynamicPanel);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        ShipmentsBtn.setOnAction(actionEvent -> {
+            try {
+                SceneLoader.loadShipment(dynamicPanel);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        BackToDashboard.setOnAction(actionEvent -> LogOutService.BackToDashboard());
+
+        UsersBtn.setOnAction(actionEvent -> {
+            try {
+                SceneLoader.loadEditEmployee(dynamicPanel);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        ReportsBtn.setOnAction(actionEvent -> {
+            try {
+                SceneLoader.loadReports(dynamicPanel);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        LogoutBtn.setOnAction(event -> LogOutService.Logout());
+    }
 
     @Override
-    public void start(Stage stage) throws Exception{
+    public void start(Stage stage) throws Exception {
         mainStage = stage;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/UserFrame.fxml"));
-        //loader.setController(this);
         AnchorPane root = loader.load();
 
         Scene scene = new Scene(root);

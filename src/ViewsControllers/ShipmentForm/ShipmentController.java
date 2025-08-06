@@ -4,8 +4,10 @@ import Models.Product;
 import Models.Session;
 import Models.Warehouse;
 import Services.ProductsService;
+import Services.ShipmentServices;
 import Services.WareHouseService;
 import Utilities.AlertUtils;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -36,6 +38,7 @@ public class ShipmentController {
     @FXML private Button EditBtn;
     @FXML private Button RemoveBtn;
     @FXML private ComboBox<Product> ExpadistionComboBox;
+    @FXML private ProgressIndicator progressIndicator; // Add this to FXML
 
     private ShipmentFormHandler formHandler;
 
@@ -56,6 +59,11 @@ public class ShipmentController {
         setupButtons();
 
         ShipmentType.selectToggle(ReceptionRadioButton); // Default
+
+        // Hide progress indicator initially
+        if (progressIndicator != null) {
+            progressIndicator.setVisible(false);
+        }
     }
 
     private void setupWarehouses() {
@@ -104,7 +112,9 @@ public class ShipmentController {
     }
 
     private void setupProducts() {
-        ProductsService.getProducts();
+
+        if (Session.getProducts() == null) ProductsService.getProducts();
+
         ArrayList<Product> products = Session.getProducts();
         ExpadistionComboBox.getItems().addAll(products);
 
@@ -123,7 +133,6 @@ public class ShipmentController {
             }
         });
 
-        // ✅ Auto-fill Name and Unit Price on selection
         ExpadistionComboBox.setOnAction(event -> {
             Product selected = ExpadistionComboBox.getValue();
             if (selected != null) {
@@ -174,49 +183,94 @@ public class ShipmentController {
             }
         });
 
-        SaveButton.setOnAction(event -> formHandler.save(
-                ReceptionRadioButton.isSelected(),
-                SourceComboBox.getValue(),
-                DestinationComboBox.getValue()
-        ));
+        SaveButton.setOnAction(event -> handleSave());
 
         CancelButton.setOnAction(event -> formHandler.reset());
 
-        EditBtn.setOnAction(event -> {
-            String selectedEntry = ProductsListView.getSelectionModel().getSelectedItem();
-            if (selectedEntry == null) {
-                AlertUtils.showWarning("No Selection", "Please select a product to edit.");
-                return;
-            }
-
-            String[] parts = selectedEntry.split(" - Qty: ");
-            if (parts.length != 2) {
-                AlertUtils.showError("Invalid Format", "The selected entry is not valid.");
-                return;
-            }
-
-            String itemCode = parts[0].trim();
-            String quantity = parts[1].trim();
-
-            if (ReceptionRadioButton.isSelected()) {
-                ItemCodeTxt.setText(itemCode);
-                ItemCodeTxt.setDisable(true);
-                QuantityTxt.setText(quantity);
-            } else {
-                for (Product product : ExpadistionComboBox.getItems()) {
-                    if (product.getItemCode().equalsIgnoreCase(itemCode)) {
-                        ExpadistionComboBox.getSelectionModel().select(product);
-                        formHandler.autoFillFromProduct(product);
-                        break;
-                    }
-                }
-                QuantityTxt.setText(quantity);
-            }
-
-            ProductsListView.getItems().remove(selectedEntry);
-            formHandler.removeItem(itemCode);
-        });
+        EditBtn.setOnAction(event -> handleEdit());
 
         RemoveBtn.setOnAction(actionEvent -> formHandler.removeItem());
+    }
+
+    private void handleSave() {
+        boolean isReception = ReceptionRadioButton.isSelected();
+        Warehouse source = SourceComboBox.getValue();
+        Warehouse destination = DestinationComboBox.getValue();
+        ArrayList<Product> items = formHandler.getItems();
+        ArrayList<Integer> quantities = formHandler.getQuantities();
+        int totalQty = formHandler.getTotalQuantity();
+        float totalPrice = formHandler.getTotalPrice();
+
+        if (progressIndicator != null) {
+            progressIndicator.setVisible(true);
+        }
+
+        Task<Void> shipmentTask = new Task<>() {
+            @Override
+            protected Void call() {
+                if (isReception) {
+                    ShipmentServices.reception(source, destination, items, quantities, totalQty, totalPrice);
+                } else {
+                    ShipmentServices.expedition(source, destination, items, quantities, totalQty, totalPrice);
+                }
+                return null;
+            }
+        };
+
+        shipmentTask.setOnRunning(e -> {
+            if (progressIndicator != null) progressIndicator.setVisible(true);
+            SaveButton.setDisable(true);
+        });
+
+        shipmentTask.setOnSucceeded(e -> {
+            if (progressIndicator != null) progressIndicator.setVisible(false);
+            formHandler.reset();
+            SaveButton.setDisable(false);
+            AlertUtils.showSuccess("Shipment completed successfully.");
+        });
+
+        shipmentTask.setOnFailed(e -> {
+            if (progressIndicator != null) progressIndicator.setVisible(false);
+            String message = shipmentTask.getException() != null ? shipmentTask.getException().getMessage() : "Unknown error";
+            SaveButton.setDisable(false);
+            AlertUtils.showError("Error", "Failed to process shipment: " + message);
+        });
+
+        new Thread(shipmentTask).start();
+    }
+
+    private void handleEdit() {
+        String selectedEntry = ProductsListView.getSelectionModel().getSelectedItem();
+        if (selectedEntry == null) {
+            AlertUtils.showWarning("No Selection", "Please select a product to edit.");
+            return;
+        }
+
+        String[] parts = selectedEntry.split(" - Qty: ");
+        if (parts.length != 2) {
+            AlertUtils.showError("Invalid Format", "The selected entry is not valid.");
+            return;
+        }
+
+        String itemCode = parts[0].trim();
+        String quantity = parts[1].trim();
+
+        if (ReceptionRadioButton.isSelected()) {
+            ItemCodeTxt.setText(itemCode);
+            ItemCodeTxt.setDisable(true);
+            QuantityTxt.setText(quantity);
+        } else {
+            for (Product product : ExpadistionComboBox.getItems()) {
+                if (product.getItemCode().equalsIgnoreCase(itemCode)) {
+                    ExpadistionComboBox.getSelectionModel().select(product);
+                    formHandler.autoFillFromProduct(product);
+                    break;
+                }
+            }
+            QuantityTxt.setText(quantity);
+        }
+
+        ProductsListView.getItems().remove(selectedEntry);
+        formHandler.removeItem(itemCode);
     }
 }

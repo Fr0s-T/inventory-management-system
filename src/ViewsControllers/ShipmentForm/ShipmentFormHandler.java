@@ -5,7 +5,10 @@ import Models.Warehouse;
 import Models.Session;
 import Services.ShipmentServices;
 import Utilities.AlertUtils;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
@@ -29,6 +32,8 @@ public class ShipmentFormHandler {
     private int totalQuantity = 0;
     private float totalPrice = 0;
 
+    private ProgressIndicator progressIndicator;
+
     public ShipmentFormHandler(ListView<String> productsListView,
                                TextField totalQuantityTxt,
                                TextField totalPriceTxt,
@@ -44,9 +49,14 @@ public class ShipmentFormHandler {
         setupAutoFillDetails();
     }
 
+    public void setProgressIndicator(ProgressIndicator indicator) {
+        this.progressIndicator = indicator;
+        if (progressIndicator != null) progressIndicator.setVisible(false);
+    }
+
     private void setupAutoFillDetails() {
         itemCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) { // Field lost focus
+            if (!newValue) {
                 autoFillProductDetails(itemCodeField.getText());
             }
         });
@@ -113,7 +123,6 @@ public class ShipmentFormHandler {
         }
 
         Product product = getProduct(code, qtyText, existingProduct);
-
         addProduct(product, Integer.parseInt(qtyText));
     }
 
@@ -188,17 +197,38 @@ public class ShipmentFormHandler {
             return;
         }
 
-        if (isReception) {
-            ShipmentServices.reception(source, destination, items, quantities, totalQuantity, totalPrice);
-        } else {
-            if (source.equals(destination)) {
-                AlertUtils.showWarning("Invalid Warehouses", "Source and destination cannot be the same.");
-                return;
-            }
-            ShipmentServices.expedition(source, destination, items, quantities, totalQuantity, totalPrice);
+        if (!isReception && source.equals(destination)) {
+            AlertUtils.showWarning("Invalid Warehouses", "Source and destination cannot be the same.");
+            return;
         }
-        AlertUtils.showSuccess("Shipment completed successfully.");
-        reset();
+
+        if (progressIndicator != null) progressIndicator.setVisible(true);
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                if (isReception) {
+                    ShipmentServices.reception(source, destination, items, quantities, totalQuantity, totalPrice);
+                } else {
+                    ShipmentServices.expedition(source, destination, items, quantities, totalQuantity, totalPrice);
+                }
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            if (progressIndicator != null) progressIndicator.setVisible(false);
+            AlertUtils.showSuccess("Shipment completed successfully.");
+            reset();
+        });
+
+        task.setOnFailed(event -> {
+            if (progressIndicator != null) progressIndicator.setVisible(false);
+            String msg = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+            AlertUtils.showError("Error", "Failed to process shipment: " + msg);
+        });
+
+        new Thread(task).start();
     }
 
     public void reset() {
@@ -246,5 +276,22 @@ public class ShipmentFormHandler {
         String itemCode = parts[0].trim();
         removeItem(itemCode);
         productsListView.getItems().remove(selectedEntry);
+    }
+
+    // 👉 These are helpful if ShipmentController wants to use the values directly
+    public ArrayList<Product> getItems() {
+        return items;
+    }
+
+    public ArrayList<Integer> getQuantities() {
+        return quantities;
+    }
+
+    public int getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public float getTotalPrice() {
+        return totalPrice;
     }
 }

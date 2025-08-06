@@ -14,7 +14,6 @@ import Models.Warehouse;
 
 import java.io.IOException;
 import java.util.ArrayList;
-//to do: add primaryStage.setMaximized(true);
 
 /**
  * Utility class for managing scene transitions across the application.
@@ -22,6 +21,7 @@ import java.util.ArrayList;
  */
 public class SceneLoader {
     private static Stage primaryStage;
+    private static String currentSceneFxml = ""; // ✅ Track the current FXML
 
     public static void setPrimaryStage(Stage stage) {
         primaryStage = stage;
@@ -37,13 +37,14 @@ public class SceneLoader {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
 
-            // ✅ Automatically maximize SuFrame
+            // ✅ Update current scene
+            currentSceneFxml = fxmlPath;
+
             if (fxmlPath.contains("LoginPage.fxml")) {
                 primaryStage.setMaximized(false);
                 primaryStage.centerOnScreen();
             } else {
-                //primaryStage.setMaximized(true);
-                primaryStage.centerOnScreen(); // optional for login page
+                primaryStage.centerOnScreen();
             }
 
             primaryStage.show();
@@ -52,14 +53,13 @@ public class SceneLoader {
             throw new RuntimeException("Failed to load scene: " + fxmlPath);
         }
     }
-    public static void loadWarehouseCards(ArrayList<Warehouse> warehouses, FlowPane flowPane) {
-        flowPane.getChildren().clear(); // clear old cards if any
 
-        // Layout setup
+    public static void loadWarehouseCards(ArrayList<Warehouse> warehouses, FlowPane flowPane) {
+        flowPane.getChildren().clear();
         flowPane.setOrientation(Orientation.HORIZONTAL);
-        flowPane.setPrefWrapLength(600); // 2 cards of 280 + 20 gap
-        flowPane.setHgap(20); // horizontal space between cards
-        flowPane.setVgap(20); // vertical space between rows
+        flowPane.setPrefWrapLength(600);
+        flowPane.setHgap(20);
+        flowPane.setVgap(20);
 
         for (Warehouse warehouse : warehouses) {
             try {
@@ -67,7 +67,7 @@ public class SceneLoader {
                 Node card = loader.load();
 
                 WarehouseCards controller = loader.getController();
-                controller.setData(warehouse); // inject warehouse data
+                controller.setData(warehouse);
 
                 flowPane.getChildren().add(card);
             } catch (IOException e) {
@@ -75,6 +75,7 @@ public class SceneLoader {
             }
         }
     }
+
     public static void loadProducts(AnchorPane dynamicPanel) throws IOException {
         dynamicPanel.getChildren().clear();
 
@@ -88,7 +89,10 @@ public class SceneLoader {
         AnchorPane.setLeftAnchor(card, 0.0);
         AnchorPane.setRightAnchor(card, 0.0);
 
+        // ✅ Update current scene for dynamic panels
+        currentSceneFxml = "Products.fxml";
     }
+
     public static void loadShipment(AnchorPane dynamicPanel) throws IOException {
         dynamicPanel.getChildren().clear();
 
@@ -101,7 +105,10 @@ public class SceneLoader {
         AnchorPane.setBottomAnchor(card, 0.0);
         AnchorPane.setLeftAnchor(card, 0.0);
         AnchorPane.setRightAnchor(card, 0.0);
+
+        currentSceneFxml = "Shipment.fxml";
     }
+
     public static void loadEditEmployee(AnchorPane dynamicPanel) throws IOException {
         dynamicPanel.getChildren().clear();
 
@@ -114,7 +121,10 @@ public class SceneLoader {
         AnchorPane.setBottomAnchor(card, 0.0);
         AnchorPane.setLeftAnchor(card, 0.0);
         AnchorPane.setRightAnchor(card, 0.0);
+
+        currentSceneFxml = "Users.fxml";
     }
+
     public static void loadReports(AnchorPane dynamicPanel) throws IOException {
         dynamicPanel.getChildren().clear();
 
@@ -127,8 +137,12 @@ public class SceneLoader {
         AnchorPane.setBottomAnchor(card, 0.0);
         AnchorPane.setLeftAnchor(card, 0.0);
         AnchorPane.setRightAnchor(card, 0.0);
+
+        currentSceneFxml = "Reports.fxml";
     }
 
-
+    // ✅ Method to get the current scene name
+    public static String getCurrentScene() {
+        return currentSceneFxml;
+    }
 }
-
