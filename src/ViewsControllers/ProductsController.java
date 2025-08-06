@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -33,6 +34,7 @@ public class ProductsController {
     @FXML private TableColumn<Product, String> sizeColumn;
     @FXML private TableColumn<Product, String> sectionColumn;
     @FXML private TableColumn<Product, String> UnitPriceColumn;
+    @FXML private Button RefreshButton;
 
     private static ProductsController instance;
 

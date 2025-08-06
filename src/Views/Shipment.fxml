@@ -1,51 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="685.0" prefWidth="1193.0" stylesheets="@../StyleSheets/Shipment.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.ShipmentForm.ShipmentController">
+<AnchorPane prefHeight="685.0" prefWidth="1293.0" stylesheets="@../StyleSheets/Shipment.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewsControllers.ShipmentForm.ShipmentController">
+
    <children>
-      <Pane layoutX="148.0" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ADD8E6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+      <!-- Header Bar -->
+      <Pane prefHeight="125.0" style="-fx-background-color: linear-gradient(to bottom, #ADD8E6, #87CEFA);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button id="CancelButton" fx:id="CancelButton" layoutX="1000.0" layoutY="590.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="Cancel" />
-            <Button id="SaveButton" fx:id="SaveButton" layoutX="820.0" layoutY="591.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="Save" />
-            <Label layoutX="50.0" layoutY="50.0" prefHeight="50.0" prefWidth="120.0" text="Shipment Type:" />
-            <RadioButton id="ReceptionRadioButton" fx:id="ReceptionRadioButton" layoutX="200.0" layoutY="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Reception">
+            <Label alignment="CENTER" layoutX="389.0" layoutY="30.0" prefHeight="50.0" prefWidth="500.0" styleClass="title-label" text="Shipment Form">
+               <font>
+                  <Font name="System Bold" size="32.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+
+      <!-- Main content container -->
+      <VBox layoutY="124.8" prefHeight="560.0" prefWidth="1293.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="125.0">
+
+         <!-- Shipment Type -->
+         <HBox spacing="20">
+            <Label text="Shipment Type:" />
+            <RadioButton fx:id="ReceptionRadioButton" text="Reception">
                <toggleGroup>
                   <ToggleGroup fx:id="ShipmentType" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton id="ExpeditionRadioButton" fx:id="ExpeditionRadioButton" layoutX="350.0" layoutY="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Expedition" toggleGroup="$ShipmentType" />
-            <Label alignment="CENTER" layoutX="85.0" layoutY="150.0" prefHeight="50.0" prefWidth="120.0" text="Source:" />
-            <Label alignment="CENTER" layoutX="390.0" layoutY="150.0" prefHeight="50.0" prefWidth="120.0" text="Destination:" />
-            <ComboBox id="SourceComboBox" fx:id="SourceComboBox" layoutX="50.0" layoutY="200.0" prefHeight="50.0" prefWidth="200.0" />
-            <ComboBox id="DestinationComboBox" fx:id="DestinationComboBox" layoutX="350.0" layoutY="200.0" prefHeight="50.0" prefWidth="200.0" />
-            <ListView id="ProductsListView" fx:id="ProductsListView" editable="true" layoutX="43.0" layoutY="351.0" prefHeight="300.0" prefWidth="700.0" />
-            <Label layoutX="796.0" layoutY="97.0" prefHeight="50.0" prefWidth="120.0" text="Item Code:" />
-            <TextField id="ItemCodeTxt" fx:id="ItemCodeTxt" layoutX="796.0" layoutY="147.0" prefHeight="50.0" prefWidth="200.0" />
-            <Label layoutX="796.0" layoutY="217.0" prefHeight="50.0" prefWidth="120.0" text="Quantity:" />
-            <TextField id="QuantityTxt" fx:id="QuantityTxt" layoutX="798.0" layoutY="267.0" prefHeight="50.0" prefWidth="200.0" />
-            <TextField id="TotalQuantityTxt" fx:id="TotalQuantityTxt" editable="false" layoutX="373.0" layoutY="296.0" prefHeight="50.0" prefWidth="150.0" />
-            <Label alignment="CENTER" layoutX="253.0" layoutY="296.0" prefHeight="50.0" prefWidth="120.0" text="Total Qty:" />
-            <Label alignment="CENTER" layoutX="43.0" layoutY="296.0" prefHeight="50.0" prefWidth="150.0" text="Product List" />
-            <Button fx:id="AddBtn" layoutX="1046.0" layoutY="184.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="90.0" text="Add" />
-            <ComboBox fx:id="ExpadistionComboBox" layoutX="825.0" layoutY="155.0" prefWidth="150.0" />
-            <Label layoutX="536.0" layoutY="313.0" text="Total Price:" />
-            <TextField fx:id="TotalPriceTxtField" layoutX="621.0" layoutY="296.0" prefHeight="50.0" prefWidth="150.0" />
-            <TextField fx:id="UnitPriceField" layoutX="822.0" layoutY="339.0" />
-            <Button fx:id="EditBtn" layoutX="759.0" layoutY="400.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="74.0" text="Edit" />
-            <Label layoutX="743.0" layoutY="344.0" text="Unit Price:" />
-            <Button fx:id="RemoveBtn" layoutX="761.0" layoutY="469.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="74.0" text="Remove" />
-            <Label layoutX="916.0" layoutY="57.0" text="Name:" />
-            <TextField fx:id="NameTxtField" layoutX="964.0" layoutY="51.0" />
-         </children>
-      </Pane>
+            <RadioButton fx:id="ExpeditionRadioButton" text="Expedition" toggleGroup="$ShipmentType" />
+            <VBox.margin>
+               <Insets left="20.0" top="30.0" />
+            </VBox.margin>
+         </HBox>
+
+         <!-- Source and Destination -->
+         <HBox spacing="40">
+            <VBox spacing="10">
+               <Label text="Source:" />
+               <ComboBox fx:id="SourceComboBox" prefWidth="200" />
+            </VBox>
+            <VBox spacing="10">
+               <Label text="Destination:" />
+               <ComboBox fx:id="DestinationComboBox" prefWidth="200" />
+            </VBox>
+            <VBox spacing="10">
+               <children>
+                  <Label text="Outside of network:" />
+                  <TextField fx:id="OutsideOfNetworkTxt" prefWidth="200" />
+               </children>
+            </VBox>
+            <CheckBox fx:id="OutsideOfNetworkCheckBox" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Outside Of Network">
+               <HBox.margin>
+                  <Insets top="30.0" />
+               </HBox.margin>
+            </CheckBox>
+            <VBox.margin>
+               <Insets left="20.0" />
+            </VBox.margin>
+         </HBox>
+
+         <!-- Item Details -->
+         <HBox spacing="40">
+            <VBox spacing="10">
+               <Label text="Item Code:" />
+               <Pane prefHeight="30.0" prefWidth="200.0">
+                  <children>
+                     <TextField fx:id="ItemCodeTxt" layoutY="2.0" prefHeight="20.0" prefWidth="200" />
+                     <ComboBox fx:id="ExpadistionComboBox" layoutY="2.0" prefHeight="28.2" prefWidth="200.0" />
+                  </children>
+               </Pane>
+            </VBox>
+            <VBox spacing="10">
+               <Label text="Name:" />
+               <TextField fx:id="NameTxtField" prefWidth="200" />
+            </VBox>
+            <VBox spacing="10">
+               <Label text="Quantity:" />
+               <TextField fx:id="QuantityTxt" prefWidth="200" />
+            </VBox>
+            <VBox spacing="10">
+               <Label text="Unit Price:" />
+               <TextField fx:id="UnitPriceField" prefWidth="200" />
+            </VBox>
+            <Button fx:id="AddBtn" prefHeight="30.0" prefWidth="100" text="Add">
+               <HBox.margin>
+                  <Insets top="20.0" />
+               </HBox.margin></Button>
+            <VBox.margin>
+               <Insets left="20.0" />
+            </VBox.margin>
+         </HBox>
+
+         <!-- Product List -->
+         <VBox spacing="10">
+            <Label text="Product List" />
+            <ListView fx:id="ProductsListView" prefHeight="150" />
+            <HBox spacing="30">
+               <VBox>
+                  <Label text="Total Qty:" />
+                  <TextField fx:id="TotalQuantityTxt" editable="false" prefWidth="150" />
+               </VBox>
+               <VBox>
+                  <Label text="Total Price:" />
+                  <TextField fx:id="TotalPriceTxtField" editable="false" prefWidth="150" />
+               </VBox>
+            </HBox>
+            <VBox.margin>
+               <Insets left="20.0" right="20.0" />
+            </VBox.margin>
+         </VBox>
+
+         <!-- Buttons -->
+         <HBox alignment="CENTER_RIGHT" prefHeight="70.0" prefWidth="1294.0" spacing="20">
+            <Button fx:id="EditBtn" prefHeight="40.0" prefWidth="120.0" text="Edit" />
+            <Button fx:id="RemoveBtn" prefHeight="40.0" prefWidth="120.0" text="Remove" />
+            <Region prefHeight="70.0" prefWidth="588.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="RefreshButton" layoutX="1004.0" layoutY="25.0" prefHeight="40.0" prefWidth="120" text="Refresh">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0">
+                     <image>
+                        <Image url="@../Icons/refresh.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="SaveButton" prefHeight="40.0" prefWidth="120" text="Save" />
+            <Button fx:id="CancelButton" prefHeight="40.0" prefWidth="120" text="Cancel" />
+            <VBox.margin>
+               <Insets left="20.0" right="20.0" />
+            </VBox.margin>
+         </HBox>
+
+      </VBox>
    </children>
 </AnchorPane>
