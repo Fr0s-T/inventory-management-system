@@ -1,42 +1,127 @@
-# Warehouse Management System 🏭📦
+# Inventory Management System (JavaFX)
 
-![Java](https://img.shields.io/badge/Java-17%2B-blue)
-![JavaFX](https://img.shields.io/badge/JavaFX-24-orange)
-![SQLServer](https://img.shields.io/badge/Database-SQL_Server-red)
-![License](https://img.shields.io/badge/License-MIT-green)
+![Java](https://img.shields.io/badge/Java-17%2B-blue?logo=java\&logoColor=white)
+![JavaFX](https://img.shields.io/badge/JavaFX-17%2B-brightgreen?logo=oracle)
+![SQL Server](https://img.shields.io/badge/Database-SQL%20Server-lightgrey?logo=microsoftsqlserver\&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 
-A comprehensive warehouse management solution with role-based access control and inventory tracking.
+A desktop application for managing warehouse products and shipments, built with JavaFX and connected to a SQL Server backend.
 
-## Key Features ✨
+---
 
-### Role-Based Access Control
-- **General Manager**: Full system access
-- **Regional Manager**: Multi-warehouse oversight
-- **Warehouse Manager**: Single location control  
-- **Floor/Shift Manager**: Department-level operations
-- **Employee**: Basic inventory functions
+## 📦 Features
 
-### Core Modules
-- 📊 Real-time inventory tracking
-- 👥 Employee performance analytics
-- 🚚 Shipment lifecycle management
-- 📈 Interactive data dashboards
+* **User Authentication** – Secure login interface for warehouse personnel.
+* **Product Management** –
 
-## Requirements
+  * Dynamic product listing by warehouse.
+  * Live search by name, item code, and color.
+  * Real-time background syncing of inventory.
+* **Shipment Handling** –
 
-### Development
-- Java 24+
-- JavaFX SDK 24.0.2
-- SQL Server 2019+
+  * View shipments tied to warehouse location.
+  * Dynamic pane switching for seamless UX.
+* **Role Management** – Admins, Supervisors, Users with access-based screen rendering.
+* **Session-Based Caching** – Reduces redundant DB calls for efficiency.
 
-### Runtime
-- JRE 24+
-- SQL Server connection
+---
 
-## Installation
+## 🔧 Installation
 
-1. **Database Setup**:
-```sql
--- Execute initialization script
-USE master;
-CREATE DATABASE WarehouseDB;
+### Requirements
+
+* Java 17 or higher
+* JavaFX SDK 17+
+* SQL Server (with proper schema and view setup)
+* Maven or manual JAR management
+
+### Setup Instructions
+
+1. Clone the repo:
+
+   ```bash
+   git clone https://github.com/yourname/inventory-system-javafx.git
+   ```
+
+2. Open in IntelliJ or VS Code (Java)
+
+3. Add JavaFX to VM options:
+
+   ```
+   --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml
+   ```
+
+4. Update DB credentials in `DataBaseConnection.java`
+
+5. Run `Main.java`
+
+---
+
+## 📁 Project Structure
+
+```plaintext
+src/
+├── Controllers/           # Entry scene logic (e.g., LoginPage, SceneLoader)
+├── ViewsControllers/      # Controllers linked to specific views (e.g., Products, Reports)
+├── Models/                # Data models (Product, Session, User...)
+├── Services/              # Business logic + DB interaction
+├── Views/                 # FXML UI layouts (Products.fxml, Reports.fxml...)
+├── FXML/                  # Login & frame views (UserFrame.fxml, LoginPage.fxml)
+├── Icons/                 # Image assets
+├── Main.java              # Entry point
+```
+
+---
+
+## 🛠️ Tech Stack
+
+* **JavaFX** – UI and event handling
+* **JDBC** – SQL Server DB access
+* **FXML** – Declarative UI layout
+* **SQL Views** – For clean and efficient queries
+
+---
+
+## 📌 Known Design Principles
+
+* MVC-ish separation (Controllers, Models, Views)
+* Lazy loading of views for dynamic switching
+* Background product sync via `ScheduledExecutorService`
+
+---
+
+## 📸 Screenshots
+
+> *(You can drag and drop screenshots below when ready)*
+
+* Login Page
+* Product Table
+* Shipment View
+* Role-Based Dashboards
+
+---
+
+## 🤝 Contribution
+
+This project is currently maintained by \[Frost and Ilia]. If you wish to contribute:
+
+1. Fork the repo
+2. Create a branch: `feature/your-feature`
+3. Submit a pull request with clear description
+
+---
+
+## 🧹 Future Enhancements
+
+* [ ] Admin dashboard for system-wide metrics
+* [ ] Import/export CSV for product inventory
+* [ ] Role-permission management in GUI
+* [ ] Shipment creation + live tracking
+* [ ] DAO refactor for better data access handling
+* [ ] External SQL query files for modularity
+
+---
+
+## 📜 License
+
+MIT (or your custom license here)
