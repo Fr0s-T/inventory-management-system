@@ -19,6 +19,7 @@ public class ProductsService {
     public static void getProducts(){
         final String sql =
                 "SELECT " +
+                        "  p.Name," +
                         "  p.ItemCode, " +
                         "  p.Color, " +
                         "  q.Quantity, " +
@@ -47,7 +48,8 @@ public class ProductsService {
                         rs.getString("Size"),
                         rs.getString("Section"),
                         rs.getString("Picture"),
-                        rs.getFloat("UnitPrice")
+                        rs.getFloat("UnitPrice"),
+                        rs.getString("Name")
                 );
                 products.add(product);
             }
@@ -61,6 +63,7 @@ public class ProductsService {
     public static ArrayList<Product> getProductsByWarehouseId(int warehouseId) {
         final String sql =
                 "SELECT " +
+                        "   p.Name"+
                         "  p.ItemCode, " +
                         "  p.Color, " +
                         "  q.Quantity, " +
@@ -90,7 +93,8 @@ public class ProductsService {
                         rs.getString("Size"),
                         rs.getString("Section"),
                         rs.getString("Picture"),
-                        rs.getFloat("UnitPrice")
+                        rs.getFloat("UnitPrice"),
+                        rs.getString("Name")
                 );
                 products.add(product);
             }

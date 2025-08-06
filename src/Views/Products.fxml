@@ -17,19 +17,20 @@
                   <Image url="@../Icons/clothes.png" />
                </image>
             </ImageView>
-            <TextField layoutX="107.0" layoutY="36.0" prefHeight="40.0" prefWidth="200.0" promptText="Search..." />
+            <TextField fx:id="SearchTxtField" layoutX="107.0" layoutY="36.0" prefHeight="40.0" prefWidth="200.0" promptText="Search..." />
+            <TableView fx:id="ProductsTable" layoutX="55.0" layoutY="174.0" prefHeight="574.0" prefWidth="1193.0">
+              <columns>
+                  <TableColumn fx:id="pictureColumn" prefWidth="100.0" text="Picture" />
+                  <TableColumn fx:id="NameColumn" prefWidth="100.0" text="Name" />
+                  <TableColumn fx:id="itemCodeColumn" prefWidth="75.0" text="Item Code" />
+                  <TableColumn fx:id="colorColumn" prefWidth="75.0" text="Color" />
+                  <TableColumn fx:id="quantityColumn" prefWidth="75.0" text="Quantity" />
+                  <TableColumn fx:id="sizeColumn" prefWidth="75.0" text="Size" />
+                  <TableColumn fx:id="sectionColumn" prefWidth="75.0" text="Section" />
+                  <TableColumn fx:id="UnitPriceColumn" prefWidth="75.0" text="Unit Price" />
+              </columns>
+            </TableView>
          </children>
       </Pane>
-      <TableView fx:id="ProductsTable" layoutX="1.0" layoutY="111.2" prefHeight="574.0" prefWidth="1193.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="111.0">
-        <columns>
-            <TableColumn fx:id="pictureColumn" prefWidth="100.0" text="Picture" />
-            <TableColumn fx:id="itemCodeColumn" prefWidth="75.0" text="Item Code" />
-            <TableColumn fx:id="colorColumn" prefWidth="75.0" text="Color" />
-            <TableColumn fx:id="quantityColumn" prefWidth="75.0" text="Quantity" />
-            <TableColumn fx:id="sizeColumn" prefWidth="75.0" text="Size" />
-            <TableColumn fx:id="sectionColumn" prefWidth="75.0" text="Section" />
-            <TableColumn fx:id="UnitPriceColumn" prefWidth="75.0" text="Unit Price" />
-        </columns>
-      </TableView>
    </children>
 </AnchorPane>

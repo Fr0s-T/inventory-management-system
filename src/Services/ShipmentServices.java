@@ -18,24 +18,12 @@ import java.util.ArrayList;
  * Author: @Frost
  *
  */
-
-
 public class ShipmentServices {
 
     public static void reception(Warehouse selectedSourceWarehouse, Warehouse selectedDestinationWarehouse,
                                  ArrayList<Product> items, ArrayList<Integer> quantity, int totQuantity, float totalPrice) {
-        if (items == null || items.isEmpty()) {
-            AlertUtils.showError("Error", "No products selected for shipment.");
-            return;
-        }
-        if (quantity == null || quantity.isEmpty()) {
-            AlertUtils.showError("Error", "Quantity list is empty.");
-            return;
-        }
-        if (totQuantity <= 0) {
-            AlertUtils.showError("Error", "Total quantity cannot be zero.");
-            return;
-        }
+
+        if (isInputInvalid(items, quantity, totQuantity)) return;
 
         Connection connection = null;
         try {
@@ -72,7 +60,7 @@ public class ShipmentServices {
                 }
             }
 
-            // ✅ Insert new products into Product table
+            // ✅ Insert new products into ProductType table (with Name)
             if (!newProducts.isEmpty()) {
                 insertNewProducts(connection, newProducts);
                 insertNewProductValuesIntoQuantity(connection, newProducts, newProductsQty, selectedDestinationWarehouse);
@@ -103,23 +91,10 @@ public class ShipmentServices {
         }
     }
 
-
     public static void expedition(Warehouse selectedSourceWarehouse, Warehouse selectedDestinationWarehouse,
                                   ArrayList<Product> items, ArrayList<Integer> quantity, int totQuantity, float totalPrice) {
 
-        // ✅ Validate inputs before proceeding
-        if (items == null || items.isEmpty()) {
-            AlertUtils.showError("Error", "No products selected for shipment.");
-            return;
-        }
-        if (quantity == null || quantity.isEmpty()) {
-            AlertUtils.showError("Error", "Quantity list is empty.");
-            return;
-        }
-        if (totQuantity <= 0) {
-            AlertUtils.showError("Error", "Total quantity cannot be zero.");
-            return;
-        }
+        if (isInputInvalid(items, quantity, totQuantity)) return;
 
         Connection connection = null;
         try {
@@ -135,8 +110,7 @@ public class ShipmentServices {
             connection.commit();
             ProductsService.getProducts(); // Refresh products after commit
 
-            // ✅ Success alert
-            AlertUtils.showSuccess( "Shipment created successfully (ID: " + shipmentId + ").");
+            AlertUtils.showSuccess("Shipment created successfully (ID: " + shipmentId + ").");
 
         } catch (SQLException | ClassNotFoundException e) {
             if (connection != null) {
@@ -148,6 +122,22 @@ public class ShipmentServices {
                 try { connection.close(); } catch (SQLException ignored) {}
             }
         }
+    }
+
+    private static boolean isInputInvalid(ArrayList<Product> items, ArrayList<Integer> quantity, int totQuantity) {
+        if (items == null || items.isEmpty()) {
+            AlertUtils.showError("Error", "No products selected for shipment.");
+            return true;
+        }
+        if (quantity == null || quantity.isEmpty()) {
+            AlertUtils.showError("Error", "Quantity list is empty.");
+            return true;
+        }
+        if (totQuantity <= 0) {
+            AlertUtils.showError("Error", "Total quantity cannot be zero.");
+            return true;
+        }
+        return false;
     }
 
     // -------------------- Sub-methods --------------------
@@ -216,15 +206,17 @@ public class ShipmentServices {
         }
     }
 
+    // ✅ Updated method to include Name
     private static void insertNewProducts(Connection connection, ArrayList<Product> newProducts) throws SQLException {
-        final String sql = "INSERT INTO ProductType (ItemCode, UnitPrice, Color, Size, Section) VALUES (?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO ProductType (ItemCode, Name, UnitPrice, Color, Size, Section) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             for (Product p : newProducts) {
                 ps.setString(1, p.getItemCode());
-                ps.setFloat(2, p.getUnitPrice());
-                ps.setString(3, p.getColor() != null ? p.getColor() : "");
-                ps.setString(4, p.getSize() != null ? p.getSize() : "");
-                ps.setString(5, p.getSection() != null ? p.getSection() : "");
+                ps.setString(2, p.getName() != null ? p.getName() : "");
+                ps.setFloat(3, p.getUnitPrice());
+                ps.setString(4, p.getColor() != null ? p.getColor() : "");
+                ps.setString(5, p.getSize() != null ? p.getSize() : "");
+                ps.setString(6, p.getSection() != null ? p.getSection() : "");
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -232,9 +224,9 @@ public class ShipmentServices {
     }
 
     private static void insertNewProductValuesIntoQuantity(Connection connection,
-                                                    ArrayList<Product> newProducts,
-                                                    ArrayList<Integer> newProductsQty,
-                                                    Warehouse destinationWarehouse) throws SQLException {
+                                                           ArrayList<Product> newProducts,
+                                                           ArrayList<Integer> newProductsQty,
+                                                           Warehouse destinationWarehouse) throws SQLException {
         final String sql = "INSERT INTO Quantity (ItemCode, Quantity, WarehouseID) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -248,10 +240,9 @@ public class ShipmentServices {
 
                 ps.addBatch();
             }
-            ps.executeBatch(); // Execute all insert statements at once
+            ps.executeBatch();
         }
     }
-
 
     private static void increaseQuantityInQuantityTable(Connection connection, Warehouse destinationWarehouse,
                                                         ArrayList<Product> items, ArrayList<Integer> quantity) throws SQLException {
@@ -267,5 +258,4 @@ public class ShipmentServices {
             ps.executeBatch();
         }
     }
-
 }

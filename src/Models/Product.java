@@ -9,29 +9,20 @@ package Models;
 
 public class Product {
     private String itemCode;
+    private String name;
     private String color;
     private int quantity;
     private float unitPrice;
     private String size;
     private String section;
     private String picture;
-    private int shipmentDetailsID;
-
 
     public Product() {
     }
 
-    public Product(String itemCode, String color, int quantity, String size, String section, String picture, int shipmentDetailsID) {
-        this.itemCode = itemCode;
-        this.color = color;
-        this.quantity = quantity;
-        this.size = size;
-        this.section = section;
-        this.picture = picture;
-        this.shipmentDetailsID = shipmentDetailsID;
-    }
 
-    public Product(String itemCode, String color, int quantity, String size, String section, String picture, float unitPrice) {
+    public Product(String itemCode, String color, int quantity, String size,
+                   String section, String picture, float unitPrice, String name) {
         this.itemCode = itemCode;
         this.color = color;
         this.quantity = quantity;
@@ -39,6 +30,7 @@ public class Product {
         this.section = section;
         this.picture = picture;
         this.unitPrice = unitPrice;
+        this.name = name;
     }
 
     public Product(String code, String qtyText, float i) {
@@ -53,6 +45,17 @@ public class Product {
     }
 
     //  Getters and Setters
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
     public String getItemCode() {
         return itemCode;
     }
@@ -101,10 +104,6 @@ public class Product {
         this.picture = picture;
     }
 
-    public int getShipmentDetailsID() {
-        return shipmentDetailsID;
-    }
-
 
     public float getUnitPrice() {
         return unitPrice;
@@ -114,9 +113,6 @@ public class Product {
         this.unitPrice = unitPrice;
     }
 
-    public void setShipmentDetailsID(int shipmentDetailsID) {
-        this.shipmentDetailsID = shipmentDetailsID;
-    }
     @Override
     public String toString() {
         return "Product {" +
@@ -126,7 +122,6 @@ public class Product {
                 ", Size='" + size + '\'' +
                 ", Section='" + section + '\'' +
                 ", Picture='" + (picture != null ? picture : "No image") + '\'' +
-                ", ShipmentDetailsID=" + shipmentDetailsID +
                 '}';
     }
 }

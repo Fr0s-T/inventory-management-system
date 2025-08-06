@@ -16,9 +16,9 @@ import java.util.ArrayList;
  * Author: @Frost
  *
  */
-
 public class ShipmentController {
 
+    @FXML private TextField NameTxtField;
     @FXML private RadioButton ReceptionRadioButton;
     @FXML private RadioButton ExpeditionRadioButton;
     @FXML private ToggleGroup ShipmentType;
@@ -46,9 +46,9 @@ public class ShipmentController {
                 TotalQuantityTxt,
                 TotalPriceTxtField,
                 UnitPriceField,
-                ItemCodeTxt
+                ItemCodeTxt,
+                NameTxtField
         );
-
 
         setupWarehouses();
         setupProducts();
@@ -64,7 +64,6 @@ public class ShipmentController {
         }
 
         ArrayList<Warehouse> warehouses = Session.getAllWarehouses();
-
         SourceComboBox.getItems().addAll(warehouses);
         DestinationComboBox.getItems().addAll(warehouses);
 
@@ -98,8 +97,6 @@ public class ShipmentController {
             }
         });
 
-
-
         if (!warehouses.isEmpty()) {
             SourceComboBox.getSelectionModel().selectFirst();
             DestinationComboBox.getSelectionModel().selectFirst();
@@ -126,23 +123,22 @@ public class ShipmentController {
             }
         });
 
-        // ✅ Auto-fill unit price on selection
+        // ✅ Auto-fill Name and Unit Price on selection
         ExpadistionComboBox.setOnAction(event -> {
             Product selected = ExpadistionComboBox.getValue();
-            if (selected != null && selected.getUnitPrice() > 0) {
-                UnitPriceField.setText(String.valueOf(selected.getUnitPrice()));
-                UnitPriceField.setDisable(true);
+            if (selected != null) {
+                formHandler.autoFillFromProduct(selected);
             } else {
+                NameTxtField.clear();
+                NameTxtField.setDisable(false);
                 UnitPriceField.clear();
                 UnitPriceField.setDisable(false);
             }
         });
     }
 
-
     private void setupRadioButtons() {
         ShipmentType.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
-
             if (newToggle == ExpeditionRadioButton) {
                 for (Warehouse warehouse : SourceComboBox.getItems()) {
                     if (warehouse.getId() == Session.getCurrentWarehouse().getId()) {
@@ -155,7 +151,6 @@ public class ShipmentController {
                 ItemCodeTxt.setVisible(false);
                 ExpadistionComboBox.setVisible(true);
             } else {
-
                 for (Warehouse warehouse : DestinationComboBox.getItems()) {
                     if (warehouse.getId() == Session.getCurrentWarehouse().getId()) {
                         DestinationComboBox.getSelectionModel().select(warehouse);
@@ -188,71 +183,40 @@ public class ShipmentController {
         CancelButton.setOnAction(event -> formHandler.reset());
 
         EditBtn.setOnAction(event -> {
+            String selectedEntry = ProductsListView.getSelectionModel().getSelectedItem();
+            if (selectedEntry == null) {
+                AlertUtils.showWarning("No Selection", "Please select a product to edit.");
+                return;
+            }
+
+            String[] parts = selectedEntry.split(" - Qty: ");
+            if (parts.length != 2) {
+                AlertUtils.showError("Invalid Format", "The selected entry is not valid.");
+                return;
+            }
+
+            String itemCode = parts[0].trim();
+            String quantity = parts[1].trim();
+
             if (ReceptionRadioButton.isSelected()) {
-                String selectedEntry = ProductsListView.getSelectionModel().getSelectedItem();
-                if (selectedEntry == null) {
-                    AlertUtils.showWarning("No Selection", "Please select a product to edit.");
-                    return;
-                }
-
-                String[] parts = selectedEntry.split(" - Qty: ");
-                if (parts.length != 2) {
-                    AlertUtils.showError("Invalid Format", "The selected entry is not valid.");
-                    return;
-                }
-
-                String itemCode = parts[0].trim();
-                String quantity = parts[1].trim();
-
                 ItemCodeTxt.setText(itemCode);
                 ItemCodeTxt.setDisable(true);
                 QuantityTxt.setText(quantity);
-
-                ProductsListView.getItems().remove(selectedEntry);
-                formHandler.removeItem(itemCode);
-            } else if (ExpeditionRadioButton.isSelected()) {
-                String selectedEntry = ProductsListView.getSelectionModel().getSelectedItem();
-                if (selectedEntry == null) {
-                    AlertUtils.showWarning("No Selection", "Please select a product to edit.");
-                    return;
-                }
-
-                String[] parts = selectedEntry.split(" - Qty: ");
-                if (parts.length != 2) {
-                    AlertUtils.showError("Invalid Format", "The selected entry is not valid.");
-                    return;
-                }
-
-                String itemCode = parts[0].trim();
-                String quantity = parts[1].trim();
-
-                // Find and set the product in ComboBox
+            } else {
                 for (Product product : ExpadistionComboBox.getItems()) {
                     if (product.getItemCode().equalsIgnoreCase(itemCode)) {
                         ExpadistionComboBox.getSelectionModel().select(product);
-
-                        // Auto-fill unit price for expedition edit
-                        if (product.getUnitPrice() > 0) {
-                            UnitPriceField.setText(String.valueOf(product.getUnitPrice()));
-                            UnitPriceField.setDisable(true);
-                        } else {
-                            UnitPriceField.clear();
-                            UnitPriceField.setDisable(false);
-                        }
+                        formHandler.autoFillFromProduct(product);
                         break;
                     }
                 }
-
                 QuantityTxt.setText(quantity);
-
-                ProductsListView.getItems().remove(selectedEntry);
-                formHandler.removeItem(itemCode);
             }
-        });
-        RemoveBtn.setOnAction(actionEvent -> {
-            formHandler.removeItem();
+
+            ProductsListView.getItems().remove(selectedEntry);
+            formHandler.removeItem(itemCode);
         });
 
+        RemoveBtn.setOnAction(actionEvent -> formHandler.removeItem());
     }
-
 }

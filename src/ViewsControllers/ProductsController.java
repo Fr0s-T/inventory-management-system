@@ -5,9 +5,12 @@ import Models.Session;
 import Services.ProductsService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
@@ -19,9 +22,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ProductsController {
 
-
+    @FXML private TextField SearchTxtField;
     @FXML private TableView<Product> ProductsTable;
     @FXML private TableColumn<Product, String> pictureColumn;
+    @FXML private TableColumn<Product, String> NameColumn;
     @FXML private TableColumn<Product, String> itemCodeColumn;
     @FXML private TableColumn<Product, String> colorColumn;
     @FXML private TableColumn<Product, Integer> quantityColumn;
@@ -30,28 +34,55 @@ public class ProductsController {
     @FXML private TableColumn<Product, String> UnitPriceColumn;
 
     @FXML
-    public void initialize() {
+    private ObservableList<Product> originalProductList;
 
+    @FXML
+    public void initialize() {
         if (Session.getProducts() == null) ProductsService.getProducts();
+
+        originalProductList = FXCollections.observableArrayList(Session.getProducts());
+
         // Set up columns
         itemCodeColumn.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+        NameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); // lowercase property name
         colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         sectionColumn.setCellValueFactory(new PropertyValueFactory<>("section"));
         pictureColumn.setCellValueFactory(new PropertyValueFactory<>("picture"));
         UnitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
-        ProductsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        // Fill the table
-        ProductsTable.setItems(FXCollections.observableArrayList(Session.getProducts()));
 
+        ProductsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+        // Fill the table
+        ProductsTable.setItems(originalProductList);
+
+        // Disable column dragging
         Platform.runLater(() -> {
             ProductsTable.lookupAll(".column-header").forEach(node -> {
-                node.setOnMouseDragged(event -> event.consume());  // disable dragging
-                node.setOnMousePressed(event -> event.consume());  // prevent header click-drag start
+                node.setOnMouseDragged(Event::consume);
+                node.setOnMousePressed(Event::consume);
             });
         });
 
-
+        // Add listener to search field
+        SearchTxtField.textProperty().addListener((observable, oldValue, newValue)
+                -> searchByName(newValue));
     }
+
+
+    private void searchByName(String searchText) {
+        if (searchText == null || searchText.trim().isEmpty()) {
+            ProductsTable.setItems(originalProductList); // show all if empty
+            return;
+        }
+
+        ObservableList<Product> filteredList = originalProductList.filtered(
+                product -> product.getName() != null &&
+                        product.getName().toLowerCase().contains(searchText.toLowerCase())
+        );
+
+        ProductsTable.setItems(filteredList);
+    }
+
 }

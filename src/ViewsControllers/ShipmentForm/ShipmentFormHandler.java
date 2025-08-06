@@ -15,7 +15,6 @@ import java.util.ArrayList;
  * Author: @Frost
  *
  */
-
 public class ShipmentFormHandler {
 
     private final ListView<String> productsListView;
@@ -23,6 +22,7 @@ public class ShipmentFormHandler {
     private final TextField totalPriceTxt;
     private final TextField unitPriceField;
     private final TextField itemCodeField;
+    private final TextField nameField;
 
     private final ArrayList<Product> items = new ArrayList<>();
     private final ArrayList<Integer> quantities = new ArrayList<>();
@@ -33,28 +33,26 @@ public class ShipmentFormHandler {
                                TextField totalQuantityTxt,
                                TextField totalPriceTxt,
                                TextField unitPriceField,
-                               TextField itemCodeField) {
+                               TextField itemCodeField,
+                               TextField nameField) {
         this.productsListView = productsListView;
         this.totalQuantityTxt = totalQuantityTxt;
         this.totalPriceTxt = totalPriceTxt;
         this.unitPriceField = unitPriceField;
         this.itemCodeField = itemCodeField;
-
-        setupAutoFillPrice();
+        this.nameField = nameField;
+        setupAutoFillDetails();
     }
 
-    /**
-     * Automatically checks product price once the user finishes entering the item code.
-     */
-    private void setupAutoFillPrice() {
+    private void setupAutoFillDetails() {
         itemCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) { // Field lost focus
-                autoFillPrice(itemCodeField.getText());
+                autoFillProductDetails(itemCodeField.getText());
             }
         });
     }
 
-    private void autoFillPrice(String code) {
+    private void autoFillProductDetails(String code) {
         if (code == null || code.isEmpty()) return;
 
         Product existingProduct = Session.getProducts().stream()
@@ -62,46 +60,77 @@ public class ShipmentFormHandler {
                 .findFirst()
                 .orElse(null);
 
-        if (existingProduct != null && existingProduct.getUnitPrice() > 0) {
-            unitPriceField.setText(String.valueOf(existingProduct.getUnitPrice()));
-            unitPriceField.setDisable(true); // Disable editing for existing products
+        if (existingProduct != null) {
+            if (existingProduct.getUnitPrice() > 0) {
+                unitPriceField.setText(String.valueOf(existingProduct.getUnitPrice()));
+                unitPriceField.setDisable(true);
+            } else {
+                unitPriceField.clear();
+                unitPriceField.setDisable(false);
+            }
+            nameField.setText(existingProduct.getName());
+            nameField.setDisable(true);
         } else {
             unitPriceField.clear();
-            unitPriceField.setDisable(false); // Allow entering price for new products
+            unitPriceField.setDisable(false);
+            nameField.clear();
+            nameField.setDisable(false);
         }
+    }
+
+    public void autoFillFromProduct(Product product) {
+        if (product == null) return;
+
+        if (product.getUnitPrice() > 0) {
+            unitPriceField.setText(String.valueOf(product.getUnitPrice()));
+            unitPriceField.setDisable(true);
+        } else {
+            unitPriceField.clear();
+            unitPriceField.setDisable(false);
+        }
+        nameField.setText(product.getName());
+        nameField.setDisable(true);
     }
 
     public void handleReception(String code, String qtyText) {
         if (validateInput(code, qtyText)) return;
 
-        // ✅ Check if product exists in the session
         Product existingProduct = Session.getProducts().stream()
                 .filter(p -> p.getItemCode().equalsIgnoreCase(code))
                 .findFirst()
                 .orElse(null);
 
-        // ✅ If new product and no price entered → show alert
         if ((existingProduct == null || existingProduct.getUnitPrice() <= 0) &&
                 unitPriceField.getText().trim().isEmpty()) {
             AlertUtils.showWarning("Missing Price", "You must enter a unit price for new products.");
             return;
         }
 
-        float unitPrice;
-
-        if (!unitPriceField.getText().trim().isEmpty()) {
-            unitPrice = Float.parseFloat(unitPriceField.getText().trim());
-        } else {
-            // If existing product already has a price
-            assert existingProduct != null;
-            unitPrice = existingProduct.getUnitPrice();
+        if ((existingProduct == null || existingProduct.getName() == null || existingProduct.getName().isEmpty()) &&
+                nameField.getText().trim().isEmpty()) {
+            AlertUtils.showWarning("Missing Name", "You must enter a name for new products.");
+            return;
         }
 
-        Product product = new Product(code, qtyText, unitPrice);
-        product.setItemCode(code);
+        Product product = getProduct(code, qtyText, existingProduct);
+
         addProduct(product, Integer.parseInt(qtyText));
     }
 
+    private Product getProduct(String code, String qtyText, Product existingProduct) {
+        float unitPrice = !unitPriceField.getText().trim().isEmpty()
+                ? Float.parseFloat(unitPriceField.getText().trim())
+                : (existingProduct != null ? existingProduct.getUnitPrice() : 0);
+
+        String productName = !nameField.getText().trim().isEmpty()
+                ? nameField.getText().trim()
+                : (existingProduct != null ? existingProduct.getName() : "");
+
+        Product product = new Product(code, qtyText, unitPrice);
+        product.setItemCode(code);
+        product.setName(productName);
+        return product;
+    }
 
     public void handleExpedition(Product selectedProduct, String qtyText) {
         if (selectedProduct == null) {
@@ -110,14 +139,7 @@ public class ShipmentFormHandler {
         }
         if (validateInput(selectedProduct.getItemCode(), qtyText)) return;
 
-        // ✅ Auto-fill unit price
-        if (selectedProduct.getUnitPrice() > 0) {
-            unitPriceField.setText(String.valueOf(selectedProduct.getUnitPrice()));
-            unitPriceField.setDisable(true);
-        } else {
-            unitPriceField.clear();
-            unitPriceField.setDisable(false);
-        }
+        autoFillFromProduct(selectedProduct);
 
         int qty = Integer.parseInt(qtyText);
         if (qty > selectedProduct.getQuantity()) {
@@ -126,7 +148,6 @@ public class ShipmentFormHandler {
         }
         addProduct(selectedProduct, qty);
     }
-
 
     private boolean validateInput(String code, String qtyText) {
         if (code == null || code.isEmpty()) {
@@ -189,8 +210,10 @@ public class ShipmentFormHandler {
         totalQuantityTxt.clear();
         totalPriceTxt.clear();
         unitPriceField.clear();
-        unitPriceField.setDisable(false); // ✅ Re-enable for next input
+        unitPriceField.setDisable(false);
         itemCodeField.clear();
+        nameField.clear();
+        nameField.setDisable(false);
     }
 
     public void removeItem(String itemCode) {
@@ -203,7 +226,6 @@ public class ShipmentFormHandler {
                 break;
             }
         }
-
         totalQuantityTxt.setText(String.valueOf(totalQuantity));
         totalPriceTxt.setText(String.valueOf(totalPrice));
     }
@@ -225,6 +247,4 @@ public class ShipmentFormHandler {
         removeItem(itemCode);
         productsListView.getItems().remove(selectedEntry);
     }
-
-
 }

@@ -43,6 +43,8 @@
             <Button fx:id="EditBtn" layoutX="759.0" layoutY="400.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="74.0" text="Edit" />
             <Label layoutX="743.0" layoutY="344.0" text="Unit Price:" />
             <Button fx:id="RemoveBtn" layoutX="761.0" layoutY="469.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="74.0" text="Remove" />
+            <Label layoutX="916.0" layoutY="57.0" text="Name:" />
+            <TextField fx:id="NameTxtField" layoutX="964.0" layoutY="51.0" />
          </children>
       </Pane>
    </children>
