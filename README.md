@@ -40,7 +40,7 @@ A desktop application for managing warehouse products and shipments, built with 
 1. Clone the repo:
 
    ```bash
-   git clone https://github.com/yourname/inventory-system-javafx.git
+   git clone https://github.com/Fr0s-T/inventory-system-javafx.git
    ```
 
 2. Open in IntelliJ or VS Code (Java)
