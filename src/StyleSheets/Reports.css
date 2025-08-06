@@ -47,18 +47,10 @@
 
 
 
-/* TableView Styling */
-/*.table-view {
-    -fx-background-color: white;
-    -fx-border-color: #d1c4e9;
-    -fx-border-width: 1;
-    -fx-padding: 10;
-    -fx-table-cell-border-color: #e1bee7;
-    -fx-selection-bar: #b39ddb;
-    -fx-selection-bar-non-focused: #d1c4e9;
-    -fx-font-size: 14px;
+.table-view .column-header .label {
+    -fx-font-size: 16px;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e2e2e;
 }
 
-.table-column {
-    -fx-alignment: CENTER;
-}*/

@@ -36,6 +36,9 @@ public class ShipmentController {
     @FXML private Button EditBtn;
     @FXML private Button RemoveBtn;
     @FXML private ComboBox<Product> ExpadistionComboBox;
+    @FXML private TextField OutsideOfNetworkTxt;
+    @FXML private CheckBox OutsideOfNetworkCheckBox;
+    @FXML private Button RefreshButton;
 
     private ShipmentFormHandler formHandler;
 

@@ -97,6 +97,7 @@ public class UserFrame extends Application {
                     throw new RuntimeException(e);
                 }
             });
+            BackToDashboard.setVisible(Session.getCurrentUser().getRole() == User.Role.REGIONAL_MANAGER);
             BackToDashboard.setOnAction(actionEvent -> LogOutService.BackToDashboard());
             UsersBtn.setOnAction(actionEvent -> {
                 try {

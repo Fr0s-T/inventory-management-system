@@ -62,3 +62,10 @@
     -fx-font-size: 13px;
     -fx-text-fill: #0D47A1;
 }
+.title-label {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0D47A1;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+}

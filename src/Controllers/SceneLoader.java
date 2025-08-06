@@ -2,6 +2,7 @@ package Controllers;
 
 import ViewsControllers.*;
 import ViewsControllers.ShipmentForm.ShipmentController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -35,15 +36,19 @@ public class SceneLoader {
             }
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
 
-            // ✅ Automatically maximize SuFrame
             if (fxmlPath.contains("LoginPage.fxml")) {
+
                 primaryStage.setMaximized(false);
-                primaryStage.centerOnScreen();
+
+                Platform.runLater(()->{
+                    primaryStage.setScene(scene);
+                    primaryStage.centerOnScreen();
+                });
+
             } else {
-                //primaryStage.setMaximized(true);
-                primaryStage.centerOnScreen(); // optional for login page
+                primaryStage.setScene(scene);
+                primaryStage.centerOnScreen();
             }
 
             primaryStage.show();
