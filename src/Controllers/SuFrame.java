@@ -163,6 +163,7 @@ public class SuFrame extends Application {
             LogOutService.handleExit();
             Platform.exit();
         });
+
         stage.show();
     }
 
