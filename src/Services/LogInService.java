@@ -79,10 +79,17 @@ public class LogInService {
 
     private void handleLoginSuccess(User user) {
         Platform.runLater(() -> {
-            Session.setCurrentUser(user);
-            switchSceneBasedOnRole(user);
+            try {
+                markUserAsLoggedIn(user.getId());  // Add this line
+                Session.setCurrentUser(user);
+                switchSceneBasedOnRole(user);
+            } catch (SQLException e) {
+                showError("Error updating login state.");
+                loginButton.setDisable(false);
+            }
         });
     }
+
 
     private void switchSceneBasedOnRole(User user) {
         try {
@@ -126,8 +133,14 @@ public class LogInService {
                 String storedPassword = rs.getString("Password");
 
                 if (hashedPassword.equals(storedPassword)) {
+
+                    if (rs.getBoolean("IsLoggedIn")) {
+                        throw new SQLException("This account is already logged in on another device.");
+                    }
+
                     resetFailedAttempts(connection, username);
                     return buildUserFromResultSet(rs);
+
                 } else {
                     incrementFailedAttempts(connection, rs.getInt("FailedAttempts"), username);
                     throw new SQLException("Invalid username or password");
@@ -191,4 +204,15 @@ public class LogInService {
                 rs.getBoolean("IsLoggedIn")
         );
     }
+    private void markUserAsLoggedIn(int userId) throws SQLException {
+        String updateSql = "UPDATE Employee SET IsLoggedIn = 1 WHERE ID = ?";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+            stmt.setInt(1, userId);
+            stmt.executeUpdate();
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("Database connection error");
+        }
+    }
+
 }

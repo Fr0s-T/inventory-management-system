@@ -26,6 +26,7 @@ public class ShipmentFormHandler {
     private final TextField unitPriceField;
     private final TextField itemCodeField;
     private final TextField nameField;
+    private final TextField QuantityTxt;
 
     private final ArrayList<Product> items = new ArrayList<>();
     private final ArrayList<Integer> quantities = new ArrayList<>();
@@ -39,13 +40,15 @@ public class ShipmentFormHandler {
                                TextField totalPriceTxt,
                                TextField unitPriceField,
                                TextField itemCodeField,
-                               TextField nameField) {
+                               TextField nameField,
+                               TextField QuantityTxt) {
         this.productsListView = productsListView;
         this.totalQuantityTxt = totalQuantityTxt;
         this.totalPriceTxt = totalPriceTxt;
         this.unitPriceField = unitPriceField;
         this.itemCodeField = itemCodeField;
         this.nameField = nameField;
+        this.QuantityTxt=QuantityTxt;
         setupAutoFillDetails();
     }
 
@@ -240,6 +243,7 @@ public class ShipmentFormHandler {
         totalQuantityTxt.clear();
         totalPriceTxt.clear();
         unitPriceField.clear();
+        QuantityTxt.clear();
         unitPriceField.setDisable(false);
         itemCodeField.clear();
         nameField.clear();

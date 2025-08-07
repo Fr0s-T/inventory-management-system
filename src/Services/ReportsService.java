@@ -45,18 +45,7 @@ public class ReportsService {
     public static ArrayList<Shipment> getShipmentsFromDb() throws Exception {
         ArrayList<Shipment> shipments = new ArrayList<>();
 
-        String query = """
-    SELECT s.ID, s.Date,
-           ws.Name AS SourceName,
-           wd.Name AS DestinationName,
-           s.TotalQuantity,
-           e.Username AS HandledBy
-    FROM Shipment s
-    JOIN Warehouse ws ON s.SourceID = ws.ID
-    JOIN Warehouse wd ON s.DestinationID = wd.ID
-    JOIN Employee e ON s.EmployeeID = e.ID
-    WHERE s.SourceID = ? OR s.DestinationID = ?
-""";
+        String query = "SELECT * FROM v_ShipmentsWithDetails WHERE SourceID = ? OR DestinationID = ?";
 
 
         try (Connection conn = DataBaseConnection.getConnection();
