@@ -3,7 +3,10 @@ package Services;
 import Controllers.SceneLoader;
 import Models.Session;
 import Utilities.AlertUtils;
+import Utilities.DataBaseConnection;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Optional;
 
 /**
@@ -21,6 +24,7 @@ public class LogOutService {
         );
 
         if (confirmed) {
+            setLoggedOutInDatabase();
             Session.logOut();
             SceneLoader.loadScene("/FXML/LoginPage.fxml", null); // Adjust path if needed
         }
@@ -37,4 +41,25 @@ public class LogOutService {
             SceneLoader.loadScene("/FXML/SuFrame.fxml", null); // Adjust path if needed
         }
     }
+    private static void setLoggedOutInDatabase() {
+        try (Connection conn = DataBaseConnection.getConnection()) {
+            String sql = "UPDATE Employee SET IsLoggedIn = 0 WHERE ID = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, Session.getCurrentUser().getId());
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void handleExit() {
+        try (Connection conn = DataBaseConnection.getConnection()) {
+            String sql = "UPDATE Employee SET IsLoggedIn = 0 WHERE ID = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, Session.getCurrentUser().getId());
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace(); // Optionally log to a file
+        }
+    }
+
 }

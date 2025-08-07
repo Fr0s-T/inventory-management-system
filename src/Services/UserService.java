@@ -19,14 +19,7 @@ public class UserService {
     public static ArrayList<User> getWarehouseManagersFromDb() throws SQLException, ClassNotFoundException {
         ArrayList<User> managers = new ArrayList<>();
 
-        final String sql = "SELECT e.ID, e.FirstName, e.MiddleName, e.LastName, e.Username, " +
-                "e.RoleID, e.WarehouseID, e.Picture, e.FailedAttempts, " +
-                "e.LockoutUntil, e.IsLoggedIn " +
-                "FROM Employee e " +
-                "INNER JOIN Hierarchy h ON e.ID = h.EmployeeID " +
-                "WHERE e.RoleID = 2 " +
-                "  AND e.WarehouseID IS NULL " +
-                "  AND h.ManagerID = ?";
+        final String sql = "SELECT * FROM v_ManagersWithoutWarehouse WHERE ManagerID = ?";
 
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

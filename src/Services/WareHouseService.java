@@ -20,13 +20,7 @@ public class WareHouseService {
     public static ArrayList<Warehouse> getWarehousesFromDb() throws SQLException, ClassNotFoundException {
         ArrayList<Warehouse> warehouses = new ArrayList<>();
 
-        final String sql = "SELECT w.ID, w.Name, w.Location, w.Capacity, e.Username " +
-                "FROM Employee AS e " +
-                "INNER JOIN Warehouse AS w ON e.WarehouseID = w.ID " +
-                "INNER JOIN [dbo].[Hierarchy] AS h ON e.ID = h.EmployeeID " +
-                "WHERE e.RoleID = 2 " +
-                "AND w.RegionalManager = h.ManagerID " +
-                "AND w.RegionalManager = ?";
+        final String sql = "SELECT * FROM v_ManagerWarehouses WHERE RegionalManager = ?";
 
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

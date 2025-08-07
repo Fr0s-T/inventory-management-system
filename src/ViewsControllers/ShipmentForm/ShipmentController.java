@@ -50,7 +50,8 @@ public class ShipmentController {
                 TotalPriceTxtField,
                 UnitPriceField,
                 ItemCodeTxt,
-                NameTxtField
+                NameTxtField,
+                QuantityTxt
         );
 
         setupWarehouses();

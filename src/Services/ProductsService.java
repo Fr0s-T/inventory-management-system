@@ -101,19 +101,7 @@ public class ProductsService {
      */
     private static ArrayList<Product> fetchProductsFromDB(int warehouseId) {
         final String sql =
-                "SELECT " +
-                        "  p.Name, " +
-                        "  p.ItemCode, " +
-                        "  p.Color, " +
-                        "  q.Quantity, " +
-                        "  p.Size, " +
-                        "  p.Section, " +
-                        "  p.Picture, " +
-                        "  p.UnitPrice " +
-                        "FROM Quantity AS q " +
-                        "INNER JOIN ProductType AS p ON q.ItemCode = p.ItemCode " +
-                        "INNER JOIN Warehouse AS w ON q.WarehouseID = w.ID " +
-                        "WHERE w.ID = ?";
+                "SELECT * FROM v_ProductInventory WHERE WarehouseID = ?";
 
         ArrayList<Product> products = new ArrayList<>();
 

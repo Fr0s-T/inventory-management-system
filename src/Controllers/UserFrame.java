@@ -4,6 +4,7 @@ import Services.LogOutService;
 import Services.ProductsService;
 import Services.WareHouseService;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -139,6 +140,10 @@ public class UserFrame extends Application {
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setOnCloseRequest(event->{
+            LogOutService.handleExit();
+            Platform.exit();
+        });
         stage.show();
     }
 
