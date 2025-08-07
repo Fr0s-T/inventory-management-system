@@ -42,6 +42,7 @@ public class LogOutService {
         }
     }
     private static void setLoggedOutInDatabase() {
+
         try (Connection conn = DataBaseConnection.getConnection()) {
             String sql = "UPDATE Employee SET IsLoggedIn = 0 WHERE ID = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);

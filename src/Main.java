@@ -1,3 +1,4 @@
+import Models.Session;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import Controllers.SceneLoader;
@@ -14,20 +15,27 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-
             SceneLoader.setPrimaryStage(primaryStage);
             SceneLoader.loadScene("/FXML/LoginPage.fxml", null);
             primaryStage.setTitle("Inventory Management System");
-            // primaryStage.setMaximized(true);
+
+            // ✅ Attach exit handler here — works for all scenes
+            primaryStage.setOnCloseRequest(event -> {
+                Services.LogOutService.handleExit(); // Safely logs out current user
+                Services.ProductsService.stopBackgroundSync(); // Optional cleanup
+                System.out.println("🔚 Application is closing...");
+                javafx.application.Platform.exit();
+            });
+
         } catch (Exception e) {
-            e.printStackTrace(); // Print full error for debugging
+            e.printStackTrace();
         }
     }
 
     @Override
     public void stop() throws Exception {
         super.stop();
-        // Stop background sync gracefully when app closes
+        // Optional: ensure services shut down
         ProductsService.stopBackgroundSync();
     }
 
