@@ -7,11 +7,18 @@ import Services.ProductsService;
 import Services.ShipmentServices;
 import Services.WareHouseService;
 import Utilities.AlertUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -38,7 +45,7 @@ public class ShipmentController {
     @FXML private Button EditBtn;
     @FXML private Button RemoveBtn;
     @FXML private ComboBox<Product> ExpadistionComboBox;
-    @FXML private ProgressIndicator progressIndicator; // Add this to FXML
+    @FXML private ProgressIndicator progressIndicator;
 
     private ShipmentFormHandler formHandler;
 
@@ -59,9 +66,7 @@ public class ShipmentController {
         setupRadioButtons();
         setupButtons();
 
-        ShipmentType.selectToggle(ReceptionRadioButton); // Default
-
-        // Hide progress indicator initially
+        ShipmentType.selectToggle(ReceptionRadioButton);
         if (progressIndicator != null) {
             progressIndicator.setVisible(false);
         }
@@ -113,7 +118,6 @@ public class ShipmentController {
     }
 
     private void setupProducts() {
-
         if (Session.getProducts() == null) ProductsService.getProducts();
 
         ArrayList<Product> products = Session.getProducts();

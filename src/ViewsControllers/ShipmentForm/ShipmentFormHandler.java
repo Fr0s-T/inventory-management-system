@@ -73,6 +73,11 @@ public class ShipmentFormHandler {
                 .findFirst()
                 .orElse(null);
 
+        if (existingProduct == null && Session.getGlobalProductCatalog() != null) {
+            // Try to get from global catalog
+            existingProduct = Session.getGlobalProductCatalog().get(code);
+        }
+
         if (existingProduct != null) {
             if (existingProduct.getUnitPrice() > 0) {
                 unitPriceField.setText(String.valueOf(existingProduct.getUnitPrice()));
@@ -90,6 +95,7 @@ public class ShipmentFormHandler {
             nameField.setDisable(false);
         }
     }
+
 
     public void autoFillFromProduct(Product product) {
         if (product == null) return;

@@ -4,6 +4,8 @@ import ViewsControllers.ProductsController;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -16,7 +18,18 @@ public class Session {
     private static ArrayList<Product> products;
     private static Warehouse currentWarehouse;
     private static ArrayList<Warehouse> allWarehouses;
+    private static Map<String, Product> globalProductCatalog;
     private static Timestamp lastUpdate;
+
+
+    public static Map<String, Product> getGlobalProductCatalog() {
+        return globalProductCatalog;
+    }
+
+    public static void setGlobalProductCatalog(Map<String, Product> globalProductCatalog) {
+        Session.globalProductCatalog = globalProductCatalog;
+    }
+
 
     public static Warehouse getCurrentWarehouse() {
         return currentWarehouse;

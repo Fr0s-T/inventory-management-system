@@ -18,6 +18,7 @@ import Models.*;
 import java.io.IOException;
 import java.sql.SQLException;
 
+
 /**
  * Author: @Frost,@Ilia
  *
@@ -43,6 +44,9 @@ public class UserFrame extends Application {
         try {
             User user = Session.getCurrentUser();
             UsernameLabel.setText(user.getUsername());
+
+            if (Session.getGlobalProductCatalog() == null) Session.setGlobalProductCatalog(
+                    ProductsService.getGlobalProductCatalog());
 
             // ✅ Load warehouse info if not cached
             if (Session.getWarehouses() == null) {

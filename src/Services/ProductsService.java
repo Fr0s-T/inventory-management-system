@@ -5,7 +5,7 @@ import Models.Session;
 import Utilities.DataBaseConnection;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -132,4 +132,30 @@ public class ProductsService {
 
         return products;
     }
+
+    public static Map<String, Product> getGlobalProductCatalog() throws SQLException, ClassNotFoundException {
+        Map<String, Product> catalog = new HashMap<>();
+        String sql = "SELECT * FROM ProductType";
+
+        try (Connection conn = DataBaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Product pt = new Product(
+                        rs.getString("ItemCode"),
+                        rs.getString("Color"),
+                        0, // quantity is unknown here
+                        rs.getString("Size"),
+                        rs.getString("Section"),
+                        null, // picture is not in ProductType table
+                        rs.getFloat("UnitPrice"),
+                        rs.getString("Name")
+                );
+                catalog.put(pt.getItemCode(), pt);
+            }
+        }
+        return catalog;
+    }
+
 }

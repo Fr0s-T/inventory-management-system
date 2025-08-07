@@ -1,9 +1,8 @@
 package Controllers;
 
-import Services.DeletedLogsService;
 import Services.LogOutService;
+import Services.ProductsService;
 import Services.WareHouseService;
-import ViewsControllers.AddManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,12 +16,12 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Models.*;
-import jdk.jshell.Snippet;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Optional;
+
+
 
 /**
  * Author: @Frost
@@ -56,8 +55,8 @@ public class SuFrame extends Application {
             warehouses = WareHouseService.getWarehousesFromDb();  // Fetch from DB
             Session.setWarehouses(warehouses);                    // Cache it
         }
-
-// (Optional) Only print IDs if you just loaded from DB
+        if (Session.getGlobalProductCatalog() == null) Session.setGlobalProductCatalog(
+                ProductsService.getGlobalProductCatalog());// (Optional) Only print IDs if you just loaded from DB
         for (Warehouse warehouse : warehouses) {
             System.out.println(warehouse.getId());
         }
