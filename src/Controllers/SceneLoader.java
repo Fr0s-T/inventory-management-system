@@ -21,7 +21,8 @@ import java.util.ArrayList;
  */
 public class SceneLoader {
     private static Stage primaryStage;
-    private static String currentSceneFxml = ""; // ✅ Track the current FXML
+    private static String currentSceneFxml = "";
+    public static ProductsController productsController;
 
     public static void setPrimaryStage(Stage stage) {
         primaryStage = stage;
@@ -75,6 +76,7 @@ public class SceneLoader {
             }
         }
     }
+
 
     public static void loadProducts(AnchorPane dynamicPanel) throws IOException {
         dynamicPanel.getChildren().clear();

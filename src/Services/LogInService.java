@@ -137,6 +137,10 @@ public class LogInService {
                     if (rs.getBoolean("IsLoggedIn")) {
                         throw new SQLException("This account is already logged in on another device.");
                     }
+                    if(!rs.getBoolean("OnDuty")){
+                        throw new SQLException("This user is not On Duty");
+                    }
+
 
                     resetFailedAttempts(connection, username);
                     return buildUserFromResultSet(rs);

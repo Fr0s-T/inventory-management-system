@@ -43,6 +43,23 @@ public class UserFrame extends Application {
     private void initialize() {
         try {
             User user = Session.getCurrentUser();
+            if(user.getRole()!= User.Role.REGIONAL_MANAGER){
+                BackToDashboard.setVisible(false);
+                switch (user.getRole()) {
+                    case User.Role.SHIFT_MANAGER:
+                        UsersBtn.setVisible(false);
+                        AddEmployeeBtn.setVisible(false);
+                        break;
+                    case User.Role.EMPLOYEE:
+                        UsersBtn.setVisible(false);
+                        ReportsBtn.setVisible(false);
+                        AddEmployeeBtn.setVisible(false);
+                        break;
+                }
+
+
+
+            }
             UsernameLabel.setText(user.getUsername());
 
             if (Session.getGlobalProductCatalog() == null) Session.setGlobalProductCatalog(
