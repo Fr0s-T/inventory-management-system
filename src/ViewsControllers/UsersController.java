@@ -38,25 +38,33 @@ public class UsersController {
 
         FetchBtn.setOnAction(actionEvent -> {
             try {
+                ShiftManagerCheckBox.setVisible(true);
                 int userId = Integer.parseInt(IDtxt.getText());
                 User user = EditUserServices.fetchUser(userId);
 
-                if (user.getRole() == User.Role.REGIONAL_MANAGER || user.getRole() == User.Role.WAREHOUSE_MANAGER) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Access Denied");
-                    alert.setHeaderText("Permission Denied");
-                    alert.setContentText("You don't have the permission to fetch this user's data.");
-                    alert.showAndWait();
-                    return;
+                User.Role currentRole = Session.getCurrentUser().getRole();
+
+                if (currentRole == User.Role.REGIONAL_MANAGER) {
+                    // Block only if target user is Regional Manager
+                    if (user.getRole() == User.Role.REGIONAL_MANAGER) {
+                        showAccessDenied("You don't have permission to access this user's information.");
+                        return;
+                    } else if (user.getRole()== User.Role.WAREHOUSE_MANAGER) {
+                        ShiftManagerCheckBox.setVisible(false);
+                    }
+                } else if (currentRole == User.Role.WAREHOUSE_MANAGER) {
+
+                    if (user.getRole() == User.Role.WAREHOUSE_MANAGER || user.getRole() == User.Role.REGIONAL_MANAGER) {
+                        showAccessDenied("You don't have permission to access this user's information.");
+                        return;
+                    }
+
                 }
                 if (user.getWarehouseId() != Session.getCurrentWarehouse().getId()) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Access Denied");
-                    alert.setHeaderText("Permission Denied");
-                    alert.setContentText("This user does not work in your warehouse.");
-                    alert.showAndWait();
+                    showAccessDenied("This user does not work in your warehouse.");
                     return;
                 }
+
 
                 Fnametxt.setText(user.getFirstName());
                 Mnametxt.setText(user.getMiddleName());
@@ -157,5 +165,13 @@ public class UsersController {
             Usernametxt.clear();
         }
     }
+    private void showAccessDenied(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Access Denied");
+        alert.setHeaderText("Permission Denied");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
 }

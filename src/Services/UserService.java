@@ -124,13 +124,29 @@ public class UserService {
                 if (generatedKeys.next()) {
                     int newId = generatedKeys.getInt(1);
 
+                    String getWarehouseManagerSql =
+                            "SELECT ID FROM Employee WHERE WarehouseID = ? AND RoleID = 2";
+
+                    int warehouseManagerId = -1;
+                    try (PreparedStatement wmStmt = connection.prepareStatement(getWarehouseManagerSql)) {
+                        wmStmt.setInt(1, Session.getCurrentWarehouse().getId());
+                        try (ResultSet rs = wmStmt.executeQuery()) {
+                            if (rs.next()) {
+                                warehouseManagerId = rs.getInt("ID");
+                            } else {
+                                throw new SQLException("No Warehouse Manager found for this warehouse.");
+                            }
+                        }
+                    }
+
+
                     final String insertHierarchySql = "INSERT INTO Hierarchy (EmployeeID, RoleID, ManagerID, StartDate) VALUES (?, ?, ?, ?)";
 
                     try (PreparedStatement hierarchyStmt = connection.prepareStatement(insertHierarchySql)) {
                         hierarchyStmt.setInt(1, newId);
-                        hierarchyStmt.setInt(2, RoleID); // RoleID for Warehouse Manager
-                        hierarchyStmt.setInt(3, Session.getCurrentUser().getId());
-                        hierarchyStmt.setDate(4, Date.valueOf(LocalDate.now())); // Current date
+                        hierarchyStmt.setInt(2, RoleID);
+                        hierarchyStmt.setInt(3, warehouseManagerId);
+                        hierarchyStmt.setDate(4, Date.valueOf(LocalDate.now()));
 
                         hierarchyStmt.executeUpdate();
                     }

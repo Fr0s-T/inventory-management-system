@@ -32,7 +32,7 @@ public class Session {
 
     public static void setProducts(ArrayList<Product> products) {
         Session.products = products;
-        ProductsController.refreshTable();
+
 
     }
 

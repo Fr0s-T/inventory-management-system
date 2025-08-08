@@ -49,7 +49,7 @@ public class ProductsController {
         originalProductList = FXCollections.observableArrayList(Session.getProducts());
 
         if (SceneLoader.getCurrentScene().equals("Products.fxml")) {
-            ProductsController.refreshTable();
+            SceneLoader.productsController.refreshTable();
         }
 
         // Set up columns
@@ -76,32 +76,45 @@ public class ProductsController {
         });
 
         // Add listener to search field
-        SearchTxtField.textProperty().addListener((observable, oldValue, newValue)
-                -> searchByName(newValue));
+        SearchTxtField.textProperty().addListener((observable, oldValue, newValue) ->
+                searchProducts(newValue)
+        );
+
     }
 
 
-    private void searchByName(String searchText) {
+    private void searchProducts(String searchText) {
         if (searchText == null || searchText.trim().isEmpty()) {
             ProductsTable.setItems(originalProductList); // show all if empty
             return;
         }
 
+        String lowerCaseSearch = searchText.toLowerCase();
+
         ObservableList<Product> filteredList = originalProductList.filtered(
-                product -> product.getName() != null &&
-                        product.getName().toLowerCase().contains(searchText.toLowerCase())
+                product -> {
+                    boolean matchesName = product.getName() != null &&
+                            product.getName().toLowerCase().contains(lowerCaseSearch);
+
+                    boolean matchesCode = product.getItemCode() != null &&
+                            product.getItemCode().toLowerCase().contains(lowerCaseSearch);
+
+                    return matchesName || matchesCode;
+                }
         );
 
         ProductsTable.setItems(filteredList);
     }
 
-    public static void refreshTable() {
-        if (instance != null && instance.ProductsTable != null) {
+
+    public void refreshTable() {
+        if (ProductsTable != null) {
             Platform.runLater(() -> {
-                instance.originalProductList.setAll(Session.getProducts());
-                instance.ProductsTable.refresh();
+                originalProductList.setAll(Session.getProducts());
+                ProductsTable.refresh();
             });
         }
     }
+
 
 }
