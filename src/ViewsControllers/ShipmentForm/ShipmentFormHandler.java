@@ -5,6 +5,7 @@ import Models.Warehouse;
 import Models.Session;
 import Services.ShipmentServices;
 import Utilities.AlertUtils;
+import Utilities.QRCodeUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
@@ -195,10 +196,19 @@ public class ShipmentFormHandler {
         totalQuantity += qty;
         totalPrice += product.getUnitPrice() * qty;
 
-        productsListView.getItems().add(product.getItemCode() + " - Qty: " + qty);
+        String display = String.format(
+                "%s | %s | Qty: %d | Price: %.2f",
+                product.getItemCode(),
+                product.getName(),
+                qty,
+                product.getUnitPrice()
+        );
+
+        productsListView.getItems().add(display);
         totalQuantityTxt.setText(String.valueOf(totalQuantity));
         totalPriceTxt.setText(String.valueOf(totalPrice));
     }
+
 
     public void save(boolean isReception, Warehouse source, Warehouse destination) {
         if (items.isEmpty()) {
@@ -258,17 +268,28 @@ public class ShipmentFormHandler {
 
     public void removeItem(String itemCode) {
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getItemCode().equalsIgnoreCase(itemCode)) {
-                totalQuantity -= quantities.get(i);
-                totalPrice -= items.get(i).getUnitPrice() * quantities.get(i);
+            Product product = items.get(i);
+            if (product.getItemCode().equalsIgnoreCase(itemCode)) {
+                int removedQty = quantities.get(i);
+                float removedPrice = product.getUnitPrice() * removedQty;
+
+                totalQuantity -= removedQty;
+                totalPrice -= removedPrice;
+
                 items.remove(i);
                 quantities.remove(i);
                 break;
             }
         }
+
+        // Prevent negative values (in case of bugs)
+        totalQuantity = Math.max(0, totalQuantity);
+        totalPrice = Math.max(0, totalPrice);
+
         totalQuantityTxt.setText(String.valueOf(totalQuantity));
-        totalPriceTxt.setText(String.valueOf(totalPrice));
+        totalPriceTxt.setText(String.format("%.2f", totalPrice));
     }
+
 
     public void removeItem() {
         String selectedEntry = productsListView.getSelectionModel().getSelectedItem();
@@ -277,8 +298,8 @@ public class ShipmentFormHandler {
             return;
         }
 
-        String[] parts = selectedEntry.split(" - Qty: ");
-        if (parts.length != 2) {
+        String[] parts = selectedEntry.split(" \\| ");
+        if (parts.length < 1) {
             AlertUtils.showWarning("Invalid Format", "Cannot identify the selected product.");
             return;
         }
@@ -287,6 +308,21 @@ public class ShipmentFormHandler {
         removeItem(itemCode);
         productsListView.getItems().remove(selectedEntry);
     }
+
+    public void generateQRCode(Warehouse source, boolean isInNetwork, String outsideName) {
+        try {
+            String filePath = "generated_qr/shipment.png";
+            QRCodeUtils.generateShipmentQRCode(items, quantities, source, isInNetwork, outsideName, filePath);
+
+            //  Confirmation alert
+            AlertUtils.showInfo("QR Code Created", "The QR code has been successfully generated and saved.");
+        } catch (Exception e) {
+            AlertUtils.showError("QR Generation Failed", e.getMessage());
+        }
+    }
+
+
+
 
     // 👉 These are helpful if ShipmentController wants to use the values directly
     public ArrayList<Product> getItems() {

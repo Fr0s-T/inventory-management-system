@@ -7,6 +7,7 @@ import Services.ProductsService;
 import Services.ShipmentServices;
 import Services.WareHouseService;
 import Utilities.AlertUtils;
+import Utilities.QRCodeUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -45,6 +46,10 @@ public class ShipmentController {
     @FXML private Button EditBtn;
     @FXML private Button RemoveBtn;
     @FXML private ComboBox<Product> ExpadistionComboBox;
+    @FXML private Button QRCodeGeneraore;
+    @FXML private CheckBox OutsideOfNetworkCheckBox;
+    @FXML private TextField OutsideOfNetworkTxt;
+
     @FXML private ProgressIndicator progressIndicator;
 
     private ShipmentFormHandler formHandler;
@@ -195,6 +200,17 @@ public class ShipmentController {
         EditBtn.setOnAction(event -> handleEdit());
 
         RemoveBtn.setOnAction(actionEvent -> formHandler.removeItem());
+
+        QRCodeGeneraore.setOnAction(event -> {
+            formHandler.generateQRCode(
+                    SourceComboBox.getValue(),
+                    OutsideOfNetworkCheckBox.isSelected(),
+                    OutsideOfNetworkTxt.getText()
+            );
+        });
+
+
+
     }
 
     private void handleSave() {
@@ -251,14 +267,23 @@ public class ShipmentController {
             return;
         }
 
-        String[] parts = selectedEntry.split(" - Qty: ");
-        if (parts.length != 2) {
+        // Split using " | " to extract parts
+        String[] parts = selectedEntry.split(" \\| ");
+        if (parts.length < 3) {
             AlertUtils.showError("Invalid Format", "The selected entry is not valid.");
             return;
         }
 
-        String itemCode = parts[0].trim();
-        String quantity = parts[1].trim();
+        String itemCode = parts[0].trim(); // First part is item code
+        String qtyPart = parts[2].trim();  // Third part is "Qty: N"
+        String quantity;
+
+        if (qtyPart.startsWith("Qty:")) {
+            quantity = qtyPart.substring(4).trim(); // Remove "Qty:"
+        } else {
+            AlertUtils.showError("Invalid Format", "Cannot extract quantity.");
+            return;
+        }
 
         if (ReceptionRadioButton.isSelected()) {
             ItemCodeTxt.setText(itemCode);
