@@ -1,5 +1,6 @@
 package Models;
 
+import Services.ProductsService;
 import ViewsControllers.ProductsController;
 
 import java.sql.Timestamp;
@@ -45,7 +46,7 @@ public class Session {
 
     public static void setProducts(ArrayList<Product> products) {
         Session.products = products;
-        ProductsController.refreshTable();
+
 
     }
 
@@ -66,10 +67,14 @@ public class Session {
     }
 
     public static void logOut() {
+        ProductsService.stopBackgroundSync();
         currentUser = null;
         warehouses = null;
         products = null;
+        currentWarehouse = null;
+        allWarehouses = null;
         lastUpdate = null;
+        // Keep globalProductCatalog intact
     }
 
     public static void BackToDashboard() {

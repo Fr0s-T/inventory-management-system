@@ -36,7 +36,7 @@ public class ProductsController {
     @FXML private TableColumn<Product, String> UnitPriceColumn;
     @FXML private Button RefreshButton;
 
-    private static ProductsController instance;
+
 
     @FXML
     private ObservableList<Product> originalProductList;
@@ -44,13 +44,9 @@ public class ProductsController {
     @FXML
     public void initialize() {
         if (Session.getProducts() == null) ProductsService.getProducts();
-        if (instance == null) instance = this;
+
 
         originalProductList = FXCollections.observableArrayList(Session.getProducts());
-
-        if (SceneLoader.getCurrentScene().equals("Products.fxml")) {
-            ProductsController.refreshTable();
-        }
 
         // Set up columns
         itemCodeColumn.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
@@ -95,13 +91,5 @@ public class ProductsController {
         ProductsTable.setItems(filteredList);
     }
 
-    public static void refreshTable() {
-        if (instance != null && instance.ProductsTable != null) {
-            Platform.runLater(() -> {
-                instance.originalProductList.setAll(Session.getProducts());
-                instance.ProductsTable.refresh();
-            });
-        }
-    }
 
 }

@@ -66,11 +66,14 @@ public class ProductsService {
     /**
      * Stops background synchronization.
      */
+
     public static void stopBackgroundSync() {
         if (scheduler != null && !scheduler.isShutdown()) {
             scheduler.shutdownNow();
+            scheduler = null;
         }
     }
+
 
     /**
      * Retrieves the latest update timestamp from the database.
@@ -157,5 +160,7 @@ public class ProductsService {
         }
         return catalog;
     }
+
+
 
 }
