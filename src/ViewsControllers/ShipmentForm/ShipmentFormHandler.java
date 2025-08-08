@@ -315,7 +315,7 @@ public class ShipmentFormHandler {
             QRCodeUtils.generateShipmentQRCode(items, quantities, source, isInNetwork, outsideName, filePath);
 
             //  Confirmation alert
-            AlertUtils.showInfo("QR Code Created", "The QR code has been successfully generated and saved.");
+            AlertUtils.showSuccess("The QR code has been successfully generated and saved.");
         } catch (Exception e) {
             AlertUtils.showError("QR Generation Failed", e.getMessage());
         }
