@@ -24,6 +24,7 @@ public class Main extends Application {
                 Services.LogOutService.handleExit(); // Safely logs out current user
                 Services.ProductsService.stopBackgroundSync(); // Optional cleanup
                 System.out.println("🔚 Application is closing...");
+                Models.Session.logOut();
                 javafx.application.Platform.exit();
             });
 
