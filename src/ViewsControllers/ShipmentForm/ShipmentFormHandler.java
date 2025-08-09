@@ -1,12 +1,12 @@
 package ViewsControllers.ShipmentForm;
 
+import Models.ItemEntry;
 import Models.Product;
 import Models.Warehouse;
 import Models.Session;
 import Services.ShipmentServices;
 import Utilities.AlertUtils;
 import Utilities.QRCodeUtils;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
@@ -15,9 +15,17 @@ import javafx.scene.control.TextField;
 import java.util.ArrayList;
 
 /**
+ * ShipmentFormHandler
  *
- * Author: @Frost
+ * Responsibilities:
+ *  - Manages the in-form list of items, quantities and totals.
+ *  - Autofills product details from session data.
+ *  - Performs local validation and duplicate prevention.
+ *  - Generates QR payloads with the current cart.
  *
+ * Notes:
+ *  - Totals are kept as float to keep compatibility with existing services,
+ *    but display is formatted to two decimals to reduce visual artifacts.
  */
 public class ShipmentFormHandler {
 
@@ -32,7 +40,7 @@ public class ShipmentFormHandler {
     private final ArrayList<Product> items = new ArrayList<>();
     private final ArrayList<Integer> quantities = new ArrayList<>();
     private int totalQuantity = 0;
-    private float totalPrice = 0;
+    private float totalPrice = 0f;
 
     private ProgressIndicator progressIndicator;
 
@@ -49,7 +57,7 @@ public class ShipmentFormHandler {
         this.unitPriceField = unitPriceField;
         this.itemCodeField = itemCodeField;
         this.nameField = nameField;
-        this.QuantityTxt=QuantityTxt;
+        this.QuantityTxt = QuantityTxt;
         setupAutoFillDetails();
     }
 
@@ -58,24 +66,21 @@ public class ShipmentFormHandler {
         if (progressIndicator != null) progressIndicator.setVisible(false);
     }
 
-    private void setupAutoFillDetails() {
-        itemCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                autoFillProductDetails(itemCodeField.getText());
-            }
-        });
-    }
+    /* ---------- Autofill ---------- */
 
-    private void autoFillProductDetails(String code) {
+    private void setupAutoFillProductDetails(String code) {
         if (code == null || code.isEmpty()) return;
 
-        Product existingProduct = Session.getProducts().stream()
-                .filter(p -> p.getItemCode().equalsIgnoreCase(code))
-                .findFirst()
-                .orElse(null);
+        Product existingProduct = null;
+
+        if (Session.getProducts() != null) {
+            existingProduct = Session.getProducts().stream()
+                    .filter(p -> p.getItemCode().equalsIgnoreCase(code))
+                    .findFirst()
+                    .orElse(null);
+        }
 
         if (existingProduct == null && Session.getGlobalProductCatalog() != null) {
-            // Try to get from global catalog
             existingProduct = Session.getGlobalProductCatalog().get(code);
         }
 
@@ -97,6 +102,13 @@ public class ShipmentFormHandler {
         }
     }
 
+    private void setupAutoFillDetails() {
+        itemCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                setupAutoFillProductDetails(itemCodeField.getText());
+            }
+        });
+    }
 
     public void autoFillFromProduct(Product product) {
         if (product == null) return;
@@ -112,13 +124,18 @@ public class ShipmentFormHandler {
         nameField.setDisable(true);
     }
 
+    /* ---------- Add items ---------- */
+
     public void handleReception(String code, String qtyText) {
         if (validateInput(code, qtyText)) return;
 
-        Product existingProduct = Session.getProducts().stream()
-                .filter(p -> p.getItemCode().equalsIgnoreCase(code))
-                .findFirst()
-                .orElse(null);
+        Product existingProduct = null;
+        if (Session.getProducts() != null) {
+            existingProduct = Session.getProducts().stream()
+                    .filter(p -> p.getItemCode().equalsIgnoreCase(code))
+                    .findFirst()
+                    .orElse(null);
+        }
 
         if ((existingProduct == null || existingProduct.getUnitPrice() <= 0) &&
                 unitPriceField.getText().trim().isEmpty()) {
@@ -132,11 +149,11 @@ public class ShipmentFormHandler {
             return;
         }
 
-        Product product = getProduct(code, qtyText, existingProduct);
+        Product product = getProduct(code, existingProduct);
         addProduct(product, Integer.parseInt(qtyText));
     }
 
-    private Product getProduct(String code, String qtyText, Product existingProduct) {
+    private Product getProduct(String code, Product existingProduct) {
         float unitPrice = !unitPriceField.getText().trim().isEmpty()
                 ? Float.parseFloat(unitPriceField.getText().trim())
                 : (existingProduct != null ? existingProduct.getUnitPrice() : 0);
@@ -145,7 +162,7 @@ public class ShipmentFormHandler {
                 ? nameField.getText().trim()
                 : (existingProduct != null ? existingProduct.getName() : "");
 
-        Product product = new Product(code, qtyText, unitPrice);
+        Product product = new Product(code, "0", unitPrice);
         product.setItemCode(code);
         product.setName(productName);
         return product;
@@ -187,7 +204,7 @@ public class ShipmentFormHandler {
     }
 
     private void addProduct(Product product, int qty) {
-        if (items.stream().anyMatch(p -> p.getItemCode().equals(product.getItemCode()))) {
+        if (items.stream().anyMatch(p -> p.getItemCode().equalsIgnoreCase(product.getItemCode()))) {
             AlertUtils.showWarning("Duplicate Item", "This product is already added.");
             return;
         }
@@ -206,9 +223,10 @@ public class ShipmentFormHandler {
 
         productsListView.getItems().add(display);
         totalQuantityTxt.setText(String.valueOf(totalQuantity));
-        totalPriceTxt.setText(String.valueOf(totalPrice));
+        totalPriceTxt.setText(String.format("%.2f", totalPrice));
     }
 
+    /* ---------- Save and reset ---------- */
 
     public void save(boolean isReception, Warehouse source, Warehouse destination) {
         if (items.isEmpty()) {
@@ -216,7 +234,7 @@ public class ShipmentFormHandler {
             return;
         }
 
-        if (!isReception && source.equals(destination)) {
+        if (!isReception && source != null && destination != null && source.equals(destination)) {
             AlertUtils.showWarning("Invalid Warehouses", "Source and destination cannot be the same.");
             return;
         }
@@ -266,6 +284,8 @@ public class ShipmentFormHandler {
         nameField.setDisable(false);
     }
 
+    /* ---------- Removal ---------- */
+
     public void removeItem(String itemCode) {
         for (int i = 0; i < items.size(); i++) {
             Product product = items.get(i);
@@ -282,14 +302,12 @@ public class ShipmentFormHandler {
             }
         }
 
-        // Prevent negative values (in case of bugs)
         totalQuantity = Math.max(0, totalQuantity);
         totalPrice = Math.max(0, totalPrice);
 
         totalQuantityTxt.setText(String.valueOf(totalQuantity));
         totalPriceTxt.setText(String.format("%.2f", totalPrice));
     }
-
 
     public void removeItem() {
         String selectedEntry = productsListView.getSelectionModel().getSelectedItem();
@@ -309,35 +327,65 @@ public class ShipmentFormHandler {
         productsListView.getItems().remove(selectedEntry);
     }
 
-    public void generateQRCode(Warehouse source, boolean isInNetwork, String outsideName) {
-        try {
-            String filePath = "generated_qr/shipment.png";
-            QRCodeUtils.generateShipmentQRCode(items, quantities, source, isInNetwork, outsideName, filePath);
+    /* ---------- QR generation ---------- */
 
-            //  Confirmation alert
+    /**
+     * Generates a QR for the current in-form items and parameters.
+     *
+     * @param source         source warehouse (can be null when outside network)
+     * @param destination    destination warehouse (can be null when outside network)
+     * @param isInNetwork    true if both ends are inside the network
+     * @param outsideName    non-null when outside network and the external party needs a name
+     * @param shipmentType   QR-facing type label (e.g., "Expedition" or "Reception")
+     * @param filePath       target PNG path selected by user
+     */
+    public void generateQRCode(Warehouse source,
+                               Warehouse destination,
+                               boolean isInNetwork,
+                               String outsideName,
+                               String shipmentType,
+                               String filePath) {
+        try {
+            QRCodeUtils.generateShipmentQRCode(
+                    items, quantities, source, destination,
+                    isInNetwork, outsideName, filePath, shipmentType
+            );
+
             AlertUtils.showSuccess("The QR code has been successfully generated and saved.");
         } catch (Exception e) {
             AlertUtils.showError("QR Generation Failed", e.getMessage());
         }
     }
 
+    /* ---------- Mapping helpers used by controller ---------- */
 
-
-
-    // 👉 These are helpful if ShipmentController wants to use the values directly
-    public ArrayList<Product> getItems() {
-        return items;
+    public Product fromItemEntry(ItemEntry entry) {
+        return new Product(
+                entry.itemCode(),
+                String.valueOf(entry.quantity()),
+                entry.unitPrice()
+        );
     }
 
-    public ArrayList<Integer> getQuantities() {
-        return quantities;
+    public void setItems(ArrayList<Product> newItems, ArrayList<Integer> newQuantities) {
+        if (newItems == null || newQuantities == null || newItems.size() != newQuantities.size()) {
+            AlertUtils.showError("Invalid Data", "Mismatch between products and quantities.");
+            return;
+        }
+
+        reset(); // Clear existing form
+
+        for (int i = 0; i < newItems.size(); i++) {
+            Product product = newItems.get(i);
+            int quantity = newQuantities.get(i);
+            addProduct(product, quantity);
+        }
     }
 
-    public int getTotalQuantity() {
-        return totalQuantity;
-    }
+    /* ---------- Accessors ---------- */
 
-    public float getTotalPrice() {
-        return totalPrice;
-    }
+    public ArrayList<Product> getItems() { return items; }
+    public ArrayList<Integer> getQuantities() { return quantities; }
+    public int getTotalQuantity() { return totalQuantity; }
+    public float getTotalPrice() { return totalPrice; }
 }

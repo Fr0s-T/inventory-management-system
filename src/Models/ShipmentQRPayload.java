@@ -2,34 +2,48 @@ package Models;
 
 import java.util.List;
 
-public class ShipmentQRPayload {
+public record ShipmentQRPayload(String shipmentType, String source, String destination, boolean isInNetwork,
+                                List<ItemEntry> items) {
 
-    private final String shipmentType;
-    private final String source;
-    private final boolean isInNetwork;
-    private final List<ItemEntry> items;
-
-    public ShipmentQRPayload(String shipmentType, String source, boolean isInNetwork, List<ItemEntry> items) {
-        this.shipmentType = shipmentType;
-        this.source = source;
-        this.isInNetwork = isInNetwork;
-        this.items = items;
-    }
-
-    public String getShipmentType() {
+    // ✅ Add this method so controller can access shipmentType properly
+    public String getType() {
         return shipmentType;
     }
 
-    public String getSource() {
-        return source;
+    // ========== NEW METHODS ==========
+
+    public boolean isOutsideNetwork() {
+        return !isInNetwork;
     }
 
-    public boolean isInNetwork() {
-        return isInNetwork;
+    public String getSourceName() {
+        return isOutsideNetwork() && "Reception".equalsIgnoreCase(shipmentType) ? source : null;
     }
 
-    public List<ItemEntry> getItems() {
-        return items;
+    public String getDestinationName() {
+        return isOutsideNetwork() && "Expedition".equalsIgnoreCase(shipmentType) ? destination : null;
+    }
+
+    public int getSourceId() {
+        if (!isOutsideNetwork() && "Reception".equalsIgnoreCase(shipmentType)) {
+            try {
+                return Integer.parseInt(source);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+        return -1;
+    }
+
+    public int getDestinationId() {
+        if (!isOutsideNetwork() && "Expedition".equalsIgnoreCase(shipmentType)) {
+            try {
+                return Integer.parseInt(destination);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -37,6 +51,7 @@ public class ShipmentQRPayload {
         return "ShipmentQRPayload{" +
                 "shipmentType='" + shipmentType + '\'' +
                 ", source='" + source + '\'' +
+                ", destination='" + destination + '\'' +
                 ", isInNetwork=" + isInNetwork +
                 ", items=" + items +
                 '}';

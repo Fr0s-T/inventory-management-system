@@ -13,6 +13,7 @@ import java.util.Set;
  * Author: @Frost
  *
  */
+
 public class Session {
     private static User currentUser;
     private static ArrayList<Warehouse> warehouses;

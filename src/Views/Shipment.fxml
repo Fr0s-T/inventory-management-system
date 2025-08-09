@@ -45,6 +45,7 @@
                </toggleGroup>
             </RadioButton>
             <RadioButton fx:id="ExpeditionRadioButton" text="Expedition" toggleGroup="$ShipmentType" />
+            <Button fx:id="QrCodeReader" mnemonicParsing="false" text="Button" />
             <VBox.margin>
                <Insets left="20.0" top="30.0" />
             </VBox.margin>

@@ -6,11 +6,16 @@ import Models.ShipmentQRPayload;
 import Models.ItemEntry;
 import com.google.gson.Gson;
 import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -45,11 +50,20 @@ public class QRCodeUtils {
     public static void generateShipmentQRCode(ArrayList<Product> items,
                                               ArrayList<Integer> quantities,
                                               Warehouse source,
+                                              Warehouse destination,
                                               boolean isInNetwork,
                                               String outsideNetworkName,
-                                              String filePath) {
+                                              String filePath,
+                                              String shipmentType) {
         try {
-            // Step 1: Convert items + quantities → ItemEntry list
+            // Ensure directory exists
+            Path path = FileSystems.getDefault().getPath(filePath);
+            Path dir = path.getParent();
+            if (dir != null && !java.nio.file.Files.exists(dir)) {
+                java.nio.file.Files.createDirectories(dir);
+            }
+
+            // Convert to ItemEntry list
             List<ItemEntry> itemEntries = new ArrayList<>();
             for (int i = 0; i < items.size(); i++) {
                 Product product = items.get(i);
@@ -62,15 +76,20 @@ public class QRCodeUtils {
                 ));
             }
 
-            // Step 2: Build Payload
+            // Decide how to represent source and destination
+            String sourceStr = source != null ? String.valueOf(source.getId()) : outsideNetworkName;
+            String destinationStr = destination != null ? String.valueOf(destination.getId()) : outsideNetworkName;
+
+            // Create payload
             ShipmentQRPayload payload = new ShipmentQRPayload(
-                    "Expedition",
-                    isInNetwork ? String.valueOf(source.getId()) : outsideNetworkName,
+                    shipmentType,
+                    sourceStr,
+                    destinationStr,
                     isInNetwork,
                     itemEntries
             );
 
-            // Step 3: Serialize and Generate QR Code
+            // Serialize and generate QR
             Gson gson = new Gson();
             String jsonPayload = gson.toJson(payload);
 
@@ -81,4 +100,25 @@ public class QRCodeUtils {
             e.printStackTrace();
         }
     }
+    public static ShipmentQRPayload decodeShipmentQRCode(String filePath) {
+        try {
+            BufferedImage image = ImageIO.read(new File(filePath));
+            LuminanceSource source = new BufferedImageLuminanceSource(image);
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+            Result result = new MultiFormatReader().decode(bitmap);
+            String json = result.getText();
+
+            Gson gson = new Gson();
+            return gson.fromJson(json, ShipmentQRPayload.class);
+
+        } catch (Exception e) {
+            System.err.println("❌ Failed to decode QR Code: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+
+
 }
