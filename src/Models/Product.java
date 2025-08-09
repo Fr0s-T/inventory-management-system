@@ -20,7 +20,6 @@ public class Product {
     public Product() {
     }
 
-
     public Product(String itemCode, String color, int quantity, String size,
                    String section, String picture, float unitPrice, String name) {
         this.itemCode = itemCode;
@@ -112,6 +111,8 @@ public class Product {
     public void setUnitPrice(float unitPrice) {
         this.unitPrice = unitPrice;
     }
+
+
 
     @Override
     public String toString() {

@@ -38,6 +38,7 @@ public class SuFrame extends Application {
     @FXML private FlowPane flowPane;
     @FXML private Button AddWarehouseBtn;
     @FXML private Button AddManagerBtn;
+    @FXML private Button EditItem;
 
     private Stage mainStage;
 
@@ -134,6 +135,32 @@ public class SuFrame extends Application {
 
                 // Pass stage to controller
                 ViewsControllers.AddManager controller = loader.getController();
+                controller.setDialogStage(dialogStage);
+
+                // Show popup
+                dialogStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        EditItem.setOnAction(actionEvent -> {
+            try {
+                // Load FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/EditProduct.fxml"));
+                AnchorPane page = loader.load();
+
+                // Create popup Stage
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Edit Item");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(EditItem.getScene().getWindow());
+
+                Scene scene = new Scene(page);
+                dialogStage.setScene(scene);
+
+                // Pass stage to controller
+                ViewsControllers.EditItem controller = loader.getController();
                 controller.setDialogStage(dialogStage);
 
                 // Show popup

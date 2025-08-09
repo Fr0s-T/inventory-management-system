@@ -17,18 +17,24 @@
             <Label alignment="CENTER" layoutX="470.0" layoutY="23.0" prefHeight="90.0" prefWidth="400.0" text="Warehouse Reports" />
          </children>
       </Pane>
-      <HBox layoutX="496.0" layoutY="138.0" prefHeight="70.0" prefWidth="200.0" spacing="130.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0">
+      <HBox layoutX="496.0" layoutY="138.0" prefHeight="70.0" prefWidth="200.0" spacing="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0">
          <children>
             <Button id="EmployeesInfoBtn" fx:id="EmployeesInfoBtn" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Employees Info">
                <HBox.margin>
-                  <Insets left="50.0" />
+                  <Insets left="30.0" />
                </HBox.margin>
             </Button>
             <Button id="StockValuationBtn" fx:id="StockValuationBtn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Stock Valuation" />
-            <Button id="ReceivedBtn" fx:id="ReceivedBtn" layoutX="266.0" layoutY="10.0" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Received Shipments" />
-            <Button id="SentBtn" fx:id="SentBtn" layoutX="522.0" layoutY="10.0" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Sent Shipments">
+            <Button id="ReceivedItemsBtn" fx:id="ReceivedItemsBtn" layoutX="266.0" layoutY="10.0" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Received Items" />
+            <Button id="SentItemsBtn" fx:id="SentItemsBtn" layoutX="522.0" layoutY="10.0" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Sent Items">
                <HBox.margin>
-                  <Insets right="50.0" />
+                  <Insets />
+               </HBox.margin>
+            </Button>
+            <Button id="ReceivedBtn" fx:id="ReceivedBtn" layoutX="721.0" layoutY="10.0" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Received Shipments" />
+            <Button id="SentBtn" fx:id="SentBtn" layoutX="854.0" layoutY="10.0" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Sent Shipments">
+               <HBox.margin>
+                  <Insets right="30.0" />
                </HBox.margin>
             </Button>
          </children>
@@ -66,5 +72,13 @@
       <Label id="ValueL" fx:id="ValueL" alignment="CENTER" layoutX="1070.0" layoutY="431.2" prefHeight="50.0" prefWidth="110.0" styleClass="report-label" text="Value" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="431.0" />
       <TextField id="StockLeveltxt" fx:id="StockLeveltxt" editable="false" layoutX="1010.0" layoutY="231.0" prefHeight="40.0" prefWidth="200.0" styleClass="report-field" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="330.0" />
       <TextField id="Valuetxt" fx:id="Valuetxt" editable="false" layoutX="967.0" layoutY="440.0" prefHeight="40.0" prefWidth="200.0" styleClass="report-field" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="500.0" />
+      <TableView id="ItemsTable" fx:id="ItemsTable" layoutX="10.0" layoutY="270.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="260.0">
+         <columns>
+            <TableColumn id="ItemCodeC2" fx:id="ItemCodeC2" prefWidth="325.0" text="Item Code" />
+            <TableColumn id="ItemQuantityC2" fx:id="ItemQuantityC2" prefWidth="325.0" text="Quantity" />
+            <TableColumn id="TotalPriceC2" fx:id="TotalPriceC2" prefWidth="325.0" text="Total Price" />
+            <TableColumn id="ShipmentIdC2" fx:id="ShipmentIdC2" prefWidth="325.0" text="Shipment ID" />
+         </columns>
+      </TableView>
    </children>
 </AnchorPane>
