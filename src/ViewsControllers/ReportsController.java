@@ -25,6 +25,8 @@ public class ReportsController {
     @FXML private Button StockValuationBtn;
     @FXML private Button ReceivedBtn;
     @FXML private Button SentBtn;
+    @FXML private Button ReceivedItemsBtn;
+    @FXML private Button SentItemsBtn;
     @FXML private TextField StockLeveltxt;
     @FXML private TextField Valuetxt;
     @FXML private Label StockLevelL;
@@ -52,9 +54,16 @@ public class ReportsController {
     @FXML private TableColumn<Product, Integer> ItemQuantityC;
     @FXML private TableColumn<Product, Integer> UnitPriceC;
     @FXML private TableColumn<Product, String> TotalPriceC;
+    //Items table and columns
+    @FXML private TableView<ShipmentDetails> ItemsTable;
+    @FXML private TableColumn<ShipmentDetails, String> ItemCodeC2;
+    @FXML private TableColumn<ShipmentDetails, Integer> ItemQuantityC2;
+    @FXML private TableColumn<ShipmentDetails, String> TotalPriceC2;
+    @FXML private TableColumn<ShipmentDetails, String> ShipmentIdC2;
 
 
-    @FXML public void initialize(){
+    @FXML
+    public void initialize() {
         ClearPage();
 
         EmployeesInfoBtn.setOnAction(actionEvent -> showEmployeesTable());
@@ -71,13 +80,22 @@ public class ReportsController {
         SentBtn.setOnAction(actionEvent -> showExpeditionShipments());
         LockColumns(ShipmentsTable);
 
-        //Initialize Valuation table and columns
+        ReceivedItemsBtn.setOnAction(actionEvent -> showReceivedItems());
+        SentItemsBtn.setOnAction(actionEvent -> showSentItems());
 
+        // ItemsTable column mapping
+        ShipmentIdC2.setCellValueFactory(new PropertyValueFactory<>("shipmentId"));
+        ItemCodeC2.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+        ItemQuantityC2.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        TotalPriceC2.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+
+        LockColumns(ItemsTable);
+
+        //Initialize Valuation table and columns
         StockValuationBtn.setOnAction(actionEvent -> showValuationTable());
         LockColumns(StockLevelTable);
-
-
     }
+
 
     @FXML
     private void showEmployeesTable() {
@@ -96,6 +114,7 @@ public class ReportsController {
 
         });
 
+        ItemsTable.setVisible(false);
         EmployeesTable.setVisible(true);
         ShipmentsTable.setVisible(false);
         StockLeveltxt.setVisible(false);
@@ -111,6 +130,7 @@ public class ReportsController {
         }
     }
     private void showValuationTable() {
+        ItemsTable.setVisible(false);
         EmployeesTable.setVisible(false);
         ShipmentsTable.setVisible(false);
         StockLeveltxt.setVisible(true);
@@ -144,6 +164,9 @@ public class ReportsController {
         Valuetxt.setText(String.format("%.2f", totalValue));
 
 
+
+
+
     }
 
     private void LockColumns(TableView<?> tableView) {
@@ -166,6 +189,7 @@ public class ReportsController {
 
             ShipmentsTable.getItems().setAll(receptions);
             ShipmentsTable.setVisible(true);
+            ItemsTable.setVisible(false);
             EmployeesTable.setVisible(false);
             StockLeveltxt.setVisible(false);
             Valuetxt.setVisible(false);
@@ -189,6 +213,7 @@ public class ReportsController {
 
             ShipmentsTable.getItems().setAll(expeditions);
             ShipmentsTable.setVisible(true);
+            ItemsTable.setVisible(false);
             EmployeesTable.setVisible(false);
             StockLeveltxt.setVisible(false);
             Valuetxt.setVisible(false);
@@ -197,6 +222,45 @@ public class ReportsController {
             StockLevelTable.setVisible(false);
         } catch (Exception e) {
             e.printStackTrace(); // Handle error (you can show an alert)
+        }
+    }
+    @FXML
+    private void showSentItems() {
+        try {
+
+            ShipmentsTable.setVisible(false);
+            ItemsTable.setVisible(true);
+            EmployeesTable.setVisible(false);
+            StockLeveltxt.setVisible(false);
+            Valuetxt.setVisible(false);
+            StockLevelL.setVisible(false);
+            ValueL.setVisible(false);
+            StockLevelTable.setVisible(false);
+
+            ArrayList<ShipmentDetails> sentItems = ReportsService.getSentItems();
+            ItemsTable.setItems(FXCollections.observableArrayList(sentItems));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void showReceivedItems() {
+        try {
+            ShipmentsTable.setVisible(false);
+            ItemsTable.setVisible(true);
+            EmployeesTable.setVisible(false);
+            StockLeveltxt.setVisible(false);
+            Valuetxt.setVisible(false);
+            StockLevelL.setVisible(false);
+            ValueL.setVisible(false);
+            StockLevelTable.setVisible(false);
+
+            ArrayList<ShipmentDetails> ReceivedItems = ReportsService.getReceivedItems();
+            ItemsTable.setItems(FXCollections.observableArrayList(ReceivedItems));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     public void ClearPage(){
@@ -208,6 +272,7 @@ public class ReportsController {
         StockLevelTable.setVisible(false);
         EmployeesTable.setVisible(false);
         ShipmentsTable.setVisible(false);
+        ItemsTable.setVisible(false);
     }
 
 

@@ -1,8 +1,6 @@
 package Services;
 
-import Models.Session;
-import Models.Shipment;
-import Models.User;
+import Models.*;
 import Utilities.DataBaseConnection;
 
 import java.sql.Connection;
@@ -72,6 +70,63 @@ public class ReportsService {
 
         return shipments;
     }
+    public static ArrayList<ShipmentDetails> getReceivedItems() throws Exception {
+        ArrayList<ShipmentDetails> receivedItems = new ArrayList<>();
+
+        String query = "SELECT ItemCode, Quantity, TotalPrice, ShipmentID, ShipmentType, SourceID, DestinationID " +
+                "FROM v_ShipmentItemsReport " +
+                "WHERE DestinationID = ?";
+
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, Session.getCurrentWarehouse().getId());
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ShipmentDetails details = new ShipmentDetails();
+                details.setItemCode(rs.getString("ItemCode"));
+                details.setQuantity(rs.getInt("Quantity"));
+                details.setTotalPrice(rs.getFloat("TotalPrice"));
+                details.setShipmentId(rs.getInt("ShipmentID"));
+                details.setShipmentType(rs.getString("ShipmentType"));
+                details.setSourceId(rs.getInt("SourceID"));
+                details.setDestinationId(rs.getInt("DestinationID"));
+                receivedItems.add(details);
+            }
+        }
+
+        return receivedItems;
+    }
+    public static ArrayList<ShipmentDetails> getSentItems() throws Exception {
+        ArrayList<ShipmentDetails> sentItems = new ArrayList<>();
+
+        String query = "SELECT ItemCode, Quantity, TotalPrice, ShipmentID, ShipmentType, SourceID, DestinationID " +
+                "FROM v_ShipmentItemsReport " +
+                "WHERE SourceID = ?";
+
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, Session.getCurrentWarehouse().getId());
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ShipmentDetails details = new ShipmentDetails();
+                details.setItemCode(rs.getString("ItemCode"));
+                details.setQuantity(rs.getInt("Quantity"));
+                details.setTotalPrice(rs.getFloat("TotalPrice"));
+                details.setShipmentId(rs.getInt("ShipmentID"));
+                details.setShipmentType(rs.getString("ShipmentType"));
+                details.setSourceId(rs.getInt("SourceID"));
+                details.setDestinationId(rs.getInt("DestinationID"));
+                sentItems.add(details);
+            }
+        }
+
+        return sentItems;
+    }
+
 
 
 
