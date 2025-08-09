@@ -2,8 +2,8 @@ package ViewsControllers.ShipmentForm;
 
 import Models.ItemEntry;
 import Models.Product;
-import Models.Warehouse;
 import Models.Session;
+import Models.Warehouse;
 import Services.ShipmentServices;
 import Utilities.AlertUtils;
 import Utilities.QRCodeUtils;
@@ -14,19 +14,6 @@ import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
 
-/**
- * ShipmentFormHandler
- *
- * Responsibilities:
- *  - Manages the in-form list of items, quantities and totals.
- *  - Autofills product details from session data.
- *  - Performs local validation and duplicate prevention.
- *  - Generates QR payloads with the current cart.
- *
- * Notes:
- *  - Totals are kept as float to keep compatibility with existing services,
- *    but display is formatted to two decimals to reduce visual artifacts.
- */
 public class ShipmentFormHandler {
 
     private final ListView<String> productsListView;
@@ -35,7 +22,7 @@ public class ShipmentFormHandler {
     private final TextField unitPriceField;
     private final TextField itemCodeField;
     private final TextField nameField;
-    private final TextField QuantityTxt;
+    private final TextField quantityTxt;
 
     private final ArrayList<Product> items = new ArrayList<>();
     private final ArrayList<Integer> quantities = new ArrayList<>();
@@ -50,26 +37,31 @@ public class ShipmentFormHandler {
                                TextField unitPriceField,
                                TextField itemCodeField,
                                TextField nameField,
-                               TextField QuantityTxt) {
+                               TextField quantityTxt) {
         this.productsListView = productsListView;
         this.totalQuantityTxt = totalQuantityTxt;
         this.totalPriceTxt = totalPriceTxt;
         this.unitPriceField = unitPriceField;
         this.itemCodeField = itemCodeField;
         this.nameField = nameField;
-        this.QuantityTxt = QuantityTxt;
+        this.quantityTxt = quantityTxt;
+
         setupAutoFillDetails();
     }
 
     public void setProgressIndicator(ProgressIndicator indicator) {
         this.progressIndicator = indicator;
-        if (progressIndicator != null) progressIndicator.setVisible(false);
+        if (progressIndicator != null) {
+            progressIndicator.setVisible(false);
+        }
     }
 
     /* ---------- Autofill ---------- */
 
     private void setupAutoFillProductDetails(String code) {
-        if (code == null || code.isEmpty()) return;
+        if (code == null || code.isEmpty()) {
+            return;
+        }
 
         Product existingProduct = null;
 
@@ -94,12 +86,13 @@ public class ShipmentFormHandler {
             }
             nameField.setText(existingProduct.getName());
             nameField.setDisable(true);
-        } else {
-            unitPriceField.clear();
-            unitPriceField.setDisable(false);
-            nameField.clear();
-            nameField.setDisable(false);
+            return;
         }
+
+        unitPriceField.clear();
+        unitPriceField.setDisable(false);
+        nameField.clear();
+        nameField.setDisable(false);
     }
 
     private void setupAutoFillDetails() {
@@ -111,7 +104,9 @@ public class ShipmentFormHandler {
     }
 
     public void autoFillFromProduct(Product product) {
-        if (product == null) return;
+        if (product == null) {
+            return;
+        }
 
         if (product.getUnitPrice() > 0) {
             unitPriceField.setText(String.valueOf(product.getUnitPrice()));
@@ -127,7 +122,9 @@ public class ShipmentFormHandler {
     /* ---------- Add items ---------- */
 
     public void handleReception(String code, String qtyText) {
-        if (validateInput(code, qtyText)) return;
+        if (validateInput(code, qtyText)) {
+            return;
+        }
 
         Product existingProduct = null;
         if (Session.getProducts() != null) {
@@ -137,35 +134,48 @@ public class ShipmentFormHandler {
                     .orElse(null);
         }
 
-        if ((existingProduct == null || existingProduct.getUnitPrice() <= 0) &&
-                unitPriceField.getText().trim().isEmpty()) {
+        boolean needsPrice = (existingProduct == null || existingProduct.getUnitPrice() <= 0);
+        if (needsPrice && unitPriceField.getText().trim().isEmpty()) {
             AlertUtils.showWarning("Missing Price", "You must enter a unit price for new products.");
             return;
         }
 
-        if ((existingProduct == null || existingProduct.getName() == null || existingProduct.getName().isEmpty()) &&
-                nameField.getText().trim().isEmpty()) {
+        boolean needsName = (existingProduct == null || existingProduct.getName() == null || existingProduct.getName().isEmpty());
+        if (needsName && nameField.getText().trim().isEmpty()) {
             AlertUtils.showWarning("Missing Name", "You must enter a name for new products.");
             return;
         }
 
-        Product product = getProduct(code, existingProduct);
-        addProduct(product, Integer.parseInt(qtyText));
+        Product product = buildProductForReception(code, existingProduct);
+        int qty = Integer.parseInt(qtyText);
+        addProduct(product, qty);
     }
 
-    private Product getProduct(String code, Product existingProduct) {
-        float unitPrice = !unitPriceField.getText().trim().isEmpty()
-                ? Float.parseFloat(unitPriceField.getText().trim())
-                : (existingProduct != null ? existingProduct.getUnitPrice() : 0);
+    private Product buildProductForReception(String code, Product existingProduct) {
+        float unitPrice;
+        String up = unitPriceField.getText().trim();
+        if (!up.isEmpty()) {
+            unitPrice = Float.parseFloat(up);
+        } else if (existingProduct != null) {
+            unitPrice = existingProduct.getUnitPrice();
+        } else {
+            unitPrice = 0;
+        }
 
-        String productName = !nameField.getText().trim().isEmpty()
-                ? nameField.getText().trim()
-                : (existingProduct != null ? existingProduct.getName() : "");
+        String productName;
+        String nf = nameField.getText().trim();
+        if (!nf.isEmpty()) {
+            productName = nf;
+        } else if (existingProduct != null) {
+            productName = existingProduct.getName();
+        } else {
+            productName = "";
+        }
 
-        Product product = new Product(code, "0", unitPrice);
-        product.setItemCode(code);
-        product.setName(productName);
-        return product;
+        Product p = new Product(code, "0", unitPrice);
+        p.setItemCode(code);
+        p.setName(productName);
+        return p;
     }
 
     public void handleExpedition(Product selectedProduct, String qtyText) {
@@ -173,7 +183,9 @@ public class ShipmentFormHandler {
             AlertUtils.showWarning("Product Selection Missing", "Please select a product for expedition.");
             return;
         }
-        if (validateInput(selectedProduct.getItemCode(), qtyText)) return;
+        if (validateInput(selectedProduct.getItemCode(), qtyText)) {
+            return;
+        }
 
         autoFillFromProduct(selectedProduct);
 
@@ -204,7 +216,8 @@ public class ShipmentFormHandler {
     }
 
     private void addProduct(Product product, int qty) {
-        if (items.stream().anyMatch(p -> p.getItemCode().equalsIgnoreCase(product.getItemCode()))) {
+        boolean duplicate = items.stream().anyMatch(p -> p.getItemCode().equalsIgnoreCase(product.getItemCode()));
+        if (duplicate) {
             AlertUtils.showWarning("Duplicate Item", "This product is already added.");
             return;
         }
@@ -239,7 +252,9 @@ public class ShipmentFormHandler {
             return;
         }
 
-        if (progressIndicator != null) progressIndicator.setVisible(true);
+        if (progressIndicator != null) {
+            progressIndicator.setVisible(true);
+        }
 
         Task<Void> task = new Task<>() {
             @Override
@@ -254,14 +269,19 @@ public class ShipmentFormHandler {
         };
 
         task.setOnSucceeded(event -> {
-            if (progressIndicator != null) progressIndicator.setVisible(false);
+            if (progressIndicator != null) {
+                progressIndicator.setVisible(false);
+            }
             AlertUtils.showSuccess("Shipment completed successfully.");
             reset();
         });
 
         task.setOnFailed(event -> {
-            if (progressIndicator != null) progressIndicator.setVisible(false);
-            String msg = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+            if (progressIndicator != null) {
+                progressIndicator.setVisible(false);
+            }
+            Throwable ex = task.getException();
+            String msg = ex != null ? ex.getMessage() : "Unknown error";
             AlertUtils.showError("Error", "Failed to process shipment: " + msg);
         });
 
@@ -271,13 +291,13 @@ public class ShipmentFormHandler {
     public void reset() {
         items.clear();
         quantities.clear();
-        totalPrice = 0;
+        totalPrice = 0f;
         totalQuantity = 0;
         productsListView.getItems().clear();
         totalQuantityTxt.clear();
         totalPriceTxt.clear();
         unitPriceField.clear();
-        QuantityTxt.clear();
+        quantityTxt.clear();
         unitPriceField.setDisable(false);
         itemCodeField.clear();
         nameField.clear();
@@ -302,8 +322,8 @@ public class ShipmentFormHandler {
             }
         }
 
-        totalQuantity = Math.max(0, totalQuantity);
-        totalPrice = Math.max(0, totalPrice);
+        if (totalQuantity < 0) totalQuantity = 0;
+        if (totalPrice < 0) totalPrice = 0;
 
         totalQuantityTxt.setText(String.valueOf(totalQuantity));
         totalPriceTxt.setText(String.format("%.2f", totalPrice));
@@ -329,16 +349,6 @@ public class ShipmentFormHandler {
 
     /* ---------- QR generation ---------- */
 
-    /**
-     * Generates a QR for the current in-form items and parameters.
-     *
-     * @param source         source warehouse (can be null when outside network)
-     * @param destination    destination warehouse (can be null when outside network)
-     * @param isInNetwork    true if both ends are inside the network
-     * @param outsideName    non-null when outside network and the external party needs a name
-     * @param shipmentType   QR-facing type label (e.g., "Expedition" or "Reception")
-     * @param filePath       target PNG path selected by user
-     */
     public void generateQRCode(Warehouse source,
                                Warehouse destination,
                                boolean isInNetwork,
@@ -360,11 +370,10 @@ public class ShipmentFormHandler {
     /* ---------- Mapping helpers used by controller ---------- */
 
     public Product fromItemEntry(ItemEntry entry) {
-        return new Product(
-                entry.itemCode(),
-                String.valueOf(entry.quantity()),
-                entry.unitPrice()
-        );
+        Product p = new Product(entry.itemCode(), String.valueOf(entry.quantity()), entry.unitPrice());
+        p.setItemCode(entry.itemCode());
+        p.setName(entry.itemCode()); // keep as-is if name is not part of entry; adjust if you store name
+        return p;
     }
 
     public void setItems(ArrayList<Product> newItems, ArrayList<Integer> newQuantities) {
@@ -373,7 +382,7 @@ public class ShipmentFormHandler {
             return;
         }
 
-        reset(); // Clear existing form
+        reset();
 
         for (int i = 0; i < newItems.size(); i++) {
             Product product = newItems.get(i);

@@ -13,7 +13,6 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
-import javafx.util.StringConverter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,14 +34,18 @@ public class ShipmentController {
     @FXML private TextField UnitPriceField;
     @FXML private ListView<String> ProductsListView;
     @FXML private Button SaveButton, CancelButton, AddBtn, EditBtn, RemoveBtn;
-    @FXML private ComboBox<Product> ExpadistionComboBox; // keep name to match FXML
+    @FXML private ComboBox<Product> ExpadistionComboBox; // keep FXML id
     @FXML private Button QRCodeGeneraore, QrCodeReader;
     @FXML private CheckBox OutsideOfNetworkCheckBox;
     @FXML private TextField OutsideOfNetworkTxt;
     @FXML private ProgressIndicator progressIndicator;
 
     private ShipmentFormHandler formHandler;
-    private boolean suppressUi = false; // guard during programmatic changes
+    private final WarehouseComboHelper comboHelper = new WarehouseComboHelper();
+    private final UiStateManager uiState = new UiStateManager();
+    private final QrShipmentMapper qrMapper = new QrShipmentMapper();
+
+    private boolean suppressUi = false;
 
     @FXML
     public void initialize() {
@@ -72,70 +75,36 @@ public class ShipmentController {
             WareHouseService.getAllWarehouses();
         }
         ArrayList<Warehouse> warehouses = Session.getAllWarehouses();
-        setupWarehouseComboBox(SourceComboBox, warehouses);
-        setupWarehouseComboBox(DestinationComboBox, warehouses);
+        comboHelper.setupWarehouseComboBox(SourceComboBox, warehouses);
+        comboHelper.setupWarehouseComboBox(DestinationComboBox, warehouses);
 
         Warehouse current = Session.getCurrentWarehouse();
         if (current != null) {
-            selectWarehouseById(SourceComboBox, current.getId());
-            selectWarehouseById(DestinationComboBox, current.getId());
+            comboHelper.selectById(SourceComboBox, current.getId());
+            comboHelper.selectById(DestinationComboBox, current.getId());
         } else if (!warehouses.isEmpty()) {
             SourceComboBox.getSelectionModel().selectFirst();
             DestinationComboBox.getSelectionModel().selectFirst();
         }
     }
 
-    private void setupWarehouseComboBox(ComboBox<Warehouse> combo, ArrayList<Warehouse> warehouses) {
-        combo.getItems().setAll(warehouses);
-
-        combo.setCellFactory(param -> new ListCell<>() {
-            @Override protected void updateItem(Warehouse w, boolean empty) {
-                super.updateItem(w, empty);
-                setText(empty || w == null ? "" : safeName(w));
-            }
-        });
-        combo.setButtonCell(new ListCell<>() {
-            @Override protected void updateItem(Warehouse w, boolean empty) {
-                super.updateItem(w, empty);
-                setText(empty || w == null ? "" : safeName(w));
-            }
-        });
-        combo.setConverter(new StringConverter<>() {
-            @Override public String toString(Warehouse w) { return w == null ? "" : safeName(w); }
-            @Override public Warehouse fromString(String s) { return null; }
-        });
-    }
-
-    private static String safeName(Warehouse w) {
-        String n = w.getName();
-        return (n == null) ? "" : n;
-    }
-
     private void setupProducts() {
-        if (Session.getProducts() == null) ProductsService.getProducts();
+        if (Session.getProducts() == null) {
+            ProductsService.getProducts();
+        }
         ArrayList<Product> products = Session.getProducts();
 
-        ExpadistionComboBox.getItems().setAll(products);
-        ExpadistionComboBox.setCellFactory(param -> new ListCell<>() {
-            @Override protected void updateItem(Product p, boolean empty) {
-                super.updateItem(p, empty);
-                setText(empty || p == null ? "" : p.getItemCode());
-            }
-        });
-        ExpadistionComboBox.setButtonCell(new ListCell<>() {
-            @Override protected void updateItem(Product p, boolean empty) {
-                super.updateItem(p, empty);
-                setText(empty || p == null ? "" : p.getItemCode());
-            }
-        });
+        comboHelper.setupProductComboBox(ExpadistionComboBox, products);
 
         ExpadistionComboBox.setOnAction(e -> {
             Product selected = ExpadistionComboBox.getValue();
             if (selected != null) {
                 formHandler.autoFillFromProduct(selected);
             } else {
-                NameTxtField.clear(); NameTxtField.setDisable(false);
-                UnitPriceField.clear(); UnitPriceField.setDisable(false);
+                NameTxtField.clear();
+                NameTxtField.setDisable(false);
+                UnitPriceField.clear();
+                UnitPriceField.setDisable(false);
             }
         });
     }
@@ -149,7 +118,9 @@ public class ShipmentController {
 
     private void setupCheckBox() {
         OutsideOfNetworkCheckBox.selectedProperty().addListener((obs, oldVal, isChecked) -> {
-            if (!isChecked) OutsideOfNetworkTxt.clear();
+            if (!isChecked) {
+                OutsideOfNetworkTxt.clear();
+            }
             applyUiState();
         });
         applyUiState();
@@ -157,10 +128,11 @@ public class ShipmentController {
 
     private void setupButtons() {
         AddBtn.setOnAction(event -> {
-            if (currentKind() == ShipmentKind.RECEPTION)
+            if (currentKind() == ShipmentKind.RECEPTION) {
                 formHandler.handleReception(ItemCodeTxt.getText(), QuantityTxt.getText());
-            else
+            } else {
                 formHandler.handleExpedition(ExpadistionComboBox.getValue(), QuantityTxt.getText());
+            }
         });
 
         SaveButton.setOnAction(event -> handleSave());
@@ -171,46 +143,43 @@ public class ShipmentController {
     }
 
     private void setupQuantityFormatter() {
-        QuantityTxt.setTextFormatter(new TextFormatter<>(change ->
-                change.getControlNewText().matches("\\d{0,9}") ? change : null));
+        TextFormatter<String> tf = new TextFormatter<>(change ->
+                change.getControlNewText().matches("\\d{0,9}") ? change : null);
+        QuantityTxt.setTextFormatter(tf);
     }
 
     /* ---------- UI state ---------- */
 
     private ShipmentKind currentKind() {
         Toggle t = ShipmentType.getSelectedToggle();
-        return t == null ? ShipmentKind.RECEPTION : (ShipmentKind) t.getUserData();
+        if (t == null) {
+            return ShipmentKind.RECEPTION;
+        }
+        return (ShipmentKind) t.getUserData();
     }
 
-    private void setVisibleAndManaged(Control c, boolean v) { c.setVisible(v); c.setManaged(v); }
+    private void setVisibleAndManaged(Control c, boolean v) {
+        c.setVisible(v);
+        c.setManaged(v);
+    }
 
     private void applyUiState() {
-        if (suppressUi) return;
+        if (suppressUi) {
+            return;
+        }
 
         ShipmentKind kind = currentKind();
         boolean outside = OutsideOfNetworkCheckBox.isSelected();
         Warehouse current = Session.getCurrentWarehouse();
-        int currentId = current != null ? current.getId() : -1;
 
-        if (kind == ShipmentKind.EXPEDITION) {
-            if (currentId > 0) selectWarehouseById(SourceComboBox, currentId);
-            SourceComboBox.setDisable(true);
-
-            DestinationComboBox.setDisable(outside);
-            OutsideOfNetworkTxt.setDisable(!outside);
-
-            setVisibleAndManaged(ItemCodeTxt, false);
-            setVisibleAndManaged(ExpadistionComboBox, true);
-        } else {
-            if (currentId > 0) selectWarehouseById(DestinationComboBox, currentId);
-            DestinationComboBox.setDisable(true);
-
-            SourceComboBox.setDisable(outside);
-            OutsideOfNetworkTxt.setDisable(!outside);
-
-            setVisibleAndManaged(ItemCodeTxt, true);
-            setVisibleAndManaged(ExpadistionComboBox, false);
-        }
+        uiState.apply(kind,
+                outside,
+                current,
+                SourceComboBox,
+                DestinationComboBox,
+                ItemCodeTxt,
+                ExpadistionComboBox,
+                OutsideOfNetworkTxt);
 
         updateQRCodeButton();
     }
@@ -234,15 +203,21 @@ public class ShipmentController {
             return;
         }
 
-        Warehouse destination = current; // locked to current
+        Warehouse destination = current;
         Warehouse source = OutsideOfNetworkCheckBox.isSelected() ? null : SourceComboBox.getValue();
         String outsideName = OutsideOfNetworkTxt.getText().trim();
 
         File file = choosePngSaveLocation("Save Reception QR");
         if (file == null) return;
 
-        formHandler.generateQRCode(source, destination, !OutsideOfNetworkCheckBox.isSelected(),
-                outsideName, mapToQr(ShipmentKind.RECEPTION), file.getAbsolutePath());
+        formHandler.generateQRCode(
+                source,
+                destination,
+                !OutsideOfNetworkCheckBox.isSelected(),
+                outsideName,
+                mapToQr(ShipmentKind.RECEPTION),
+                file.getAbsolutePath()
+        );
     }
 
     private void generateQRCodeForExpedition() {
@@ -252,15 +227,21 @@ public class ShipmentController {
             return;
         }
 
-        Warehouse source = current; // locked to current
+        Warehouse source = current;
         Warehouse destination = OutsideOfNetworkCheckBox.isSelected() ? null : DestinationComboBox.getValue();
         String outsideName = OutsideOfNetworkTxt.getText().trim();
 
         File file = choosePngSaveLocation("Save Expedition QR");
         if (file == null) return;
 
-        formHandler.generateQRCode(source, destination, !OutsideOfNetworkCheckBox.isSelected(),
-                outsideName, mapToQr(ShipmentKind.EXPEDITION), file.getAbsolutePath());
+        formHandler.generateQRCode(
+                source,
+                destination,
+                !OutsideOfNetworkCheckBox.isSelected(),
+                outsideName,
+                mapToQr(ShipmentKind.EXPEDITION),
+                file.getAbsolutePath()
+        );
     }
 
     private File choosePngSaveLocation(String title) {
@@ -282,18 +263,18 @@ public class ShipmentController {
         Warehouse current = Session.getCurrentWarehouse();
         int currentId = current != null ? current.getId() : -1;
 
-        // Decide local kind using ID-first heuristic with label fallback
-        ShipmentKind kind = mapFromQr(payload.getType(), payload);
+        ShipmentKind kind = qrMapper.decideLocalKind(payload, currentId);
 
-        // Optional guard: if QR declares a destination id that isn't me, warn
-        Integer declaredDestId = parsePositiveInt(payload.destination());
+        Integer declaredDestId = qrMapper.parsePositiveInt(payload.destination());
         if (declaredDestId != null && declaredDestId > 0 && declaredDestId != currentId) {
             boolean proceed = AlertUtils.showConfirmation(
                     "Shipment Not Intended For This Warehouse",
                     "The QR indicates destination warehouse ID " + declaredDestId +
                             ", which does not match this warehouse (ID " + currentId + ").\n\n" +
                             "Do you want to force entry into this warehouse?");
-            if (!proceed) return;
+            if (!proceed) {
+                return;
+            }
         }
 
         suppressUi = true;
@@ -304,40 +285,33 @@ public class ShipmentController {
 
             ShipmentType.selectToggle(kind == ShipmentKind.RECEPTION ? ReceptionRadioButton : ExpeditionRadioButton);
 
-            // Partner derivation based on local kind
             if (kind == ShipmentKind.RECEPTION) {
-                // I'm receiving; partner is the SOURCE given in QR
-                if (currentId > 0) selectWarehouseById(DestinationComboBox, currentId);
+                if (currentId > 0) comboHelper.selectById(DestinationComboBox, currentId);
                 DestinationComboBox.setDisable(true);
 
-                String partnerRaw = payload.source();
-                Integer partnerId = payload.isInNetwork() ? parsePositiveInt(partnerRaw) : null;
-                boolean outside = (partnerId == null);
-                OutsideOfNetworkCheckBox.setSelected(outside);
-
-                if (outside) {
-                    OutsideOfNetworkTxt.setText(nz(partnerRaw));
-                    SourceComboBox.setDisable(true);
-                } else {
-                    selectWarehouseById(SourceComboBox, partnerId);
+                QrShipmentMapper.Partner partner = qrMapper.resolvePartnerForReception(payload);
+                if (partner instanceof QrShipmentMapper.PartnerId pid) {
+                    comboHelper.selectById(SourceComboBox, pid.id());
                     SourceComboBox.setDisable(false);
+                    OutsideOfNetworkCheckBox.setSelected(false);
+                } else if (partner instanceof QrShipmentMapper.PartnerExternal pext) {
+                    OutsideOfNetworkTxt.setText(pext.name());
+                    SourceComboBox.setDisable(true);
+                    OutsideOfNetworkCheckBox.setSelected(true);
                 }
             } else {
-                // I'm sending; partner is the DESTINATION given in QR
-                if (currentId > 0) selectWarehouseById(SourceComboBox, currentId);
+                if (currentId > 0) comboHelper.selectById(SourceComboBox, currentId);
                 SourceComboBox.setDisable(true);
 
-                String partnerRaw = payload.destination();
-                Integer partnerId = payload.isInNetwork() ? parsePositiveInt(partnerRaw) : null;
-                boolean outside = (partnerId == null);
-                OutsideOfNetworkCheckBox.setSelected(outside);
-
-                if (outside) {
-                    OutsideOfNetworkTxt.setText(nz(partnerRaw));
-                    DestinationComboBox.setDisable(true);
-                } else {
-                    selectWarehouseById(DestinationComboBox, partnerId);
+                QrShipmentMapper.Partner partner = qrMapper.resolvePartnerForExpedition(payload);
+                if (partner instanceof QrShipmentMapper.PartnerId pid) {
+                    comboHelper.selectById(DestinationComboBox, pid.id());
                     DestinationComboBox.setDisable(false);
+                    OutsideOfNetworkCheckBox.setSelected(false);
+                } else if (partner instanceof QrShipmentMapper.PartnerExternal pext) {
+                    OutsideOfNetworkTxt.setText(pext.name());
+                    DestinationComboBox.setDisable(true);
+                    OutsideOfNetworkCheckBox.setSelected(true);
                 }
             }
         } finally {
@@ -360,20 +334,16 @@ public class ShipmentController {
     /* ---------- Save / Edit / Misc ---------- */
 
     private void selectWarehouseById(ComboBox<Warehouse> combo, int id) {
-        if (id <= 0) return;
-        for (Warehouse w : combo.getItems()) {
-            if (w.getId() == id) {
-                combo.getSelectionModel().select(w);
-                return;
-            }
-        }
+        comboHelper.selectById(combo, id);
     }
 
     private void onLoadQRCodeClick() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select QR Code Image");
         File file = fileChooser.showOpenDialog(null);
-        if (file != null) decodeQRCodeAndLoadForm(file.getAbsolutePath());
+        if (file != null) {
+            decodeQRCodeAndLoadForm(file.getAbsolutePath());
+        }
     }
 
     private void handleSave() {
@@ -385,9 +355,9 @@ public class ShipmentController {
         Warehouse destination = DestinationComboBox.getValue();
 
         if (isReception && outside) {
-            source = null; // external source
+            source = null;
         } else if (!isReception && outside) {
-            destination = null; // external destination
+            destination = null;
         }
 
         ArrayList<Product> items = formHandler.getItems();
@@ -411,10 +381,11 @@ public class ShipmentController {
 
         Task<Void> shipmentTask = new Task<>() {
             @Override protected Void call() {
-                if (isReception)
+                if (isReception) {
                     ShipmentServices.reception(finalSource, finalDestination, items, quantities, totalQty, totalPrice);
-                else
+                } else {
                     ShipmentServices.expedition(finalSource, finalDestination, items, quantities, totalQty, totalPrice);
+                }
                 return null;
             }
         };
@@ -429,8 +400,9 @@ public class ShipmentController {
         shipmentTask.setOnFailed(e -> {
             toggleProgress(false);
             SaveButton.setDisable(false);
-            AlertUtils.showError("Error", "Failed to process shipment: " +
-                    (shipmentTask.getException() != null ? shipmentTask.getException().getMessage() : "Unknown error"));
+            Throwable ex = shipmentTask.getException();
+            String msg = (ex != null) ? ex.getMessage() : "Unknown error";
+            AlertUtils.showError("Error", "Failed to process shipment: " + msg);
         });
 
         new Thread(shipmentTask).start();
@@ -478,48 +450,15 @@ public class ShipmentController {
     }
 
     private void toggleProgress(boolean visible) {
-        if (progressIndicator != null) progressIndicator.setVisible(visible);
-    }
-
-    /* ---------- Type mapping helpers ---------- */
-
-    private ShipmentKind mapFromQr(String qrType, ShipmentQRPayload payload) {
-        // 1) Prefer ID-based heuristic
-        Warehouse current = Session.getCurrentWarehouse();
-        int currentId = (current != null) ? current.getId() : -1;
-
-        // destination == me  -> I'm receiving
-        Integer destId = parsePositiveInt(payload.destination());
-        if (destId != null && destId == currentId) return ShipmentKind.RECEPTION;
-
-        // source == me -> I'm sending
-        Integer srcId = parsePositiveInt(payload.source());
-        if (srcId != null && srcId == currentId) return ShipmentKind.EXPEDITION;
-
-        // 2) Fall back to label inversion if IDs didn't decide it
-        if (qrType != null) {
-            String t = qrType.trim().toLowerCase();
-            if ("expedition".equals(t)) return ShipmentKind.RECEPTION;
-            if ("reception".equals(t))  return ShipmentKind.EXPEDITION;
+        if (progressIndicator != null) {
+            progressIndicator.setVisible(visible);
         }
-        // 3) Safe default
-        return ShipmentKind.RECEPTION;
     }
 
     private String mapToQr(ShipmentKind kind) {
-        return (kind == ShipmentKind.RECEPTION) ? "Expedition" : "Reception";
+        if (kind == ShipmentKind.RECEPTION) {
+            return "Expedition";
+        }
+        return "Reception";
     }
-
-    /* ---------- Utils ---------- */
-
-    private static Integer parsePositiveInt(String s) {
-        if (s == null) return null;
-        try {
-            int v = Integer.parseInt(s.trim());
-            return v > 0 ? v : null;
-        } catch (Exception e) { return null; }
-    }
-
-    private static String nz(String s) { return s == null ? "" : s; }
-
 }
