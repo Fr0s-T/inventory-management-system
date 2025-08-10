@@ -54,7 +54,7 @@
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0">
                      <image>
-                        <Image url="@/Icons/notification.png" />
+                        <Image url="@/Icons/employee.png" />
                      </image>
                   </ImageView>
                </graphic>

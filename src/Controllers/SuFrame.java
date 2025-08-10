@@ -1,5 +1,6 @@
 package Controllers;
 
+import Services.DeletedLogsService;
 import Services.LogOutService;
 import Services.ProductsService;
 import Services.WareHouseService;
@@ -13,10 +14,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Models.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -66,31 +69,20 @@ public class SuFrame extends Application {
 
         LogoutBtn.setOnAction(event -> LogOutService.Logout());
         DeletedLogs.setOnAction(actionEvent -> {
-            try {
-                // Load FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeletedLogs.fxml"));
-                AnchorPane page = loader.load();
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Deleted Logs");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Text Files", "*.txt")
+            );
+            fileChooser.setInitialFileName("deleted_logs.txt");
 
-                // Create popup Stage
-                Stage dialogStage = new Stage();
-                dialogStage.setTitle("Save deleted logs");
-                dialogStage.initModality(Modality.WINDOW_MODAL);
-                dialogStage.initOwner(DeletedLogs.getScene().getWindow());
+            File selectedFile = fileChooser.showSaveDialog(DeletedLogs.getScene().getWindow());
 
-                Scene scene = new Scene(page);
-                dialogStage.setScene(scene);
-
-                // Pass stage to controller
-                ViewsControllers.DeletedLogs controller = loader.getController();
-                controller.setDialogStage(dialogStage);
-
-                // Show popup
-                dialogStage.showAndWait();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (selectedFile != null) {
+                DeletedLogsService.saveDeletedLogsToAFileAsync(selectedFile.getAbsolutePath());
             }
-
         });
+
 
         AddWarehouseBtn.setOnAction(actionEvent -> {
             try {

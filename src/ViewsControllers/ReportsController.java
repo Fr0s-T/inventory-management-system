@@ -6,6 +6,8 @@ import Services.ReportsService;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -31,6 +33,8 @@ public class ReportsController {
     @FXML private TextField Valuetxt;
     @FXML private Label StockLevelL;
     @FXML private Label ValueL;
+    @FXML private TextField searchField;
+
     //Employees table and columns
     @FXML private TableView<User> EmployeesTable;
     @FXML private TableColumn<User, Integer> EmpIdC;
@@ -60,6 +64,16 @@ public class ReportsController {
     @FXML private TableColumn<ShipmentDetails, Integer> ItemQuantityC2;
     @FXML private TableColumn<ShipmentDetails, String> TotalPriceC2;
     @FXML private TableColumn<ShipmentDetails, String> ShipmentIdC2;
+
+    private ObservableList<User> allEmployees = FXCollections.observableArrayList();
+    private ObservableList<Shipment> allShipments = FXCollections.observableArrayList();
+    private ObservableList<Product> allStockLevels = FXCollections.observableArrayList();
+    private ObservableList<Product> allItems = FXCollections.observableArrayList();
+    private ObservableList<ShipmentDetails> allReceivedItems = FXCollections.observableArrayList();
+    private ObservableList<ShipmentDetails> allSentItems = FXCollections.observableArrayList();
+    private boolean isShowingReceivedItems = false;
+
+
 
 
     @FXML
@@ -94,7 +108,64 @@ public class ReportsController {
         //Initialize Valuation table and columns
         StockValuationBtn.setOnAction(actionEvent -> showValuationTable());
         LockColumns(StockLevelTable);
+
+        searchField.textProperty().addListener((obs, oldValue, newValue) -> {
+            String filter = newValue.toLowerCase();
+
+            if (EmployeesTable.isVisible()) {
+                applyFilter(EmployeesTable, filter);
+            } else if (ShipmentsTable.isVisible()) {
+                applyFilter(ShipmentsTable, filter);
+            } else if (StockLevelTable.isVisible()) {
+                applyFilter(StockLevelTable, filter);
+            } else if (ItemsTable.isVisible()) {
+                applyFilter(ItemsTable, filter);
+            }
+        });
     }
+    @SuppressWarnings("unchecked")
+    private <T> void applyFilter(TableView<T> table, String filter) {
+        ObservableList<T> sourceList = null;
+
+        if (table == EmployeesTable) {
+            sourceList = (ObservableList<T>) allEmployees;
+        } else if (table == ShipmentsTable) {
+            sourceList = (ObservableList<T>) allShipments;
+        } else if (table == StockLevelTable) {
+            sourceList = (ObservableList<T>) allStockLevels;
+        } else if (table == ItemsTable) {
+            // Choose based on which items are currently shown (received or sent)
+            // You can keep a boolean flag like "isShowingReceivedItems"
+            if (isShowingReceivedItems) {
+                sourceList = (ObservableList<T>) allReceivedItems;
+            } else {
+                sourceList = (ObservableList<T>) allSentItems;
+            }
+        }
+
+        if (sourceList == null) return;
+
+        if (filter.isEmpty()) {
+            table.setItems(sourceList);
+            return;
+        }
+
+        var filtered = sourceList.filtered(item -> {
+            for (TableColumn<T, ?> col : table.getColumns()) {
+                Object cellValue = col.getCellData(item);
+                if (cellValue != null && cellValue.toString().toLowerCase().contains(filter)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        table.setItems(filtered);
+    }
+
+
+
+
 
 
     @FXML
@@ -124,7 +195,8 @@ public class ReportsController {
         StockLevelTable.setVisible(false);
         try {
             ArrayList<User> users = ReportsService.getEmployeesFromDb();
-            EmployeesTable.setItems(javafx.collections.FXCollections.observableArrayList(users));
+            allEmployees.setAll(users);
+            EmployeesTable.setItems(allEmployees);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,7 +211,9 @@ public class ReportsController {
         ValueL.setVisible(true);
         StockLevelTable.setVisible(true);
 
-        if (Session.getProducts() == null) ProductsService.getProducts();
+        if (Session.getProducts() == null) {
+            ProductsService.getProducts();
+        }
 
         ItemCodeC.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
         ItemQuantityC.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -150,24 +224,24 @@ public class ReportsController {
             return new SimpleStringProperty(String.format("%.2f", total));
         });
 
-        StockLevelTable.setItems(FXCollections.observableArrayList(Session.getProducts()));
-        int totalQuantity = StockLevelTable.getItems()
-                .stream()
+        // Load into the master list
+        allStockLevels.setAll(Session.getProducts());
+
+        // Show the master list in the table
+        StockLevelTable.setItems(allStockLevels);
+
+        // Calculate totals from the master list
+        int totalQuantity = allStockLevels.stream()
                 .mapToInt(Product::getQuantity)
                 .sum();
         StockLeveltxt.setText(String.valueOf(totalQuantity));
-        double totalValue = StockLevelTable.getItems()
-                .stream()
+
+        double totalValue = allStockLevels.stream()
                 .mapToDouble(p -> p.getQuantity() * p.getUnitPrice())
                 .sum();
-
         Valuetxt.setText(String.format("%.2f", totalValue));
-
-
-
-
-
     }
+
 
     private void LockColumns(TableView<?> tableView) {
         Platform.runLater(() -> {
@@ -180,14 +254,47 @@ public class ReportsController {
     @FXML
     private void showReceptionShipments() {
         try {
-            ArrayList<Shipment> allShipments = ReportsService.getShipmentsFromDb();
-            String currentWarehouseName = Session.getCurrentWarehouse().getName();
+            // refresh master list (only call DB once)
+            allShipments.setAll(ReportsService.getShipmentsFromDb());
 
-            List<Shipment> receptions = allShipments.stream()
-                    .filter(s -> s.getDestination().equals(currentWarehouseName))
-                    .toList();
+            String currentWarehouseName = Session.getCurrentWarehouse() != null
+                    ? Session.getCurrentWarehouse().getName()
+                    : "";
 
-            ShipmentsTable.getItems().setAll(receptions);
+            // create a filtered view from the master list
+            FilteredList<Shipment> receptions = new FilteredList<>(allShipments,
+                    s -> currentWarehouseName.equals(s.getDestination()));
+
+            ShipmentsTable.setItems(receptions);
+
+            ShipmentsTable.setVisible(true);
+            ItemsTable.setVisible(false);
+            EmployeesTable.setVisible(false);
+            StockLeveltxt.setVisible(false);
+            Valuetxt.setVisible(false);
+            StockLevelL.setVisible(false);
+            ValueL.setVisible(false);
+            StockLevelTable.setVisible(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    private void showExpeditionShipments() {
+        try {
+            allShipments.setAll(ReportsService.getShipmentsFromDb());
+
+            String currentWarehouseName = Session.getCurrentWarehouse() != null
+                    ? Session.getCurrentWarehouse().getName()
+                    : "";
+
+            FilteredList<Shipment> expeditions = new FilteredList<>(allShipments,
+                    s -> currentWarehouseName.equals(s.getSource()));
+
+            ShipmentsTable.setItems(expeditions);
+
             ShipmentsTable.setVisible(true);
             ItemsTable.setVisible(false);
             EmployeesTable.setVisible(false);
@@ -202,31 +309,9 @@ public class ReportsController {
     }
 
     @FXML
-    private void showExpeditionShipments() {
-        try {
-            ArrayList<Shipment> allShipments = ReportsService.getShipmentsFromDb();
-            String currentWarehouseName = Session.getCurrentWarehouse().getName();
-
-            List<Shipment> expeditions = allShipments.stream()
-                    .filter(s -> s.getSource().equals(currentWarehouseName))
-                    .toList();
-
-            ShipmentsTable.getItems().setAll(expeditions);
-            ShipmentsTable.setVisible(true);
-            ItemsTable.setVisible(false);
-            EmployeesTable.setVisible(false);
-            StockLeveltxt.setVisible(false);
-            Valuetxt.setVisible(false);
-            StockLevelL.setVisible(false);
-            ValueL.setVisible(false);
-            StockLevelTable.setVisible(false);
-        } catch (Exception e) {
-            e.printStackTrace(); // Handle error (you can show an alert)
-        }
-    }
-    @FXML
     private void showSentItems() {
         try {
+            isShowingReceivedItems = false;
 
             ShipmentsTable.setVisible(false);
             ItemsTable.setVisible(true);
@@ -238,7 +323,8 @@ public class ReportsController {
             StockLevelTable.setVisible(false);
 
             ArrayList<ShipmentDetails> sentItems = ReportsService.getSentItems();
-            ItemsTable.setItems(FXCollections.observableArrayList(sentItems));
+            allSentItems.setAll(sentItems);
+            ItemsTable.setItems(allSentItems);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -247,6 +333,7 @@ public class ReportsController {
     @FXML
     private void showReceivedItems() {
         try {
+            isShowingReceivedItems = true;
             ShipmentsTable.setVisible(false);
             ItemsTable.setVisible(true);
             EmployeesTable.setVisible(false);
@@ -256,13 +343,15 @@ public class ReportsController {
             ValueL.setVisible(false);
             StockLevelTable.setVisible(false);
 
-            ArrayList<ShipmentDetails> ReceivedItems = ReportsService.getReceivedItems();
-            ItemsTable.setItems(FXCollections.observableArrayList(ReceivedItems));
+            ArrayList<ShipmentDetails> receivedItems = ReportsService.getReceivedItems();
+            allReceivedItems.setAll(receivedItems);
+            ItemsTable.setItems(allReceivedItems);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void ClearPage(){
 
         StockLeveltxt.setVisible(false);
