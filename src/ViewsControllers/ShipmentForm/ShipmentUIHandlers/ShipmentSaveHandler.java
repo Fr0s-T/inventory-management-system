@@ -108,13 +108,40 @@ public class ShipmentSaveHandler {
             return;
         }
 
-        if (controller.getUiStateHandler().currentKind(controller) == ShipmentController.ShipmentKind.RECEPTION) {
+        boolean isReception = controller.getUiStateHandler().currentKind(controller) == ShipmentController.ShipmentKind.RECEPTION;
+
+        if (isReception) {
+            // Populate code & qty
             controller.getItemCodeTxt().setText(itemCode);
             controller.getItemCodeTxt().setDisable(true);
             controller.getQuantityTxt().setText(quantity);
-        } else {
+
+            // NEW: try to autofill Name + UnitPrice if this code exists in known products
+            Product matched = null;
             for (Product p : controller.getExpadistionComboBox().getItems()) {
-                if (p.getItemCode().equalsIgnoreCase(itemCode)) {
+                if (p.getItemCode() != null && p.getItemCode().equalsIgnoreCase(itemCode)) {
+                    matched = p;
+                    break;
+                }
+            }
+
+            if (matched != null) {
+                // In-network product → autofill like manual flow
+                controller.getFormHandler().autoFillFromProduct(matched);
+                // (UiStateManager will typically disable name/price for in-network)
+            } else {
+                // External product (from QR) → allow manual edit of name & price
+                controller.getNameTxtField().setDisable(false);
+                controller.getUnitPriceField().setDisable(false);
+                // Optionally clear to force re-entry (or keep whatever is there)
+                // controller.getNameTxtField().clear();
+                // controller.getUnitPriceField().clear();
+            }
+
+        } else {
+            // EXPEDITION branch unchanged: select from combo then autofill
+            for (Product p : controller.getExpadistionComboBox().getItems()) {
+                if (p.getItemCode() != null && p.getItemCode().equalsIgnoreCase(itemCode)) {
                     controller.getExpadistionComboBox().getSelectionModel().select(p);
                     controller.getFormHandler().autoFillFromProduct(p);
                     break;
@@ -123,9 +150,11 @@ public class ShipmentSaveHandler {
             controller.getQuantityTxt().setText(quantity);
         }
 
+        // Remove the old row and internal entry to re-add after edit
         controller.getProductsListView().getItems().remove(selectedEntry);
         controller.getFormHandler().removeItem(itemCode);
     }
+
 
     /**
      * Show/hide the progress indicator during background operations.

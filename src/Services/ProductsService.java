@@ -49,31 +49,39 @@ public class ProductsService {
      * Safely skips cycles until current warehouse is set.
      */
     public static void startBackgroundSync() {
-        if (scheduler != null && !scheduler.isShutdown()) return;
+        if (scheduler != null && !scheduler.isShutdown()) {
+            System.out.println("[ProductsSync] Scheduler already running.");
+            return;
+        }
 
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(() -> {
             try {
+                System.out.println("[ProductsSync] Tick at " + new java.util.Date());
+
                 Warehouse current = Session.getCurrentWarehouse();
                 if (current == null) {
-                    // App not fully initialized or user logged out; skip this tick.
-                    // (Don’t throw; keep the scheduler alive.)
-                    // System.out.println("Products sync: current warehouse not set yet.");
+                    System.out.println("[ProductsSync] Current warehouse is null. Skipping refresh.");
                     return;
                 }
 
                 Timestamp dbLastUpdate = getCurrentLastUpdate();
                 Timestamp cached = Session.getLastUpdate();
 
+                System.out.println("[ProductsSync] DB last update: " + dbLastUpdate +
+                        " | Cached last update: " + cached);
+
                 if (dbLastUpdate != null && (cached == null || dbLastUpdate.after(cached))) {
-                    // Refresh cache for the active warehouse
+                    System.out.println("[ProductsSync] Change detected → refreshing cache for warehouse ID " + current.getId());
                     ArrayList<Product> updatedProducts = fetchProductsFromDB(current.getId());
                     Session.setProducts(updatedProducts);
                     Session.setLastUpdate(dbLastUpdate);
-                    // System.out.println("Products sync: cache refreshed.");
+                    System.out.println("[ProductsSync] Cache refreshed with " + updatedProducts.size() + " products.");
+                } else {
+                    System.out.println("[ProductsSync] No changes detected. Cache not refreshed.");
                 }
             } catch (Throwable t) {
-                // Never let an exception kill the repeating task
+                System.err.println("[ProductsSync] Error in background sync: " + t.getMessage());
                 t.printStackTrace();
             }
         }, 0, 10, TimeUnit.SECONDS);

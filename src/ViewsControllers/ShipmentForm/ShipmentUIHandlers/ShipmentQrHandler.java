@@ -35,7 +35,6 @@ public class ShipmentQrHandler {
             return;
         }
 
-        Warehouse destination = current;
         Warehouse source = controller.getOutsideOfNetworkCheckBox().isSelected() ? null : controller.getSourceComboBox().getValue();
         String outsideName = controller.getOutsideOfNetworkTxt().getText().trim();
 
@@ -44,7 +43,7 @@ public class ShipmentQrHandler {
 
         controller.getFormHandler().generateQRCode(
                 source,
-                destination,
+                current,
                 !controller.getOutsideOfNetworkCheckBox().isSelected(),
                 outsideName,
                 mapToQr(ShipmentController.ShipmentKind.RECEPTION),
@@ -63,7 +62,6 @@ public class ShipmentQrHandler {
             return;
         }
 
-        Warehouse source = current;
         Warehouse destination = controller.getOutsideOfNetworkCheckBox().isSelected() ? null : controller.getDestinationComboBox().getValue();
         String outsideName = controller.getOutsideOfNetworkTxt().getText().trim();
 
@@ -71,7 +69,7 @@ public class ShipmentQrHandler {
         if (file == null) return;
 
         controller.getFormHandler().generateQRCode(
-                source,
+                current,
                 destination,
                 !controller.getOutsideOfNetworkCheckBox().isSelected(),
                 outsideName,
@@ -90,7 +88,7 @@ public class ShipmentQrHandler {
     /* ---------- QR decoding with integrity check ---------- */
 
     /**
-     * Decode a shipment QR image, infer the local kind, reconcile partner identity,
+     * Decode a shipment QR image, infer (or force) the local kind, reconcile partner identity,
      * then populate the form with items and partner/warehouse fields.
      */
     public void decodeQRCodeAndLoadForm(ShipmentController controller, String filePath) {
@@ -101,10 +99,13 @@ public class ShipmentQrHandler {
         }
 
         Warehouse current = Session.getCurrentWarehouse();
-        int currentId = current != null ? current.getId() : -1;
+        int currentId = (current != null) ? current.getId() : -1;
 
+        // Initial decision
         ShipmentController.ShipmentKind kind = controller.getQrMapper().decideLocalKind(payload, currentId);
 
+        // If the QR says it's going elsewhere but the user wants to accept it here,
+        // force RECEPTION locally so UI and behavior are consistent.
         Integer declaredDestId = controller.getQrMapper().parsePositiveInt(payload.destination());
         if (declaredDestId != null && declaredDestId > 0 && declaredDestId != currentId) {
             boolean proceed = AlertUtils.showConfirmation(
@@ -115,6 +116,8 @@ public class ShipmentQrHandler {
             if (!proceed) {
                 return;
             }
+            // 🔧 User accepted to take it here → treat as RECEPTION from our perspective.
+            kind = ShipmentController.ShipmentKind.RECEPTION;
         }
 
         // Temporarily suppress UI reactions while we programmatically update controls
@@ -125,36 +128,41 @@ public class ShipmentQrHandler {
             controller.getOutsideOfNetworkTxt().clear();
 
             controller.getShipmentType().selectToggle(
-                    kind == ShipmentController.ShipmentKind.RECEPTION
+                    (kind == ShipmentController.ShipmentKind.RECEPTION)
                             ? controller.getReceptionRadioButton()
                             : controller.getExpeditionRadioButton()
             );
 
             if (kind == ShipmentController.ShipmentKind.RECEPTION) {
+                // Destination = current warehouse (locked)
                 if (currentId > 0) controller.getComboHelper().selectById(controller.getDestinationComboBox(), currentId);
                 controller.getDestinationComboBox().setDisable(true);
 
+                // Partner is the source (internal ID or external name)
                 QrShipmentMapper.Partner partner = controller.getQrMapper().resolvePartnerForReception(payload);
-                if (partner instanceof QrShipmentMapper.PartnerId pid) {
-                    controller.getComboHelper().selectById(controller.getSourceComboBox(), pid.id());
+                if (partner instanceof QrShipmentMapper.PartnerId(int id)) {
+                    controller.getComboHelper().selectById(controller.getSourceComboBox(), id);
                     controller.getSourceComboBox().setDisable(false);
                     controller.getOutsideOfNetworkCheckBox().setSelected(false);
-                } else if (partner instanceof QrShipmentMapper.PartnerExternal pext) {
-                    controller.getOutsideOfNetworkTxt().setText(pext.name());
+                } else if (partner instanceof QrShipmentMapper.PartnerExternal(String name)) {
+                    controller.getOutsideOfNetworkTxt().setText(name);
                     controller.getSourceComboBox().setDisable(true);
                     controller.getOutsideOfNetworkCheckBox().setSelected(true);
                 }
+
             } else { // EXPEDITION
+                // Source = current warehouse (locked)
                 if (currentId > 0) controller.getComboHelper().selectById(controller.getSourceComboBox(), currentId);
                 controller.getSourceComboBox().setDisable(true);
 
+                // Partner is the destination (internal ID or external name)
                 QrShipmentMapper.Partner partner = controller.getQrMapper().resolvePartnerForExpedition(payload);
-                if (partner instanceof QrShipmentMapper.PartnerId pid) {
-                    controller.getComboHelper().selectById(controller.getDestinationComboBox(), pid.id());
+                if (partner instanceof QrShipmentMapper.PartnerId(int id)) {
+                    controller.getComboHelper().selectById(controller.getDestinationComboBox(), id);
                     controller.getDestinationComboBox().setDisable(false);
                     controller.getOutsideOfNetworkCheckBox().setSelected(false);
-                } else if (partner instanceof QrShipmentMapper.PartnerExternal pext) {
-                    controller.getOutsideOfNetworkTxt().setText(pext.name());
+                } else if (partner instanceof QrShipmentMapper.PartnerExternal(String name)) {
+                    controller.getOutsideOfNetworkTxt().setText(name);
                     controller.getDestinationComboBox().setDisable(true);
                     controller.getOutsideOfNetworkCheckBox().setSelected(true);
                 }
@@ -165,7 +173,7 @@ public class ShipmentQrHandler {
             controller.getUiStateHandler().updateQRCodeButton(controller);
         }
 
-        // Load items into the form
+        // Load items into the form from payload
         ArrayList<Product> products = new ArrayList<>();
         ArrayList<Integer> quantities = new ArrayList<>();
         payload.items().forEach(entry -> {
@@ -176,6 +184,7 @@ public class ShipmentQrHandler {
 
         AlertUtils.showSuccess("Shipment form loaded from QR code.");
     }
+
 
     /**
      * Open file chooser then decode a selected QR image.

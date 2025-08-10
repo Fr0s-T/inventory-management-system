@@ -6,6 +6,7 @@
     -fx-padding: 10px 0;
     -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.2), 2, 0.0, 0, 2);
 }
+
 .primary-button {
     -fx-background-color: linear-gradient(to right, #3B82F6, #2563EB); /* blue gradient */
     -fx-text-fill: white;
@@ -19,11 +20,13 @@
 .primary-button:hover {
     -fx-background-color: linear-gradient(to right, #2563EB, #1D4ED8);
 }
+
 .form-label {
     -fx-font-size: 14px;
     -fx-text-fill: #334155; /* soft slate */
-    -fx-font-weight: semi-bold;
+    -fx-font-weight: 600; /* semi-bold equivalent */
 }
+
 .form-background {
     -fx-background-color: #EFF6FF; /* soft light gray-blue */
     -fx-padding: 20px;

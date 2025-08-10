@@ -46,6 +46,7 @@ public class ShipmentFormHandler {
                                TextField itemCodeField,
                                TextField nameField,
                                TextField quantityTxt) {
+
         this.productsListView = productsListView;
         this.totalQuantityTxt = totalQuantityTxt;
         this.totalPriceTxt = totalPriceTxt;
@@ -104,7 +105,8 @@ public class ShipmentFormHandler {
     }
 
     private void setupAutoFillDetails() {
-        itemCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+        itemCodeField.focusedProperty().addListener((observable, oldValue,
+                                                     newValue) -> {
             if (!newValue) {
                 setupAutoFillProductDetails(itemCodeField.getText());
             }
@@ -379,8 +381,8 @@ public class ShipmentFormHandler {
 
     public Product fromItemEntry(ItemEntry entry) {
         Product p = new Product(entry.itemCode(), String.valueOf(entry.quantity()), entry.unitPrice());
-        p.setItemCode(entry.itemCode());
-        p.setName(entry.itemCode()); // keep as-is if name is not part of entry; adjust if you store name
+       //p.setItemCode(entry.itemCode());
+        p.setName(entry.name()); // keep as-is if name is not part of entry; adjust if you store name
         return p;
     }
 
