@@ -17,6 +17,14 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ *
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class ShipmentController {
 
     public enum ShipmentKind { RECEPTION, EXPEDITION }

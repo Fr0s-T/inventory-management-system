@@ -5,6 +5,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 
+/**
+ *
+ *
+ * Author: @Frost
+ *
+ */
+
+
+
 public class UiStateManager {
 
     public void apply(ShipmentController.ShipmentKind kind,

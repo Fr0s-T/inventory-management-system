@@ -62,7 +62,10 @@ public class LogOutService {
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace(); // Optionally log to a file
+        } finally {
+            ProductsService.stopBackgroundSync(); // ensure thread stops on exit
         }
     }
+
 
 }

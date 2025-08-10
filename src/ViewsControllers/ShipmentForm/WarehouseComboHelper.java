@@ -8,6 +8,15 @@ import javafx.util.StringConverter;
 
 import java.util.ArrayList;
 
+
+/**
+ *
+ *
+ * Author: @Frost
+ *
+ */
+
+
 public class WarehouseComboHelper {
 
     public void setupWarehouseComboBox(ComboBox<Warehouse> combo, ArrayList<Warehouse> warehouses) {
