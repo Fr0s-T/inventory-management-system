@@ -1,5 +1,6 @@
 package ViewsControllers;
 
+import Controllers.SceneLoader;
 import Models.Product;
 import Models.Session;
 import Services.ProductsService;
@@ -50,6 +51,8 @@ public class ProductsController {
 
         // Fill the table
         ProductsTable.setItems(originalProductList);
+
+        RefreshButton.setOnAction(actionEvent -> SceneLoader.refreshPanel());
 
         // Disable column dragging
         Platform.runLater(() -> {

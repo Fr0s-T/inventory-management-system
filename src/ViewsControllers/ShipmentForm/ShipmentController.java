@@ -17,6 +17,14 @@ import Models.Warehouse;
  */
 public class ShipmentController {
 
+    public Button getRefreshButton() {
+        return RefreshButton;
+    }
+
+    public void setRefreshButton(Button refreshButton) {
+        RefreshButton = refreshButton;
+    }
+
     public enum ShipmentKind { RECEPTION, EXPEDITION }
 
     // ==== FXML UI Elements ====
@@ -32,7 +40,7 @@ public class ShipmentController {
     @FXML private TextField TotalPriceTxtField;
     @FXML private TextField UnitPriceField;
     @FXML private ListView<String> ProductsListView;
-    @FXML private Button SaveButton, CancelButton, AddBtn, EditBtn, RemoveBtn;
+    @FXML private Button SaveButton, CancelButton, AddBtn, EditBtn, RemoveBtn, RefreshButton;
     @FXML private ComboBox<Product> ExpadistionComboBox;
     @FXML private Button QRCodeGeneraore, QrCodeReader;
     @FXML private CheckBox OutsideOfNetworkCheckBox;

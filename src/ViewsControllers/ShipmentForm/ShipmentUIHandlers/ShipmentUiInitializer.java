@@ -1,5 +1,6 @@
 package ViewsControllers.ShipmentForm.ShipmentUIHandlers;
 
+import Controllers.SceneLoader;
 import Models.Product;
 import Models.Session;
 import Models.Warehouse;
@@ -126,6 +127,7 @@ public class ShipmentUiInitializer {
         controller.getCancelButton().setOnAction(event -> controller.getFormHandler().reset());
         controller.getEditBtn().setOnAction(event -> controller.getSaveHandler().handleEdit(controller));
         controller.getRemoveBtn().setOnAction(event -> controller.getFormHandler().removeItem());
+        controller.getRefreshButton().setOnAction(actionEvent -> SceneLoader.refreshPanel());
 
         controller.getUiStateHandler().updateQRCodeButton(controller);
     }
