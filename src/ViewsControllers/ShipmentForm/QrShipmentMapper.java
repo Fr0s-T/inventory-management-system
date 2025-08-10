@@ -6,16 +6,15 @@ public class QrShipmentMapper {
 
     // Sealed-ish partner outcome (no preview sealed keywords for wide compatibility)
     public interface Partner {}
-    public static final class PartnerId implements Partner {
-        private final int id;
-        public PartnerId(int id) { this.id = id; }
-        public int id() { return id; }
+
+    public record PartnerId(int id) implements Partner {
     }
-    public static final class PartnerExternal implements Partner {
-        private final String name;
-        public PartnerExternal(String name) { this.name = name == null ? "" : name; }
-        public String name() { return name; }
-    }
+
+    public record PartnerExternal(String name) implements Partner {
+            public PartnerExternal(String name) {
+                this.name = name == null ? "" : name;
+            }
+        }
 
     public ShipmentController.ShipmentKind decideLocalKind(ShipmentQRPayload payload, int currentWarehouseId) {
         Integer destId = parsePositiveInt(payload.destination());

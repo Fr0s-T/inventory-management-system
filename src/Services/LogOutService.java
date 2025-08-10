@@ -25,6 +25,7 @@ public class LogOutService {
 
         if (confirmed) {
             setLoggedOutInDatabase();
+            ProductsService.stopBackgroundSync();
             Session.logOut();
             SceneLoader.loadScene("/FXML/LoginPage.fxml", null); // Adjust path if needed
         }
@@ -38,6 +39,7 @@ public class LogOutService {
 
         if (confirmed) {
             Session.BackToDashboard();
+            ProductsService.stopBackgroundSync();
             SceneLoader.loadScene("/FXML/SuFrame.fxml", null); // Adjust path if needed
         }
     }
