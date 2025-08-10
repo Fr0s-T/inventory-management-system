@@ -147,12 +147,13 @@ public class ShipmentServices {
 
     private static void insertShippedItems(Connection conn, int detailsId,
                                            ArrayList<Product> items, ArrayList<Integer> qty) throws SQLException {
-        String sql = "INSERT INTO ShippedItems (ShipmentDetailsID, ItemCode, Quantity) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO ShippedItems (ShipmentDetailsID, ItemCode, Quantity , UnitPrice) VALUES (?, ?, ?,?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (int i = 0; i < items.size(); i++) {
                 ps.setInt(1, detailsId);
                 ps.setString(2, items.get(i).getItemCode());
                 ps.setInt(3, qty.get(i));
+                ps.setFloat(4,items.get(i).getUnitPrice());
                 ps.addBatch();
             }
             ps.executeBatch();
