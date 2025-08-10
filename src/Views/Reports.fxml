@@ -6,6 +6,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -15,6 +17,13 @@
       <Pane layoutX="496.0" layoutY="33.0" prefHeight="125.0" prefWidth="1193.0" style="-fx-background-color: linear-gradient(to bottom, #b39ddb, #7e57c2);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label alignment="CENTER" layoutX="470.0" layoutY="23.0" prefHeight="90.0" prefWidth="400.0" text="Warehouse Reports" />
+            <TextField id="searchField" fx:id="searchField" layoutX="159.0" layoutY="54.0" prefHeight="30.0" prefWidth="200.0" promptText="Search" />
+             <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="114.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+                 <image>
+                     <Image url="@../Icons/search.png" />
+                 </image>
+             </ImageView>
+
          </children>
       </Pane>
       <HBox layoutX="496.0" layoutY="138.0" prefHeight="70.0" prefWidth="200.0" spacing="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0">
