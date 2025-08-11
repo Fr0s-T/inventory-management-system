@@ -1,5 +1,6 @@
 package ViewsControllers;
 
+import Controllers.SceneLoader;
 import Models.User;
 import Services.UserService;
 import Services.WareHouseService;
@@ -52,6 +53,8 @@ public class AddWarehouse {
             System.err.println("Capacity must be a number");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+        }finally{
+            SceneLoader.loadScene("/FXML/SuFrame.fxml",null);
         }
     }
 

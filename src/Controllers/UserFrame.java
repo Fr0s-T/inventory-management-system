@@ -43,23 +43,9 @@ public class UserFrame extends Application {
     private void initialize() {
         try {
             User user = Session.getCurrentUser();
-            if(user.getRole()!= User.Role.REGIONAL_MANAGER){
-                BackToDashboard.setVisible(false);
-                switch (user.getRole()) {
-                    case User.Role.SHIFT_MANAGER:
-                        UsersBtn.setVisible(false);
-                        AddEmployeeBtn.setVisible(false);
-                        break;
-                    case User.Role.EMPLOYEE:
-                        UsersBtn.setVisible(false);
-                        ReportsBtn.setVisible(false);
-                        AddEmployeeBtn.setVisible(false);
-                        break;
-                }
 
+            permission(user);
 
-
-            }
             UsernameLabel.setText(user.getUsername());
 
             if (Session.getGlobalProductCatalog() == null) Session.setGlobalProductCatalog(
@@ -168,6 +154,25 @@ public class UserFrame extends Application {
         });
         stage.show();
     }
+
+    private void permission(User user){
+        if(user.getRole()!= User.Role.REGIONAL_MANAGER){
+            BackToDashboard.setVisible(false);
+            switch (user.getRole()) {
+                case User.Role.SHIFT_MANAGER:
+                    UsersBtn.setVisible(false);
+                    AddEmployeeBtn.setVisible(false);
+                    break;
+                case User.Role.EMPLOYEE:
+                    UsersBtn.setVisible(false);
+                    ReportsBtn.setVisible(false);
+                    AddEmployeeBtn.setVisible(false);
+                    break;
+            }
+
+        }
+    }
+
 
     public static void main(String[] args) {
         launch(args);

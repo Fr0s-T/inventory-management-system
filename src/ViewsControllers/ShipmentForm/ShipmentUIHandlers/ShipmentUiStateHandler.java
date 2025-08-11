@@ -59,12 +59,20 @@ public class ShipmentUiStateHandler {
      * Update the QR button label and behavior per mode.
      */
     public void updateQRCodeButton(ShipmentController controller) {
-        if (currentKind(controller) == ShipmentController.ShipmentKind.RECEPTION) {
+        /*if (currentKind(controller) == ShipmentController.ShipmentKind.RECEPTION) {
             controller.getQRCodeGeneraore().setText("Generate Reception QR");
             controller.getQRCodeGeneraore().setOnAction(e -> controller.getQrHandler().generateQRCodeForReception(controller));
         } else {
             controller.getQRCodeGeneraore().setText("Generate Expedition QR");
             controller.getQRCodeGeneraore().setOnAction(e -> controller.getQrHandler().generateQRCodeForExpedition(controller));
+        }*/
+        if (currentKind(controller) == ShipmentController.ShipmentKind.RECEPTION) {
+            controller.getQRCodeGenerator().setVisible(false);
+            controller.getQrCodeReader().setVisible(true);
+        }
+        else {
+            controller.getQRCodeGenerator().setVisible(true);
+            controller.getQrCodeReader().setVisible(false);
         }
     }
 

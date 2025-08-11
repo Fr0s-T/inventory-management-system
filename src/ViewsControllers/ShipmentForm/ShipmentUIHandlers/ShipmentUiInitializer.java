@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  *
  * Author: @Frost
- *
+ * <p>
  * Handles initial setup of UI elements in ShipmentController.
  */
 public class ShipmentUiInitializer {
@@ -31,9 +31,6 @@ public class ShipmentUiInitializer {
         setupCheckBox(controller);
         setupButtons(controller);
         setupQuantityFormatter(controller);
-
-        // QR reader button action
-        controller.getQrCodeReader().setOnAction(e -> controller.getQrHandler().onLoadQRCodeClick(controller));
 
         // Default selection and initial UI state
         controller.getShipmentType().selectToggle(controller.getReceptionRadioButton());
@@ -127,6 +124,11 @@ public class ShipmentUiInitializer {
         controller.getCancelButton().setOnAction(event -> controller.getFormHandler().reset());
         controller.getEditBtn().setOnAction(event -> controller.getSaveHandler().handleEdit(controller));
         controller.getRemoveBtn().setOnAction(event -> controller.getFormHandler().removeItem());
+
+        // QR reader button action
+        controller.getQrCodeReader().setOnAction(e -> controller.getQrHandler().onLoadQRCodeClick(controller));
+        controller.getQRCodeGenerator().setOnAction(actionEvent -> controller.getQrHandler().generateQRCodeForReception(controller));
+
         controller.getRefreshButton().setOnAction(actionEvent -> SceneLoader.refreshPanel());
 
         controller.getUiStateHandler().updateQRCodeButton(controller);

@@ -42,7 +42,7 @@ public class ShipmentController {
     @FXML private ListView<String> ProductsListView;
     @FXML private Button SaveButton, CancelButton, AddBtn, EditBtn, RemoveBtn, RefreshButton;
     @FXML private ComboBox<Product> ExpadistionComboBox;
-    @FXML private Button QRCodeGeneraore, QrCodeReader;
+    @FXML private Button QRCodeGenerator, QrCodeReader;
     @FXML private CheckBox OutsideOfNetworkCheckBox;
     @FXML private TextField OutsideOfNetworkTxt;
     @FXML private ProgressIndicator progressIndicator;
@@ -97,9 +97,19 @@ public class ShipmentController {
     public Button getEditBtn() { return EditBtn; }
     public Button getRemoveBtn() { return RemoveBtn; }
     public ComboBox<Product> getExpadistionComboBox() { return ExpadistionComboBox; }
-    public Button getQRCodeGeneraore() { return QRCodeGeneraore; }
+    public Button getQRCodeGenerator() { return QRCodeGenerator; }
     public Button getQrCodeReader() { return QrCodeReader; }
     public CheckBox getOutsideOfNetworkCheckBox() { return OutsideOfNetworkCheckBox; }
     public TextField getOutsideOfNetworkTxt() { return OutsideOfNetworkTxt; }
     public ProgressIndicator getProgressIndicator() { return progressIndicator; }
 }
+
+
+/*
+ *
+ *
+ * there is a set of logic ready to be used to generate qr code for reception but its functionality is ignored for now
+ * due to it need to be tested extensively and over minor tweaks in the logic of the reader
+ *
+ *
+ */

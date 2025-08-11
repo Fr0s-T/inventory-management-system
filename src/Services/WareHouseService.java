@@ -53,6 +53,7 @@ public class WareHouseService {
         try (Connection conn = DataBaseConnection.getConnection();
              CallableStatement cs = conn.prepareCall(callSP);
              PreparedStatement updateStmt = conn.prepareStatement(updateManagerSQL)) {
+
             System.out.println(Session.getCurrentUser().getId()+"  "+Session.getCurrentUser().getRole());
             // Prepare the stored procedure call
             cs.setString(1, name);
@@ -95,21 +96,27 @@ public class WareHouseService {
             Session.getWarehouses().add(warehouse);
             int affected = updateStmt.executeUpdate();
 
-            if (affected == 0) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Manager Not Updated");
-                alert.setHeaderText("Warning");
-                alert.setContentText("Warehouse was created, but the manager could not be updated (username not found).");
-                alert.showAndWait();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Manager Assigned");
-                alert.setHeaderText("Success");
-                alert.setContentText("Manager has been successfully assigned to the new warehouse.");
-                alert.showAndWait();
-            }
+            Alert alert = getAlert(affected);
+            alert.showAndWait();
         }
     }
+
+    private static Alert getAlert(int affected) {
+        Alert alert;
+        if (affected == 0) {
+            alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Manager Not Updated");
+            alert.setHeaderText("Warning");
+            alert.setContentText("Warehouse was created, but the manager could not be updated (username not found).");
+        } else {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Manager Assigned");
+            alert.setHeaderText("Success");
+            alert.setContentText("Manager has been successfully assigned to the new warehouse.");
+        }
+        return alert;
+    }
+
     public static void getCurrentWarehouseInfo() throws SQLException, ClassNotFoundException {
         final String sql = "SELECT w.ID, w.Name, w.Location, w.Capacity, e.Username " +
                 "FROM Warehouse w " +
