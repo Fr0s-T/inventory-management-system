@@ -69,6 +69,7 @@ public class UsersController {
                 Fnametxt.setText(user.getFirstName());
                 Mnametxt.setText(user.getMiddleName());
                 Lnametxt.setText(user.getLastName());
+                Usernametxt.setText(user.getUsername());
 
                 ShiftManagerCheckBox.setSelected(user.getRole() == User.Role.SHIFT_MANAGER);
                 StatusCheckBox.setSelected(Boolean.TRUE.equals(user.getOnDuty()));
@@ -96,6 +97,7 @@ public class UsersController {
             Fnametxt.clear();
             Mnametxt.clear();
             Lnametxt.clear();
+            Usernametxt.clear();
             Passwordtxt.clear();
             ShiftManagerCheckBox.setSelected(false);
             StatusCheckBox.setSelected(false);
@@ -109,6 +111,10 @@ public class UsersController {
                 String rawPassword = Passwordtxt.getText();
                 boolean onDuty = StatusCheckBox.isSelected();
                 int newRoleId = ShiftManagerCheckBox.isSelected() ? 3 : 4;
+                if (!ShiftManagerCheckBox.isVisible()) {
+                    newRoleId = 2;
+                }
+
                 String hashedPassword = (rawPassword != null && !rawPassword.trim().isEmpty())
                         ? HashingUtility.md5Hash(rawPassword)
                         : "";
@@ -147,24 +153,8 @@ public class UsersController {
         });
 
 
-
-        ChangeListener<String> updateListener = (
-                obs, oldVal, newVal) -> updateUsernameField();
-        Fnametxt.textProperty().addListener(updateListener);
-        Lnametxt.textProperty().addListener(updateListener);
     }
 
-    private void updateUsernameField() {
-        String fname = Fnametxt.getText().trim();
-        String lname = Lnametxt.getText().trim();
-
-        if (!fname.isEmpty() && !lname.isEmpty()) {
-            String username = fname.charAt(0) + "." + lname;
-            Usernametxt.setText(username.toLowerCase());
-        } else {
-            Usernametxt.clear();
-        }
-    }
     private void showAccessDenied(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Access Denied");
