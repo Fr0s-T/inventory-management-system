@@ -34,7 +34,7 @@ public class UserService {
                         rs.getString("MiddleName"),
                         rs.getString("LastName"),
                         rs.getString("Username"),
-                        rs.getBoolean("OnDuty"),
+                        null, // onDuty not in view
                         rs.getInt("RoleID"),
                         rs.getInt("WarehouseID"),
                         rs.getString("Picture"),
@@ -42,6 +42,7 @@ public class UserService {
                         rs.getTimestamp("LockoutUntil"),
                         rs.getBoolean("IsLoggedIn")
                 );
+
                 managers.add(manager);
             }
         }

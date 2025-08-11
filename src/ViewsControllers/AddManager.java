@@ -2,6 +2,7 @@ package ViewsControllers;
 
 
 import Services.UserService;
+import Utilities.AlertUtils;
 import Utilities.HashingUtility;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -35,7 +36,10 @@ public class AddManager {
 
     @FXML
     private void initialize() {
-        SaveButton.setOnAction(e -> handleAddManager());
+        SaveButton.setOnAction(e -> {
+            handleAddManager();
+            AlertUtils.showSuccess("Manager Added Successfully");
+        });
         CancelButton.setOnAction(e -> dialogStage.close());
 
         // Auto-update UsernameField when Fname or Lname changes

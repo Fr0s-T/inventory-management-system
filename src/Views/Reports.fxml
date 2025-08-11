@@ -26,7 +26,7 @@
 
          </children>
       </Pane>
-      <HBox layoutX="496.0" layoutY="138.0" prefHeight="70.0" prefWidth="200.0" spacing="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0">
+      <HBox layoutX="496.0" layoutY="138.0" prefHeight="70.0" prefWidth="200.0" spacing="35.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0">
          <children>
             <Button id="EmployeesInfoBtn" fx:id="EmployeesInfoBtn" mnemonicParsing="false" prefHeight="103.0" prefWidth="205.0" text="Employees Info">
                <HBox.margin>
