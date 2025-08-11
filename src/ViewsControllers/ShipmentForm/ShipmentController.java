@@ -48,7 +48,7 @@ public class ShipmentController {
     @FXML private ProgressIndicator progressIndicator;
 
     // ==== Handlers & Utilities ====
-    private final WarehouseComboHelper comboHelper = new WarehouseComboHelper();
+    private final ComboBoxHelper comboHelper = new ComboBoxHelper();
     private final UiStateManager uiState = new UiStateManager();
     private final QrShipmentMapper qrMapper = new QrShipmentMapper();
     private ShipmentFormHandler formHandler;
@@ -71,7 +71,7 @@ public class ShipmentController {
 
     // ==== Getters for Handlers ====
     public ShipmentFormHandler getFormHandler() { return formHandler; }
-    public WarehouseComboHelper getComboHelper() { return comboHelper; }
+    public ComboBoxHelper getComboHelper() { return comboHelper; }
     public UiStateManager getUiState() { return uiState; }
     public QrShipmentMapper getQrMapper() { return qrMapper; }
     public ShipmentUiStateHandler getUiStateHandler() { return uiStateHandler; }

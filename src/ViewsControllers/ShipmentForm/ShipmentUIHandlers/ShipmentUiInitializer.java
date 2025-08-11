@@ -6,6 +6,7 @@ import Models.Session;
 import Models.Warehouse;
 import Services.ProductsService;
 import Services.WareHouseService;
+import ViewsControllers.ShipmentForm.ComboBoxHelper;
 import ViewsControllers.ShipmentForm.ShipmentController;
 import javafx.scene.control.TextFormatter;
 
@@ -22,6 +23,7 @@ public class ShipmentUiInitializer {
 
     /**
      * Entry point called by ShipmentController.initialize()
+     * <p>
      * Wires up all UI pieces and delegates to other handlers.
      */
     public void setup(ShipmentController controller) {
@@ -45,9 +47,22 @@ public class ShipmentUiInitializer {
             WareHouseService.getAllWarehouses();
         }
         ArrayList<Warehouse> warehouses = Session.getAllWarehouses();
+
+        // Populate + render
         controller.getComboHelper().setupWarehouseComboBox(controller.getSourceComboBox(), warehouses);
         controller.getComboHelper().setupWarehouseComboBox(controller.getDestinationComboBox(), warehouses);
 
+        // 🔎 Enable "type while open" search for warehouses (by name + location)
+        ComboBoxHelper.enableSearchWhileOpen(
+                controller.getSourceComboBox(),
+                w -> (w.getName() == null ? "" : w.getName()) + " " + (w.getLocation() == null ? "" : w.getLocation())
+        );
+        ComboBoxHelper.enableSearchWhileOpen(
+                controller.getDestinationComboBox(),
+                w -> (w.getName() == null ? "" : w.getName()) + " " + (w.getLocation() == null ? "" : w.getLocation())
+        );
+
+        // Default select current warehouse (or first)
         Warehouse current = Session.getCurrentWarehouse();
         if (current != null) {
             controller.getComboHelper().selectById(controller.getSourceComboBox(), current.getId());
@@ -58,6 +73,7 @@ public class ShipmentUiInitializer {
         }
     }
 
+
     /**
      * Populate product combo and set autofill behavior.
      */
@@ -67,10 +83,20 @@ public class ShipmentUiInitializer {
         }
         ArrayList<Product> products = Session.getProducts();
 
+        // Populate + render
         controller.getComboHelper().setupProductComboBox(controller.getExpadistionComboBox(), products);
 
-        controller.getExpadistionComboBox().setOnAction(e -> {
-            Product selected = controller.getExpadistionComboBox().getValue();
+        // 🔎 Enable "type while open" search for products (by code + name)
+        ComboBoxHelper.enableSearchWhileOpen(
+                controller.getExpadistionComboBox(),
+                p -> (p.getItemCode() == null ? "" : p.getItemCode()) +
+                        " " +
+                        // If you don't have getName(), swap with any descriptor (color/size/section)
+                        (/* p.getName() */ null)  // <-- replace null with p.getName() if available
+        );
+
+        // Autofill behavior when a product is chosen
+        controller.getExpadistionComboBox().valueProperty().addListener((obs, oldV, selected) -> {
             if (selected != null) {
                 controller.getFormHandler().autoFillFromProduct(selected);
             } else {
@@ -81,6 +107,7 @@ public class ShipmentUiInitializer {
             }
         });
     }
+
 
     /**
      * Bind radio buttons to ShipmentKind and react to changes.
@@ -143,4 +170,3 @@ public class ShipmentUiInitializer {
         controller.getQuantityTxt().setTextFormatter(tf);
     }
 }
-// full implementation moved from setup methods

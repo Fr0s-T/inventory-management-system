@@ -53,6 +53,7 @@ public class ShipmentQrHandler {
 
     /**
      * Generate a QR code that represents an EXPEDITION (local perspective).
+     * <p>
      * Destination may be external (name) or internal (warehouse).
      */
     public void generateQRCodeForExpedition(ShipmentController controller) {

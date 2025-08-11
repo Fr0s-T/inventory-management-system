@@ -257,7 +257,7 @@ public class ShipmentFormHandler {
             return;
         }
 
-        if (!isReception && source != null && destination != null && source.equals(destination)) {
+        if (!isReception && source != null && source.equals(destination)) {
             AlertUtils.showWarning("Invalid Warehouses", "Source and destination cannot be the same.");
             return;
         }
