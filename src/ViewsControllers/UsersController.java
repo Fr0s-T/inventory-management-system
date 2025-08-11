@@ -33,7 +33,7 @@ public class UsersController {
     @FXML private Button ClearBtn;
     private User fetchedUser= null;
 
-    @FXML public void initialize(){
+    @FXML public void initialize() {
         SaveBtn.setDisable(true);
 
         FetchBtn.setOnAction(actionEvent -> {
@@ -49,7 +49,7 @@ public class UsersController {
                     if (user.getRole() == User.Role.REGIONAL_MANAGER) {
                         showAccessDenied("You don't have permission to access this user's information.");
                         return;
-                    } else if (user.getRole()== User.Role.WAREHOUSE_MANAGER) {
+                    } else if (user.getRole() == User.Role.WAREHOUSE_MANAGER) {
                         ShiftManagerCheckBox.setVisible(false);
                     }
                 } else if (currentRole == User.Role.WAREHOUSE_MANAGER) {
@@ -69,6 +69,8 @@ public class UsersController {
                 Fnametxt.setText(user.getFirstName());
                 Mnametxt.setText(user.getMiddleName());
                 Lnametxt.setText(user.getLastName());
+
+                Usernametxt.setText(user.getUsername());
 
                 ShiftManagerCheckBox.setSelected(user.getRole() == User.Role.SHIFT_MANAGER);
                 StatusCheckBox.setSelected(Boolean.TRUE.equals(user.getOnDuty()));
@@ -91,15 +93,16 @@ public class UsersController {
         });
 
 
-        ClearBtn.setOnAction(actionEvent ->{
+        ClearBtn.setOnAction(actionEvent -> {
             IDtxt.clear();
             Fnametxt.clear();
             Mnametxt.clear();
             Lnametxt.clear();
             Passwordtxt.clear();
+            Usernametxt.clear();
             ShiftManagerCheckBox.setSelected(false);
             StatusCheckBox.setSelected(false);
-        } );
+        });
         SaveBtn.setOnAction(actionEvent -> {
             try {
                 int id = Integer.parseInt(IDtxt.getText());
@@ -145,26 +148,9 @@ public class UsersController {
                 alert.showAndWait();
             }
         });
-
-
-
-        ChangeListener<String> updateListener = (
-                obs, oldVal, newVal) -> updateUsernameField();
-        Fnametxt.textProperty().addListener(updateListener);
-        Lnametxt.textProperty().addListener(updateListener);
     }
 
-    private void updateUsernameField() {
-        String fname = Fnametxt.getText().trim();
-        String lname = Lnametxt.getText().trim();
 
-        if (!fname.isEmpty() && !lname.isEmpty()) {
-            String username = fname.charAt(0) + "." + lname;
-            Usernametxt.setText(username.toLowerCase());
-        } else {
-            Usernametxt.clear();
-        }
-    }
     private void showAccessDenied(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Access Denied");
@@ -172,6 +158,6 @@ public class UsersController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
 }
+
+
