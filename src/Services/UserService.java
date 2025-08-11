@@ -50,16 +50,14 @@ public class UserService {
     }
 
 
-    public static void addManager(String firstName, String middleName, String lastName,
-                                  String username, String password)
+    public static int addManager(String firstName, String middleName, String lastName, String password)
             throws SQLException, ClassNotFoundException {
 
-        // RoleID for warehouse manager is 2
         final int roleID = 2;
 
         String insertEmployeeSql = "INSERT INTO Employee " +
-                "(FirstName, MiddleName, LastName, Username, Password, OnDuty, RoleID, WarehouseID) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "(FirstName, MiddleName, LastName, Password, OnDuty, RoleID, WarehouseID) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement insertStmt = connection.prepareStatement(insertEmployeeSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -67,11 +65,10 @@ public class UserService {
             insertStmt.setString(1, firstName);
             insertStmt.setString(2, middleName);
             insertStmt.setString(3, lastName);
-            insertStmt.setString(4, username);
-            insertStmt.setString(5, password); // If hashing needed, hash before passing
-            insertStmt.setBoolean(6, true);
-            insertStmt.setInt(7, 2);
-            insertStmt.setNull(8, Types.INTEGER);
+            insertStmt.setString(4, password);
+            insertStmt.setBoolean(5, true);
+            insertStmt.setInt(6, roleID);
+            insertStmt.setNull(7, Types.INTEGER);
 
             insertStmt.executeUpdate();
 
@@ -89,6 +86,7 @@ public class UserService {
 
                     hierarchyStmt.executeUpdate();
                 }
+                return newId;
 
             } else {
                 throw new SQLException("Creating manager failed, no ID obtained.");
@@ -96,16 +94,16 @@ public class UserService {
         }
     }
 
-    public static void addEmployee(String firstName, String middleName, String lastName,
-                                   String username, String password, Boolean isShiftManager)
+    public static int addEmployee(String firstName, String middleName, String lastName,
+                                   String password, Boolean isShiftManager)
             throws SQLException, ClassNotFoundException {
 
         int RoleID = 4;
         if (isShiftManager) RoleID = 3;
 
         String insertEmployeeSql = "INSERT INTO Employee " +
-                "(FirstName, MiddleName, LastName, Username, Password, OnDuty, RoleID, WarehouseID) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "(FirstName, MiddleName, LastName, Password, OnDuty, RoleID, WarehouseID) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement insertStmt = connection.prepareStatement(insertEmployeeSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -113,11 +111,10 @@ public class UserService {
             insertStmt.setString(1, firstName);
             insertStmt.setString(2, middleName);
             insertStmt.setString(3, lastName);
-            insertStmt.setString(4, username);
-            insertStmt.setString(5, password); // If hashing needed, hash before passing
-            insertStmt.setBoolean(6, true);
-            insertStmt.setInt(7, RoleID);
-            insertStmt.setInt(8, Session.getCurrentWarehouse().getId());
+            insertStmt.setString(4, password);
+            insertStmt.setBoolean(5, true);
+            insertStmt.setInt(6, RoleID);
+            insertStmt.setInt(7, Session.getCurrentWarehouse().getId());
 
             insertStmt.executeUpdate();
 
@@ -151,12 +148,30 @@ public class UserService {
 
                         hierarchyStmt.executeUpdate();
                     }
+                    return newId;
                 } else {
                     throw new SQLException("Creating employee failed, no ID obtained.");
                 }
             }
         }
     }
+    public static String getUsernameById(int employeeId) throws SQLException, ClassNotFoundException {
+        String username = null;
+        String querySql = "SELECT Username FROM Employee WHERE ID = ?";
+
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(querySql)) {
+
+            stmt.setInt(1, employeeId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    username = rs.getString("Username");
+                }
+            }
+        }
+        return username;
+    }
+
 
 
 
