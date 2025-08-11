@@ -107,6 +107,7 @@ public class EditUserServices {
         }
     }
 
+
     public static User fetchUser(int id) {
         String query = "SELECT * FROM Employee WHERE ID = ?";
 

@@ -33,7 +33,7 @@ public class UsersController {
     @FXML private Button ClearBtn;
     private User fetchedUser= null;
 
-    @FXML public void initialize() {
+    @FXML public void initialize(){
         SaveBtn.setDisable(true);
 
         FetchBtn.setOnAction(actionEvent -> {
@@ -49,7 +49,7 @@ public class UsersController {
                     if (user.getRole() == User.Role.REGIONAL_MANAGER) {
                         showAccessDenied("You don't have permission to access this user's information.");
                         return;
-                    } else if (user.getRole() == User.Role.WAREHOUSE_MANAGER) {
+                    } else if (user.getRole()== User.Role.WAREHOUSE_MANAGER) {
                         ShiftManagerCheckBox.setVisible(false);
                     }
                 } else if (currentRole == User.Role.WAREHOUSE_MANAGER) {
@@ -69,7 +69,6 @@ public class UsersController {
                 Fnametxt.setText(user.getFirstName());
                 Mnametxt.setText(user.getMiddleName());
                 Lnametxt.setText(user.getLastName());
-
                 Usernametxt.setText(user.getUsername());
 
                 ShiftManagerCheckBox.setSelected(user.getRole() == User.Role.SHIFT_MANAGER);
@@ -93,16 +92,16 @@ public class UsersController {
         });
 
 
-        ClearBtn.setOnAction(actionEvent -> {
+        ClearBtn.setOnAction(actionEvent ->{
             IDtxt.clear();
             Fnametxt.clear();
             Mnametxt.clear();
             Lnametxt.clear();
-            Passwordtxt.clear();
             Usernametxt.clear();
+            Passwordtxt.clear();
             ShiftManagerCheckBox.setSelected(false);
             StatusCheckBox.setSelected(false);
-        });
+        } );
         SaveBtn.setOnAction(actionEvent -> {
             try {
                 int id = Integer.parseInt(IDtxt.getText());
@@ -112,6 +111,10 @@ public class UsersController {
                 String rawPassword = Passwordtxt.getText();
                 boolean onDuty = StatusCheckBox.isSelected();
                 int newRoleId = ShiftManagerCheckBox.isSelected() ? 3 : 4;
+                if (!ShiftManagerCheckBox.isVisible()) {
+                    newRoleId = 2;
+                }
+
                 String hashedPassword = (rawPassword != null && !rawPassword.trim().isEmpty())
                         ? HashingUtility.md5Hash(rawPassword)
                         : "";
@@ -148,8 +151,9 @@ public class UsersController {
                 alert.showAndWait();
             }
         });
-    }
 
+
+    }
 
     private void showAccessDenied(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -158,6 +162,6 @@ public class UsersController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
 }
-
-
