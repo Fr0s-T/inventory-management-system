@@ -72,6 +72,8 @@ public class User {
     public User(int id, String firstName, String middleName, String lastName, String username, Boolean onDuty, int roleId, int warehouseId,int failedAttempts, Timestamp lockoutUntil,boolean IsLoggedIn) {
         this(id, firstName, middleName, lastName, username, onDuty, roleId, warehouseId, null, failedAttempts, lockoutUntil, IsLoggedIn);
     }
+
+
     // Getters for all fields
     //public User(){}
     public int getId() {

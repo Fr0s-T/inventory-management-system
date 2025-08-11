@@ -40,7 +40,7 @@ public class AddWarehouse {
             String name = nameField.getText();
             String location = locationField.getText();
             int capacity = Integer.parseInt(capacityField.getText());
-            User selectedManager = managerComboBox.getValue(); // ✅ Now works
+            User selectedManager = managerComboBox.getValue();
 
             if (selectedManager != null) {
                 WareHouseService.addWarehouse(name, location, capacity, selectedManager.getUsername());
@@ -49,7 +49,7 @@ public class AddWarehouse {
                 System.err.println("Please select a manager.");
             }
         } catch (NumberFormatException e) {
-            System.err.println("Capacity must be a number");
+            System.err.println ("Capacity must be a number");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

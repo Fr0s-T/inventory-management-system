@@ -1,6 +1,7 @@
 package ViewsControllers;
 
 import Services.UserService;
+import Utilities.AlertUtils;
 import Utilities.HashingUtility;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -48,7 +49,7 @@ public class AddEmployeeController {
                         HashingUtility.md5Hash(PasswordField.getText().trim()),
                         IsShiftManager.isSelected()
                 );
-                dialogStage.close(); // Optionally close after save
+                AlertUtils.showSuccess("Employee Added Successfully");
             } catch (SQLException | ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
