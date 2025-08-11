@@ -26,7 +26,6 @@ public class AddManager {
     @FXML private PasswordField PasswordField;
     @FXML private Button SaveButton;
     @FXML private Button CancelButton;
-    @FXML private TextField UsernameField;
 
     private Stage dialogStage;
 
@@ -36,17 +35,9 @@ public class AddManager {
 
     @FXML
     private void initialize() {
-        SaveButton.setOnAction(e -> {
-            handleAddManager();
-            AlertUtils.showSuccess("Manager Added Successfully");
-        });
+        SaveButton.setOnAction(e ->handleAddManager());
         CancelButton.setOnAction(e -> dialogStage.close());
 
-        // Auto-update UsernameField when Fname or Lname changes
-        ChangeListener<String> updateListener = (
-                obs, oldVal, newVal) -> updateUsernameField();
-        FnameField.textProperty().addListener(updateListener);
-        LnameField.textProperty().addListener(updateListener);
     }
 
     private void handleAddManager() {
@@ -54,29 +45,19 @@ public class AddManager {
             String fname = FnameField.getText().trim();
             String mname = MnameField.getText().trim();
             String lname = LnameField.getText().trim();
-            String username = UsernameField.getText().trim();
             String password = HashingUtility.md5Hash(PasswordField.getText().trim());
 
             // Add manager with RoleID = 2
-            UserService.addManager(fname, mname, lname, username, password);
+            int newManagerId = UserService.addManager(fname, mname, lname, password);
+            String generatedUsername = UserService.getUsernameById(newManagerId);
 
+            AlertUtils.showSuccess("Manager Added Successfully.\nGenerated Username: " + generatedUsername);
             dialogStage.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void updateUsernameField() {
-        String fname = FnameField.getText().trim();
-        String lname = LnameField.getText().trim();
-
-        if (!fname.isEmpty() && !lname.isEmpty()) {
-            String username = fname.charAt(0) + "." + lname;
-            UsernameField.setText(username.toLowerCase());
-        } else {
-            UsernameField.clear();
-        }
-    }
 
 }
 

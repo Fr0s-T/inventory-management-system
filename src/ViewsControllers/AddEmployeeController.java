@@ -28,7 +28,6 @@ public class AddEmployeeController {
     @FXML private PasswordField PasswordField;
     @FXML private Button SaveButton;
     @FXML private Button CancelButton;
-    @FXML private TextField UsernameField;
     @FXML private CheckBox IsShiftManager;
 
     private Stage dialogStage;
@@ -41,37 +40,22 @@ public class AddEmployeeController {
 
         SaveButton.setOnAction(e -> {
             try {
-                UserService.addEmployee(
+                int newEmployeeId = UserService.addEmployee(
                         FnameField.getText().trim(),
                         MnameField.getText().trim(),
                         LnameField.getText().trim(),
-                        UsernameField.getText().trim(),
                         HashingUtility.md5Hash(PasswordField.getText().trim()),
                         IsShiftManager.isSelected()
                 );
-                AlertUtils.showSuccess("Employee Added Successfully");
+                String generatedUsername = UserService.getUsernameById(newEmployeeId);
+
+                AlertUtils.showSuccess("Employee Added Successfully.\nGenerated Username: " + generatedUsername);
             } catch (SQLException | ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
         });
         CancelButton.setOnAction(e -> dialogStage.close());
 
-        ChangeListener<String> updateListener = (
-                obs, oldVal, newVal) -> updateUsernameField();
-        FnameField.textProperty().addListener(updateListener);
-        LnameField.textProperty().addListener(updateListener);
     }
 
-    private void updateUsernameField() {
-        String fname = FnameField.getText().trim();
-        String lname = LnameField.getText().trim();
-
-        // Only create username if both fields are NOT empty
-        if (!fname.isEmpty() && !lname.isEmpty()) {
-            String username = fname.charAt(0) + "." + lname;
-            UsernameField.setText(username.toLowerCase());
-        } else {
-            UsernameField.clear();
-        }
-    }
 }
