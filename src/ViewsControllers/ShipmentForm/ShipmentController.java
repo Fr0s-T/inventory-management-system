@@ -17,16 +17,6 @@ import Models.Warehouse;
  */
 public class ShipmentController {
 
-    public Button getRefreshButton() {
-        return RefreshButton;
-    }
-
-    public void setRefreshButton(Button refreshButton) {
-        RefreshButton = refreshButton;
-    }
-
-    public enum ShipmentKind { RECEPTION, EXPEDITION }
-
     // ==== FXML UI Elements ====
     @FXML private TextField NameTxtField;
     @FXML public RadioButton ReceptionRadioButton;
@@ -57,6 +47,7 @@ public class ShipmentController {
     private final ShipmentUiStateHandler uiStateHandler = new ShipmentUiStateHandler();
     private final ShipmentQrHandler qrHandler = new ShipmentQrHandler();
     private final ShipmentSaveHandler saveHandler = new ShipmentSaveHandler();
+
 
     @FXML
     public void initialize() {
@@ -102,6 +93,14 @@ public class ShipmentController {
     public CheckBox getOutsideOfNetworkCheckBox() { return OutsideOfNetworkCheckBox; }
     public TextField getOutsideOfNetworkTxt() { return OutsideOfNetworkTxt; }
     public ProgressIndicator getProgressIndicator() { return progressIndicator; }
+    public Button getRefreshButton() {
+        return RefreshButton;
+    }
+    public void setRefreshButton(Button refreshButton) {
+        RefreshButton = refreshButton;
+    }
+    public enum ShipmentKind { RECEPTION, EXPEDITION }
+
 }
 
 

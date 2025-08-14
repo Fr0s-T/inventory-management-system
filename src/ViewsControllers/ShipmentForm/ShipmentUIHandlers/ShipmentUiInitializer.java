@@ -154,7 +154,7 @@ public class ShipmentUiInitializer {
 
         // QR reader button action
         controller.getQrCodeReader().setOnAction(e -> controller.getQrHandler().onLoadQRCodeClick(controller));
-        controller.getQRCodeGenerator().setOnAction(actionEvent -> controller.getQrHandler().generateQRCodeForReception(controller));
+        controller.getQRCodeGenerator().setOnAction(actionEvent -> controller.getQrHandler().generateQRCodeForExpedition(controller));
 
         controller.getRefreshButton().setOnAction(actionEvent -> SceneLoader.refreshPanel());
 

@@ -93,11 +93,11 @@ public class LogInService {
 
     private void switchSceneBasedOnRole(User user) {
         try {
-            switch (user.getRole()) { // Assuming getRoleID() returns the role integer
-                case REGIONAL_MANAGER: // Regional Manager
+            switch (user.getRole()) {
+                case REGIONAL_MANAGER:
                     SceneLoader.loadScene("/FXML/SuFrame.fxml", mainStage);
                     break;
-                case WAREHOUSE_MANAGER, SHIFT_MANAGER, EMPLOYEE: // Warehouse Manager
+                case WAREHOUSE_MANAGER, SHIFT_MANAGER, EMPLOYEE:
                     SceneLoader.loadScene("/FXML/UserFrame.fxml", mainStage);
                     break;
                 default:

@@ -1,7 +1,6 @@
 package Controllers;
 
 import ViewsControllers.*;
-import ViewsControllers.ShipmentForm.ShipmentController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
@@ -18,14 +17,14 @@ import java.util.ArrayList;
 
 /**
  * Utility class for managing scene/card loading and lightweight navigation.
- *
+ * <p>
  * Core ideas:
  * - Keep all FXML loads in ONE place (this class).
  * - Cache the main dynamic panel so child controllers (e.g., product/shipment cards) can trigger refresh
  *   WITHOUT needing a direct reference to UserFrame or the panel itself.
  * - Provide overloads: loadX(panel) for first-time mounting, loadX() for refresh.
  * - Track which view is currently mounted in the panel to support universal refresh().
- *
+ * <p>
  * Author: @Frost
  */
 public class SceneLoader {
@@ -39,7 +38,7 @@ public class SceneLoader {
     /** Cached reference to the dynamic panel area inside UserFrame. */
     private static AnchorPane cachedDynamicPanel = null;
 
-    /** Optional: keep last loader for advanced cases (not required for basic refresh). */
+    /*Optional: keep last loader for advanced cases (not required for basic refresh). */
     // private static FXMLLoader lastPanelLoader = null;
 
     /* ===================== Public bootstrap APIs ===================== */
@@ -170,7 +169,7 @@ public class SceneLoader {
     /**
      * Reload the currently mounted panel view.
      * Works after any loadX(...) call that set currentPanelView.
-     *
+     * <p>
      * Example use from inside a card controller:
      *   RefreshButton.setOnAction(e -> SceneLoader.refreshPanel());
      */

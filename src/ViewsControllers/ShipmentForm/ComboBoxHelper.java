@@ -157,7 +157,7 @@ public class ComboBoxHelper {
                 // Useful non-typed keys: BACKSPACE / ESC / ENTER
                 EventHandler<KeyEvent> pressedHandler = e -> {
                     if (e.getCode() == KeyCode.BACK_SPACE) {
-                        if (query.length() > 0) {
+                        if (!query.isEmpty()) {
                             query.setLength(query.length() - 1);
                             applyFilter.run();
                         }

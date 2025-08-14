@@ -408,3 +408,4 @@ public class ShipmentFormHandler {
     public int getTotalQuantity() { return totalQuantity; }
     public float getTotalPrice() { return totalPrice; }
 }
+

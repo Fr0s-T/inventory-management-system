@@ -117,7 +117,7 @@ public class ShipmentQrHandler {
             if (!proceed) {
                 return;
             }
-            // 🔧 User accepted to take it here → treat as RECEPTION from our perspective.
+            //  User accepted to take it here → treat as RECEPTION from our perspective.
             kind = ShipmentController.ShipmentKind.RECEPTION;
         }
 

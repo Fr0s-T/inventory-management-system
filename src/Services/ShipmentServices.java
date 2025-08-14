@@ -81,8 +81,6 @@ public class ShipmentServices {
      *  3) Write ShippedItems
      *  4) Commit + refresh cache
      *
-     *  NOTE: If you want to forbid going below zero, enforce a DB CHECK constraint
-     *  or add a WHERE clause in UPDATE and verify affected rows == expected.
      */
     public static void expedition(Warehouse src,
                                   Warehouse dest,

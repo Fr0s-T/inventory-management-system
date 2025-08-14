@@ -5,7 +5,7 @@ import java.util.List;
 public record ShipmentQRPayload(String shipmentType, String source, String destination, boolean isInNetwork,
                                 List<ItemEntry> items) {
 
-    // ✅ Add this method so controller can access shipmentType properly
+
     public String getType() {
         return shipmentType;
     }

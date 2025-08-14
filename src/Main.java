@@ -19,7 +19,7 @@ public class Main extends Application {
             SceneLoader.loadScene("/FXML/LoginPage.fxml", null);
             primaryStage.setTitle("Inventory Management System");
 
-            // ✅ Attach exit handler here — works for all scenes
+
             primaryStage.setOnCloseRequest(event -> {
                 Services.LogOutService.handleExit(); // Safely logs out current user
                 Services.ProductsService.stopBackgroundSync(); // Optional cleanup
