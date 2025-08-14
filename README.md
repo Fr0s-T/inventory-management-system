@@ -123,5 +123,6 @@ This project is currently maintained by \[Frost and Ilia]. If you wish to contri
 ---
 
 ## 📜 License
-
-MIT (or your custom license here)
+[
+Custom Proprietary License
+](https://github.com/Fr0s-T/inventory-management-system/blob/master/Custom%20Proprietary%20License)
