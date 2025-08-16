@@ -51,7 +51,16 @@ A desktop application for managing warehouse products and shipments, built with 
    --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml
    ```
 
-4. Update DB credentials in `DataBaseConnection.java`
+4.Create a .env file in the project root with your DB credentials:
+
+```plaintext
+DB_SERVER=your-server.database.windows.net
+DB_NAME=IMS
+DB_USER=sqladmin
+DB_PASSWORD=yourStrongPasswordHere
+```
+
+⚠️ This file is ignored by Git (.gitignore), so your secrets are safe.
 
 5. Run `Main.java`
 

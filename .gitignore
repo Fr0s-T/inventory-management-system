@@ -1,0 +1,10 @@
+# Ignore environment files
+.env
+# ignore all tests under src/Tests
+/src/Tests/
+
+.idea
+
+inventory-management-system.iml
+
+out

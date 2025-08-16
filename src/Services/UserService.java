@@ -45,13 +45,15 @@ public class UserService {
 
                 managers.add(manager);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return managers;
     }
 
 
     public static int addManager(String firstName, String middleName, String lastName, String password)
-            throws SQLException, ClassNotFoundException {
+            throws Exception {
 
         final int roleID = 2;
 
@@ -153,6 +155,8 @@ public class UserService {
                     throw new SQLException("Creating employee failed, no ID obtained.");
                 }
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     public static String getUsernameById(int employeeId) throws SQLException, ClassNotFoundException {
@@ -168,6 +172,8 @@ public class UserService {
                     username = rs.getString("Username");
                 }
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return username;
     }

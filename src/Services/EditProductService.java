@@ -31,6 +31,8 @@ public class EditProductService {
 
             int affectedRows = ps.executeUpdate();
             return affectedRows > 0;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

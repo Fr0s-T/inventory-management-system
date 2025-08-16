@@ -38,6 +38,8 @@ public class WareHouseService {
                 newWarehouse.setManegeUSerName(rs.getString("Username"));
                 warehouses.add(newWarehouse);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return warehouses;
@@ -98,6 +100,8 @@ public class WareHouseService {
 
             Alert alert = getAlert(affected);
             alert.showAndWait();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -139,6 +143,8 @@ public class WareHouseService {
                 );
                 Session.setCurrentWarehouse(warehouse);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     public static void getAllWarehouses(){
@@ -160,7 +166,7 @@ public class WareHouseService {
                 warehouses.add(newWarehouse);
             }
             Session.setAllWarehouses(warehouses);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

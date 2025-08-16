@@ -117,6 +117,8 @@ public class ProductsService {
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
@@ -152,12 +154,14 @@ public class ProductsService {
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return products;
     }
 
-    public static Map<String, Product> getGlobalProductCatalog() throws SQLException, ClassNotFoundException {
+    public static Map<String, Product> getGlobalProductCatalog() throws Exception {
         Map<String, Product> catalog = new HashMap<>();
         String sql = "SELECT * FROM ProductType";
 
