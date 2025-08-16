@@ -47,7 +47,7 @@ public class WareHouseService {
 
     public static void addWarehouse(String name, String location, int capacity, String selectedManager)
             throws SQLException, ClassNotFoundException {
-        Warehouse warehouse = new Warehouse(name,Session.getCurrentUser().getUsername(),capacity,location);
+        Warehouse warehouse = new Warehouse(name,selectedManager,capacity,location);
 
         String callSP = "{call AddWarehouseWithManagerValidation(?,?,?,?,?)}";
         String updateManagerSQL = "UPDATE Employee SET WarehouseID = ? WHERE Username = ?";
