@@ -18,9 +18,6 @@
     -fx-background-radius: 8;
 }
 
-
-
-
 /* Profile Image */
 .profile-image {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
