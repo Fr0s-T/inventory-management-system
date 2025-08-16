@@ -10,7 +10,7 @@ import java.sql.*;
  */
 
 public class DataBaseConnectionTest {
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         // 1. Initialize database connection
         DataBaseConnection dbConnection = new DataBaseConnection();
         String connectionUrl = dbConnection.getConnectionUrl(300);
@@ -65,5 +65,5 @@ public class DataBaseConnectionTest {
             }
             e.printStackTrace();
         }
-    }
+    }*/
 }
