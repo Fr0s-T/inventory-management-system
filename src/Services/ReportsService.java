@@ -35,6 +35,8 @@ public class ReportsService {
                     users.add(new User(rs));
                 }
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return users;

@@ -74,6 +74,8 @@ public class EditItem {
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
                 showAlert(Alert.AlertType.ERROR, "Error", null, "An error occurred while fetching product data.");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         });
 

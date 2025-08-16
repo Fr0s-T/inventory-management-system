@@ -47,7 +47,7 @@ public class SuFrame extends Application {
 
 
     @FXML
-    private void initialize() throws SQLException, ClassNotFoundException {
+    private void initialize() throws Exception {
 
         User user = Session.getCurrentUser();
         UsernameLabel.setText(user.getUsername());

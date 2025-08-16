@@ -57,6 +57,8 @@ public class EditUserServices {
         } catch (SQLException | ClassNotFoundException e) {
             AlertUtils.showError("Database Error", e.getMessage());
             throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -77,7 +79,7 @@ public class EditUserServices {
                 AlertUtils.showWarning("No Update", "No active hierarchy found for EmployeeID " + employeeId);
             }
 
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (Exception e) {
             AlertUtils.showError("Database Error", e.getMessage());
         }
     }
@@ -104,6 +106,8 @@ public class EditUserServices {
 
         } catch (SQLException | ClassNotFoundException e) {
             AlertUtils.showError("Database Error", e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -123,7 +127,7 @@ public class EditUserServices {
                 AlertUtils.showWarning("Fetch User", "No user found with ID: " + id);
             }
 
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (Exception e) {
             AlertUtils.showError("Database Error", e.getMessage());
         }
 

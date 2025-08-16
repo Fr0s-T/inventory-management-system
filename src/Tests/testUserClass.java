@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public class testUserClass {
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         List<User> users = new ArrayList<>();
 
         // Initialize database connection
@@ -82,5 +82,5 @@ public class testUserClass {
                 " | Warehouse: " + user.getWarehouseId() +
                 " | Picture: " + (user.getPicture() != null ? user.getPicture() : "No picture")
         );
-    }
+    }*/
 }

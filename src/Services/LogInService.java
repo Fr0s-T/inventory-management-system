@@ -151,7 +151,7 @@ public class LogInService {
                 }
             }
             throw new SQLException("User not found");
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -216,6 +216,8 @@ public class LogInService {
             stmt.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new SQLException("Database connection error");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

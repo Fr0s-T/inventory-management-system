@@ -76,6 +76,8 @@ public class UserFrame extends Application {
             alert.setHeaderText("Failed to load warehouse information");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
