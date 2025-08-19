@@ -3,7 +3,6 @@
 ![Java](https://img.shields.io/badge/Java-17%2B-blue?logo=java\&logoColor=white)
 ![JavaFX](https://img.shields.io/badge/JavaFX-17%2B-brightgreen?logo=oracle)
 ![SQL Server](https://img.shields.io/badge/Database-SQL%20Server-lightgrey?logo=microsoftsqlserver\&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 
 A desktop application for managing warehouse products and shipments, built with JavaFX and connected to a SQL Server backend.
 
