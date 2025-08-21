@@ -194,12 +194,14 @@ public class ShipmentServices {
                                            int detailsId,
                                            ArrayList<Product> items,
                                            ArrayList<Integer> qty) throws SQLException {
-        final String sql =
-                "INSERT INTO ShippedItems (ShipmentDetailsID, ItemCode, Quantity, UnitPrice) " +
-                        "VALUES (?, ?, ?, ?)";
+        System.out.println("[DEBUG] Starting insertShippedItems");
+        System.out.println("[DEBUG] DetailsID: " + detailsId + ", Items count: " + items.size());
+
+        final String sql = "INSERT INTO ShippedItems (ShipmentDetailsID, ItemCode, Quantity, UnitPrice) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (int i = 0; i < items.size(); i++) {
+                System.out.println("[DEBUG] Inserting: " + items.get(i).getItemCode() + ", Qty: " + qty.get(i));
                 ps.setInt(1, detailsId);
                 ps.setString(2, items.get(i).getItemCode());
                 ps.setInt(3, qty.get(i));
@@ -207,6 +209,10 @@ public class ShipmentServices {
                 ps.addBatch();
             }
             ps.executeBatch();
+            System.out.println("[DEBUG] Batch executed successfully");
+        } catch (SQLException e) {
+            System.out.println("[ERROR] SQLException: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -225,6 +231,13 @@ public class ShipmentServices {
                 "MERGE ProductType AS T " +
                         "USING (VALUES (?, ?, ?, ?, ?, ?)) AS S(ItemCode, Name, UnitPrice, Color, Size, Section) " +
                         "   ON T.ItemCode = S.ItemCode " +
+                        "WHEN MATCHED THEN " +  // ← ADD THIS CLAUSE
+                        "   UPDATE SET " +
+                        "      Name = S.Name, " +
+                        "      UnitPrice = S.UnitPrice, " +
+                        "      Color = S.Color, " +
+                        "      Size = S.Size, " +
+                        "      Section = S.Section " +
                         "WHEN NOT MATCHED THEN " +
                         "   INSERT (ItemCode, Name, UnitPrice, Color, Size, Section) " +
                         "   VALUES (S.ItemCode, S.Name, S.UnitPrice, S.Color, S.Size, S.Section);";
@@ -255,25 +268,42 @@ public class ShipmentServices {
                                                 ArrayList<Product> products,
                                                 ArrayList<Integer> qty,
                                                 int sign) throws SQLException {
-        final String sql =
-                "MERGE Quantity AS T " +
-                        "USING (VALUES (?, ?, ?)) AS S(ItemCode, QtyDelta, WarehouseID) " +
-                        "   ON T.ItemCode = S.ItemCode AND T.WarehouseID = S.WarehouseID " +
-                        "WHEN MATCHED THEN " +
-                        "   UPDATE SET Quantity = T.Quantity + S.QtyDelta " +
-                        "WHEN NOT MATCHED THEN " +
-                        "   INSERT (ItemCode, Quantity, WarehouseID) " +
-                        "   VALUES (S.ItemCode, S.QtyDelta, S.WarehouseID);";
+
+        System.out.println("[DEBUG] Starting Quantity MERGE for warehouse: " +
+                (warehouse != null ? warehouse.getId() : "NULL_WAREHOUSE"));
+
+        final String sql = "MERGE Quantity AS T " +
+                "USING (VALUES (?, ?, ?)) AS S(ItemCode, QtyDelta, WarehouseID) " +
+                "   ON T.ItemCode = S.ItemCode AND T.WarehouseID = S.WarehouseID " +
+                "WHEN MATCHED THEN " +
+                "   UPDATE SET Quantity = T.Quantity + S.QtyDelta " +
+                "WHEN NOT MATCHED THEN " +
+                "   INSERT (ItemCode, Quantity, WarehouseID) " +
+                "   VALUES (S.ItemCode, S.QtyDelta, S.WarehouseID);";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (int i = 0; i < products.size(); i++) {
                 int delta = sign * qty.get(i);
-                ps.setString(1, products.get(i).getItemCode());
+                String itemCode = products.get(i).getItemCode();
+
+                // DEBUG LOGGING
+                assert warehouse != null;
+                System.out.println("[DEBUG] ItemCode: '" + itemCode +
+                        "', Delta: " + delta +
+                        ", WarehouseID: " + warehouse.getId());
+
+                // NULL CHECKS
+                if (itemCode == null) {
+                    throw new SQLException("ItemCode cannot be null for product at index: " + i);
+                }
+
+                ps.setString(1, itemCode);
                 ps.setInt(2, delta);
                 ps.setInt(3, warehouse.getId());
                 ps.addBatch();
             }
             ps.executeBatch();
+            System.out.println("[DEBUG] Quantity MERGE completed successfully");
         }
     }
 
