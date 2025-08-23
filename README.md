@@ -133,4 +133,4 @@ This project is currently maintained by \[Frost and Ilia]. If you wish to contri
 ## 📜 License
 [
 Custom Proprietary License
-](https://github.com/Fr0s-T/inventory-management-system/blob/master/Custom%20Proprietary%20License)
+](https://github.com/Fr0s-T/inventory-management-system/blob/master/LICENSE)
